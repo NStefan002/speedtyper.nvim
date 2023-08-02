@@ -1,41 +1,60 @@
-local M = require("speedtyper.main")
-local Speedtyper = {}
+local M = {}
+local util = require("speedtyper.util")
+local api = vim.api
 
--- Toggle the plugin by calling the `enable`/`disable` methods respectively.
-function Speedtyper.toggle()
-    -- when the config is not set to the global object, we set it
-    if _G.Speedtyper.config == nil then
-        _G.Speedtyper.config = require("speedtyper.config").options
+local defaults = {
+    time = 30,
+    window = {
+        height = 0.15,      -- integer grater than 0 or float in range (0, 1)
+        width = 0.55,
+        border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
+    }
+}
+
+---@param size integer | float
+---@param viewport integer
+local function calc_size(size, viewport)
+    if size <= 1 then
+        return math.ceil(size * viewport)
     end
-
-    _G.Speedtyper.state = M.toggle()
+    return math.min(size, viewport)
 end
 
--- starts Speedtyper and set internal functions and state.
-function Speedtyper.enable()
-    if _G.Speedtyper.config == nil then
-        _G.Speedtyper.config = require("speedtyper.config").options
-    end
-
-    local state = M.enable()
-
-    if state ~= nil then
-        _G.Speedtyper.state = state
-    end
-
-    return state
+function M.open_float(opts)
+    local lines = vim.o.lines - vim.o.cmdheight
+    local columns = vim.o.columns
+    local height = calc_size(opts.height, lines)
+    local width = calc_size(opts.width, columns)
+    local bufnr = api.nvim_create_buf(false, true)
+    local winnr = api.nvim_open_win(bufnr, true, {
+        relative = "editor",
+        row = math.floor((lines - height) / 2),
+        col = math.floor((columns - width) / 2),
+        anchor = "NW",
+        width = width,
+        height = height,
+        border = opts.border,
+        title = "Speedtyper",
+        title_pos = "center",
+        noautocmd = true,
+    })
+    return winnr
 end
 
--- disables Speedtyper and reset internal functions and state.
-function Speedtyper.disable()
-    _G.Speedtyper.state = M.disable()
+function M.start()
+
 end
 
--- setup Speedtyper options and merge them with user provided ones.
-function Speedtyper.setup(opts)
-    _G.Speedtyper.config = require("speedtyper.config").setup(opts)
+function M.setup(opts)
+    opts = opts or defaults
+    api.nvim_create_user_command("Speedtyper", function(event)
+        local time = event.args or opts.time
+        print(time)
+        M.open_float(opts.window)
+    end, {
+        nargs = 1,
+        desc = "Start Speedtyper with <arg> time on the clock.",
+    })
 end
 
-_G.Speedtyper = Speedtyper
-
-return _G.Speedtyper
+return M
