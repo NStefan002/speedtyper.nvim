@@ -2,7 +2,6 @@ local M = {}
 local api = vim.api
 local helper_fn = require("speedtyper.helper")
 local util = require("speedtyper.util")
-local words = require("speedtyper.words")
 
 M.default_opts = {
     time = 30,
@@ -34,7 +33,7 @@ M.open_float = function(opts)
         noautocmd = true,
     })
     -- creating space for extmarks
-    for i = 1, 3 do
+    for _ = 1, 3 do
         vim.cmd.normal("o")
     end
     vim.cmd.normal("gg")
@@ -42,7 +41,7 @@ M.open_float = function(opts)
     return winnr, bufnr
 end
 
----@param time_sec integer
+---@param time_sec number
 ---@param bufnr integer
 ---@param ns_id integer
 M.create_timer = function(time_sec, bufnr, ns_id)
@@ -53,45 +52,35 @@ M.create_timer = function(time_sec, bufnr, ns_id)
         virt_text_pos = "right_align",
     })
     local timer = vim.uv.new_timer()
-    print(time_sec)
-    timer:start(
-        0,
-        1000,
-        vim.schedule_wrap(function()
-            if time_sec == 0 then
-                timer:stop()
-                timer:close()
-            end
-            api.nvim_buf_del_extmark(bufnr, ns_id, extm_id)
+    timer:start(0, 1000, vim.schedule_wrap(function()
+        if time_sec <= 0 then
+            extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
+                virt_text = {
+                    { "Time's up!", "WarningMsg" },
+                },
+                virt_text_pos = "right_align",
+                id = extm_id
+            })
+            timer:stop()
+            timer:close()
+        else
             extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
                 virt_text = {
                     { "Time: " .. tostring(time_sec) .. "    ", "Error" },
                 },
                 virt_text_pos = "right_align",
+                id = extm_id
             })
             time_sec = time_sec - 1
-        end)
-    )
+        end
+    end))
 end
 
 ---@param bufnr integer
 ---@param ns_id integer
 M.start = function(bufnr, ns_id)
     math.randomseed(os.time())
-    local extm_ids = {}
-    local sentences = {}
-    for i = 1, 4 do
-        local sentence = helper_fn.generate_sentence(words)
-        table.insert(sentences, sentence)
-        local extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, i - 1, 0, {
-            virt_text = {
-                { sentence, "Comment" },
-            },
-            hl_mode = "combine",
-            virt_text_win_col = 0,
-        })
-        table.insert(extm_ids, extm_id)
-    end
+    local extm_ids, sentences = helper_fn.generate_extmark(bufnr, ns_id)
     api.nvim_create_autocmd("CursorMovedI", {
         group = api.nvim_create_augroup("Speedtyper", { clear = true }),
         buffer = bufnr,
@@ -105,15 +94,20 @@ end
 ---@param opts table
 M.setup = function(opts)
     opts = opts or M.default_opts
+    -- one or zero arguments
     api.nvim_create_user_command("Speedtyper", function(event)
-        local time = event.args or opts.time
+        if #event.fargs > 1 then
+            util.error("Too many arguments!")
+            return
+        end
+        local time = tonumber(event.fargs[1]) or opts.time
         local ns_id = api.nvim_create_namespace("Speedtyper")
         local winnr, bufnr = M.open_float(opts.window)
         M.start(bufnr, ns_id)
         M.create_timer(time, bufnr, ns_id)
     end, {
-        nargs = 1,
-        desc = "Start Speedtyper with <arg> time on the clock.",
+        nargs = "*",
+        desc = "Start Speedtyper with <arg> (or default if not provided) time on the clock.",
     })
 end
 

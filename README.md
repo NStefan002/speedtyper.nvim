@@ -1,18 +1,14 @@
-<p align="center">
-    <h1 align="center">speedtyper.nvim</h2>
-</p>
+# ⌨️ speedtyper.nvim
 
-<p align="center">
-    Practise typing while bored.
-</p>
+>Practise typing while bored.
 
-<div align="center">
-    > Drag your video (<10MB) here to host it for free on GitHub.
-</div>
-
-<div align="center">
-
-_[GIF version of the showcase video for Github mobile users](SHOWCASE_GIF_LINK)_
+<!-- <div align="center"> -->
+<!--     > Drag your video (<10MB) here to host it for free on GitHub. -->
+<!-- </div> -->
+<!--  -->
+<!-- <div align="center"> -->
+<!--  -->
+<!-- _[GIF version of the showcase video for Github mobile users](SHOWCASE_GIF_LINK)_ -->
 
 </div>
 
@@ -24,22 +20,7 @@ _[GIF version of the showcase video for Github mobile users](SHOWCASE_GIF_LINK)_
 
 ## 📋 Installation
 
-<div align="center">
-<table>
-<thead>
-<tr>
-<th>Package manager</th>
-<th>Snippet</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-
-[wbthomason/packer.nvim](https://github.com/wbthomason/packer.nvim)
-
-</td>
-<td>
+[packer](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use {
@@ -53,15 +34,7 @@ use {
 }
 ```
 
-</td>
-</tr>
-<tr>
-<td>
-
-[folke/lazy.nvim](https://github.com/folke/lazy.nvim)
-
-</td>
-<td>
+[lazy](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
@@ -72,12 +45,6 @@ use {
     }
 }
 ```
-
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 
 <!-- ## ☄ Getting started -->
 <!--  -->
@@ -108,6 +75,7 @@ use {
 |   Command   |         Description        |
 |-------------|----------------------------|
 |  `:Speedtyper <time>`  |     Runs typing test with `<time>` seconds on the clock.    |
+|  `:Speedtyper`  |     Runs typing test with default time setting on the clock.    |
 
 ## ⌨ Contributing
 
