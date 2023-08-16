@@ -1,9 +1,9 @@
 <p align="center">
-  <h1 align="center">speedtyper.nvim</h2>
+    <h1 align="center">speedtyper.nvim</h2>
 </p>
 
 <p align="center">
-    > A catch phrase that describes your plugin.
+    Practise typing while bored.
 </p>
 
 <div align="center">
@@ -12,15 +12,11 @@
 
 <div align="center">
 
-> Videos don't work on GitHub mobile, so a GIF alternative can help users.
-
-_[GIF version of the showcase video for mobile users](SHOWCASE_GIF_LINK)_
+_[GIF version of the showcase video for Github mobile users](SHOWCASE_GIF_LINK)_
 
 </div>
 
 ## ⚡️ Features
-
-> Write short sentences describing your plugin features
 
 - FEATURE 1
 - FEATURE ..
@@ -46,27 +42,15 @@ _[GIF version of the showcase video for mobile users](SHOWCASE_GIF_LINK)_
 <td>
 
 ```lua
--- stable version
-use {"speedtyper.nvim", tag = "*" }
--- dev version
-use {"speedtyper.nvim"}
-```
-
-</td>
-</tr>
-<tr>
-<td>
-
-[junegunn/vim-plug](https://github.com/junegunn/vim-plug)
-
-</td>
-<td>
-
-```lua
--- stable version
-Plug "speedtyper.nvim", { "tag": "*" }
--- dev version
-Plug "speedtyper.nvim"
+use {
+    "speedtyper.nvim",
+    branch = "main",
+    config = function()
+        require('speedtyper').setup({
+            -- your config
+        })
+    end
+}
 ```
 
 </td>
@@ -80,10 +64,13 @@ Plug "speedtyper.nvim"
 <td>
 
 ```lua
--- stable version
-require("lazy").setup({{"speedtyper.nvim", version = "*"}})
--- dev version
-require("lazy").setup({"speedtyper.nvim"})
+{
+    "speedtyper.nvim",
+    branch = "main",
+    opts = {
+        -- your config
+    }
+}
 ```
 
 </td>
@@ -92,23 +79,26 @@ require("lazy").setup({"speedtyper.nvim"})
 </table>
 </div>
 
-## ☄ Getting started
+<!-- ## ☄ Getting started -->
+<!--  -->
+<!-- > Describe how to use the plugin the simplest way -->
 
-> Describe how to use the plugin the simplest way
-
-## ⚙ Configuration
-
-> The configuration list sometimes become cumbersome, making it folded by default reduce the noise of the README file.
+## ⚙ Default configuration
 
 <details>
-<summary>Click to unfold the full list of options with their default values</summary>
+<summary>Full list of options with their default values</summary>
 
-> **Note**: The options are also available in Neovim by calling `:h speedtyper.options`
+> **Note**: The options are also available in Neovim by calling `:h speedtyper.default_opts`
 
 ```lua
-require("speedtyper").setup({
-    -- you can copy the full list from lua/speedtyper/config.lua
-})
+{
+    time = 30,
+    window = {
+        height = 0.15, -- integer grater than 0 or float in range (0, 1)
+        width = 0.55, -- integer grater than 0 or float in range (0, 1)
+        border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
+    }
+}
 ```
 
 </details>
@@ -117,16 +107,16 @@ require("speedtyper").setup({
 
 |   Command   |         Description        |
 |-------------|----------------------------|
-|  `:Toggle`  |     Enables the plugin.    |
+|  `:Speedtyper <time>`  |     Runs typing test with <time> seconds on the clock.    |
 
 ## ⌨ Contributing
 
-PRs and issues are always welcome. Make sure to provide as much context as possible when opening one.
+PRs and issues are always welcome.
 
 ## 🗞 Wiki
 
-You can find guides and showcase of the plugin on [the Wiki](https://github.com/nstefan002/speedtyper.nvim/wiki)
+Coming soon...
 
-## 🎭 Motivations
+## 🎭 Inspiration
 
-> If alternatives of your plugin exist, you can provide some pros/cons of using yours over the others.
+* [monkeytype](https://monkeytype.com/)
