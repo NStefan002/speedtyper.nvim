@@ -107,7 +107,7 @@ use {
 
 |   Command   |         Description        |
 |-------------|----------------------------|
-|  `:Speedtyper <time>`  |     Runs typing test with <time> seconds on the clock.    |
+|  `:Speedtyper <time>`  |     Runs typing test with `<time>` seconds on the clock.    |
 
 ## ⌨ Contributing
 
