@@ -3,28 +3,58 @@
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
 
-  - Features                                        |speedtyper.nvim-features|
-  - Installation                                |speedtyper.nvim-installation|
-  - Default configuration              |speedtyper.nvim-default-configuration|
-  - Commands                                        |speedtyper.nvim-commands|
-  - Contributing                                |speedtyper.nvim-contributing|
-  - Wiki                                                |speedtyper.nvim-wiki|
-  - Inspiration                                  |speedtyper.nvim-inspiration|
-speedtyper.nvimPractise typing while bored.
+1. speedtyper.nvim                           |speedtyper.nvim-speedtyper.nvim|
+  - Features                        |speedtyper.nvim-speedtyper.nvim-features|
+  - Installation                |speedtyper.nvim-speedtyper.nvim-installation|
+  - Default configuration|speedtyper.nvim-speedtyper.nvim-default-configuration|
+  - Commands                        |speedtyper.nvim-speedtyper.nvim-commands|
+  - Contributing                |speedtyper.nvim-speedtyper.nvim-contributing|
+  - Wiki                                |speedtyper.nvim-speedtyper.nvim-wiki|
+  - Inspiration                  |speedtyper.nvim-speedtyper.nvim-inspiration|
+
+==============================================================================
+1. speedtyper.nvim                           *speedtyper.nvim-speedtyper.nvim*
 
 
-FEATURES                                            *speedtyper.nvim-features*
+  Practise typing while bored.
+
+FEATURES                            *speedtyper.nvim-speedtyper.nvim-features*
 
 - FEATURE 1
 - FEATURE ..
 - FEATURE N
 
 
-INSTALLATION                                    *speedtyper.nvim-installation*
+INSTALLATION                    *speedtyper.nvim-speedtyper.nvim-installation*
+
+packer <https://github.com/wbthomason/packer.nvim>
+
+>lua
+    use {
+        "speedtyper.nvim",
+        branch = "main",
+        config = function()
+            require('speedtyper').setup({
+                -- your config
+            })
+        end
+    }
+<
+
+lazy <https://github.com/folke/lazy.nvim>
+
+>lua
+    {
+        "speedtyper.nvim",
+        branch = "main",
+        opts = {
+            -- your config
+        }
+    }
+<
 
 
-
-DEFAULT CONFIGURATION                  *speedtyper.nvim-default-configuration*
+DEFAULT CONFIGURATION  *speedtyper.nvim-speedtyper.nvim-default-configuration*
 
 Full list of options with their default values ~
 
@@ -43,7 +73,7 @@ Full list of options with their default values ~
 <
 
 
-COMMANDS                                            *speedtyper.nvim-commands*
+COMMANDS                            *speedtyper.nvim-speedtyper.nvim-commands*
 
   -----------------------------------------------------------------------
   Command                Description
@@ -51,19 +81,21 @@ COMMANDS                                            *speedtyper.nvim-commands*
   :Speedtyper <time>     Runs typing test with <time> seconds on the
                          clock.
 
+  :Speedtyper            Runs typing test with default time setting on
+                         the clock.
   -----------------------------------------------------------------------
 
-CONTRIBUTING                                    *speedtyper.nvim-contributing*
+CONTRIBUTING                    *speedtyper.nvim-speedtyper.nvim-contributing*
 
 PRs and issues are always welcome.
 
 
-WIKI                                                    *speedtyper.nvim-wiki*
+WIKI                                    *speedtyper.nvim-speedtyper.nvim-wiki*
 
 Coming soon…
 
 
-INSPIRATION                                      *speedtyper.nvim-inspiration*
+INSPIRATION                      *speedtyper.nvim-speedtyper.nvim-inspiration*
 
 - monkeytype <https://monkeytype.com/>
 
