@@ -1,31 +1,31 @@
-*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 16
+*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 17
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
 
-1. speedtyper.nvim                           |speedtyper.nvim-speedtyper.nvim|
-  - Features                        |speedtyper.nvim-speedtyper.nvim-features|
-  - Installation                |speedtyper.nvim-speedtyper.nvim-installation|
-  - Default configuration|speedtyper.nvim-speedtyper.nvim-default-configuration|
-  - Commands                        |speedtyper.nvim-speedtyper.nvim-commands|
-  - Contributing                |speedtyper.nvim-speedtyper.nvim-contributing|
-  - Wiki                                |speedtyper.nvim-speedtyper.nvim-wiki|
-  - Inspiration                  |speedtyper.nvim-speedtyper.nvim-inspiration|
+1. Speedtyper                                     |speedtyper.nvim-speedtyper|
+  - Features                             |speedtyper.nvim-speedtyper-features|
+  - Installation                     |speedtyper.nvim-speedtyper-installation|
+  - Default configuration   |speedtyper.nvim-speedtyper-default-configuration|
+  - Commands                             |speedtyper.nvim-speedtyper-commands|
+  - Contributing                     |speedtyper.nvim-speedtyper-contributing|
+  - Wiki                                     |speedtyper.nvim-speedtyper-wiki|
+  - Inspiration                       |speedtyper.nvim-speedtyper-inspiration|
 
 ==============================================================================
-1. speedtyper.nvim                           *speedtyper.nvim-speedtyper.nvim*
+1. Speedtyper                                     *speedtyper.nvim-speedtyper*
 
 
   Practise typing while bored.
 
-FEATURES                            *speedtyper.nvim-speedtyper.nvim-features*
+FEATURES                                 *speedtyper.nvim-speedtyper-features*
 
 - FEATURE 1
 - FEATURE ..
 - FEATURE N
 
 
-INSTALLATION                    *speedtyper.nvim-speedtyper.nvim-installation*
+INSTALLATION                         *speedtyper.nvim-speedtyper-installation*
 
 packer <https://github.com/wbthomason/packer.nvim>
 
@@ -54,7 +54,7 @@ lazy <https://github.com/folke/lazy.nvim>
 <
 
 
-DEFAULT CONFIGURATION  *speedtyper.nvim-speedtyper.nvim-default-configuration*
+DEFAULT CONFIGURATION       *speedtyper.nvim-speedtyper-default-configuration*
 
 Full list of options with their default values ~
 
@@ -73,7 +73,7 @@ Full list of options with their default values ~
 <
 
 
-COMMANDS                            *speedtyper.nvim-speedtyper.nvim-commands*
+COMMANDS                                 *speedtyper.nvim-speedtyper-commands*
 
   -----------------------------------------------------------------------
   Command                Description
@@ -85,17 +85,17 @@ COMMANDS                            *speedtyper.nvim-speedtyper.nvim-commands*
                          the clock.
   -----------------------------------------------------------------------
 
-CONTRIBUTING                    *speedtyper.nvim-speedtyper.nvim-contributing*
+CONTRIBUTING                         *speedtyper.nvim-speedtyper-contributing*
 
 PRs and issues are always welcome.
 
 
-WIKI                                    *speedtyper.nvim-speedtyper.nvim-wiki*
+WIKI                                         *speedtyper.nvim-speedtyper-wiki*
 
 Coming soon…
 
 
-INSPIRATION                      *speedtyper.nvim-speedtyper.nvim-inspiration*
+INSPIRATION                           *speedtyper.nvim-speedtyper-inspiration*
 
 - monkeytype <https://monkeytype.com/>
 
