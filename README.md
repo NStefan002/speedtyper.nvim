@@ -20,7 +20,19 @@
 
 ## 📋 Installation
 
-[packer](https://github.com/wbthomason/packer.nvim)
+[lazy](https://github.com/folke/lazy.nvim):
+
+```lua
+{
+    "speedtyper.nvim",
+    branch = "main",
+    opts = {
+    -- your config
+    }
+}
+```
+
+[packer](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use {
@@ -34,18 +46,6 @@ use {
 }
 ```
 
-[lazy](https://github.com/folke/lazy.nvim)
-
-```lua
-{
-    "speedtyper.nvim",
-    branch = "main",
-    opts = {
-        -- your config
-    }
-}
-```
-
 <!-- ## ☄ Getting started -->
 <!--  -->
 <!-- > Describe how to use the plugin the simplest way -->
@@ -54,8 +54,6 @@ use {
 
 <details>
 <summary>Full list of options with their default values</summary>
-
-> **Note**: The options are also available in Neovim by calling `:h speedtyper.default_opts`
 
 ```lua
 {
@@ -77,13 +75,9 @@ use {
 |  `:Speedtyper <time>`  |     Runs typing test with `<time>` seconds on the clock.    |
 |  `:Speedtyper`  |     Runs typing test with default time setting on the clock.    |
 
-## ⌨ Contributing
+## 🤝 Contributing
 
 PRs and issues are always welcome.
-
-## 🗞 Wiki
-
-Coming soon...
 
 ## 🎭 Inspiration
 
