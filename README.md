@@ -1,4 +1,4 @@
-# ⌨️ speedtyper.nvim
+# ⌨️ Speedtyper
 
 >Practise typing while bored.
 
