@@ -9,7 +9,6 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
   - Default configuration   |speedtyper.nvim-speedtyper-default-configuration|
   - Commands                             |speedtyper.nvim-speedtyper-commands|
   - Contributing                     |speedtyper.nvim-speedtyper-contributing|
-  - Wiki                                     |speedtyper.nvim-speedtyper-wiki|
   - Inspiration                       |speedtyper.nvim-speedtyper-inspiration|
 
 ==============================================================================
@@ -27,6 +26,18 @@ FEATURES                                 *speedtyper.nvim-speedtyper-features*
 
 INSTALLATION                         *speedtyper.nvim-speedtyper-installation*
 
+lazy <https://github.com/folke/lazy.nvim>
+
+>lua
+    {
+        "speedtyper.nvim",
+        branch = "main",
+        opts = {
+        -- your config
+        }
+    }
+<
+
 packer <https://github.com/wbthomason/packer.nvim>
 
 >lua
@@ -41,26 +52,11 @@ packer <https://github.com/wbthomason/packer.nvim>
     }
 <
 
-lazy <https://github.com/folke/lazy.nvim>
-
->lua
-    {
-        "speedtyper.nvim",
-        branch = "main",
-        opts = {
-            -- your config
-        }
-    }
-<
-
 
 DEFAULT CONFIGURATION       *speedtyper.nvim-speedtyper-default-configuration*
 
 Full list of options with their default values ~
 
-
-  **Note**The options are also available in Neovim by calling
-  |speedtyper.default_opts|
 >lua
     {
         time = 30,
@@ -88,11 +84,6 @@ COMMANDS                                 *speedtyper.nvim-speedtyper-commands*
 CONTRIBUTING                         *speedtyper.nvim-speedtyper-contributing*
 
 PRs and issues are always welcome.
-
-
-WIKI                                         *speedtyper.nvim-speedtyper-wiki*
-
-Coming soon…
 
 
 INSPIRATION                           *speedtyper.nvim-speedtyper-inspiration*
