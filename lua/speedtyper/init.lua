@@ -51,7 +51,13 @@ M.create_timer = function(time_sec, bufnr, ns_id)
         },
         virt_text_pos = "right_align",
     })
-    local timer = vim.uv.new_timer()
+    local timer
+    if vim.uv ~= nil then
+        timer = vim.uv.new_timer()
+    else
+        timer = vim.loop.new_timer()
+    end
+
     timer:start(0, 1000, vim.schedule_wrap(function()
         if time_sec <= 0 then
             extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
