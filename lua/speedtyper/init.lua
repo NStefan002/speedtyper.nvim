@@ -91,7 +91,7 @@ M.start = function(bufnr, ns_id)
         group = api.nvim_create_augroup("Speedtyper", { clear = true }),
         buffer = bufnr,
         callback = function()
-            helper_fn.update_extmarks(sentences, extm_ids, bufnr, ns_id)
+            extm_ids, sentences = helper_fn.update_extmarks(sentences, extm_ids, bufnr, ns_id)
         end,
         desc = "Update extmarks while typing.",
     })

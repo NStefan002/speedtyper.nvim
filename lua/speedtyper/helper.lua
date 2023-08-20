@@ -13,13 +13,12 @@ end
 
 ---@return string
 M.generate_sentence = function()
-    -- put random words together into a sentence and make it about 40 chars
-    local sentence = words[math.random(1, #words)]
-    local len = #sentence
-    while len <= 40 do
-        local word = words[math.random(1, #words)]
-        sentence = sentence .. " " .. word
-        len = len + #word
+    local win_width = api.nvim_win_get_width(0)
+    local sentence = ""
+    local word = words[math.random(1, #words)]
+    while #sentence + #word < .9 * win_width do
+        sentence = word .. " " .. sentence
+        word = words[math.random(1, #words)]
     end
     return sentence
 end
@@ -50,7 +49,9 @@ end
 ---@param extm_ids table
 ---@param bufnr integer
 ---@param ns_id integer
+---@return table<integer>, table<string>
 M.update_extmarks = function(sentences, extm_ids, bufnr, ns_id)
+    -- TODO: configure backspace behaviour
     local line = vim.fn.line(".")
     local col = vim.fn.col(".")
 
@@ -61,18 +62,19 @@ M.update_extmarks = function(sentences, extm_ids, bufnr, ns_id)
 
     if line == 4 and col - 2 == #sentences[line] then
         vim.cmd.normal("gg0")
-        -- print(vim.inspect((api.nvim_buf_get_extmarks(bufnr, ns_id, 0, -1, {}))))
         M.clear_extmarks_and_text(extm_ids, bufnr, ns_id)
         extm_ids, sentences = M.generate_extmark(bufnr, ns_id)
+    else
+        api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
+            id = extm_ids[line],
+            virt_text = {
+                { string.sub(sentences[line], col), "Comment" },
+            },
+            virt_text_win_col = col - 1,
+        })
     end
 
-    api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
-        id = extm_ids[line],
-        virt_text = {
-            { string.sub(sentences[line], col), "Comment" },
-        },
-        virt_text_win_col = col - 1,
-    })
+    return extm_ids, sentences
 end
 
 ---@param extm_ids table
