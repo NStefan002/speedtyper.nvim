@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 20
+*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 22
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -9,6 +9,7 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
   - Default configuration   |speedtyper.nvim-speedtyper-default-configuration|
   - Commands                             |speedtyper.nvim-speedtyper-commands|
   - Contributing                     |speedtyper.nvim-speedtyper-contributing|
+  - TODO                                     |speedtyper.nvim-speedtyper-todo|
   - Inspiration                       |speedtyper.nvim-speedtyper-inspiration|
 
 ==============================================================================
@@ -19,9 +20,11 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
 
 FEATURES                                 *speedtyper.nvim-speedtyper-features*
 
-- FEATURE 1
-- FEATURE ..
-- FEATURE N
+- **Languages**Currently only supports English.
+- **Customized Game Duration**Set the time limit for the game.
+- **Feedback**Receive instant updates on your words per minute (WPM) and accuracy.
+- **Play Online and Offline**Enjoy a broader word selection online, and still practice offline.
+- **Distraction-Free Typing**Temporarily disable cmp <https://github.com/hrsh7th/nvim-cmp> to focus on the game.
 
 
 INSTALLATION                         *speedtyper.nvim-speedtyper-installation*
@@ -84,6 +87,13 @@ COMMANDS                                 *speedtyper.nvim-speedtyper-commands*
 CONTRIBUTING                         *speedtyper.nvim-speedtyper-contributing*
 
 PRs and issues are always welcome.
+
+
+TODO                                         *speedtyper.nvim-speedtyper-todo*
+
+- Add more options
+- Add support for more languages
+- Add stats tracking
 
 
 INSPIRATION                           *speedtyper.nvim-speedtyper-inspiration*
