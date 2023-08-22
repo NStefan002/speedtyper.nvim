@@ -14,9 +14,11 @@
 
 ## ⚡️ Features
 
-- FEATURE 1
-- FEATURE ..
-- FEATURE N
+- **Languages**: Currently only supports English.
+- **Customized Game Duration**: Set the time limit for the game.
+- **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
+- **Play Online and Offline**: Enjoy a broader word selection online, and still practice offline.
+- **Distraction-Free Typing**: Temporarily disable [cmp](https://github.com/hrsh7th/nvim-cmp) to focus on the game.
 
 ## 📋 Installation
 
@@ -78,6 +80,12 @@ use {
 ## 🤝 Contributing
 
 PRs and issues are always welcome.
+
+## ✅☑️ TODO
+
+- [ ] Add more options
+- [ ] Add support for more languages
+- [ ] Add stats tracking
 
 ## 🎭 Inspiration
 
