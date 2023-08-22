@@ -4,6 +4,16 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: lint
+    steps:
+      - uses: actions/checkout@v3
+      - uses: JohnnyMorganz/stylua-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: latest
+          args: --check .
   tests_nightly:
     strategy:
       matrix:
@@ -49,6 +59,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     needs:
+      - lint
       - tests_nightly
       - tests_stable
     if: ${{ github.ref == 'refs/heads/main' }}
