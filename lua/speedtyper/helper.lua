@@ -4,7 +4,7 @@ local words = require("speedtyper.words")
 
 ---@param size integer | float
 ---@param viewport integer
-M.calc_size = function(size, viewport)
+function M.calc_size(size, viewport)
     if size <= 1 then
         return math.ceil(size * viewport)
     end
@@ -12,11 +12,11 @@ M.calc_size = function(size, viewport)
 end
 
 ---@return string
-M.generate_sentence = function()
+function M.generate_sentence()
     local win_width = api.nvim_win_get_width(0)
     local sentence = ""
     local word = words[math.random(1, #words)]
-    while #sentence + #word < .9 * win_width do
+    while #sentence + #word < 0.9 * win_width do
         sentence = word .. " " .. sentence
         word = words[math.random(1, #words)]
     end
@@ -26,7 +26,7 @@ end
 ---@param bufnr integer
 ---@param ns_id integer
 ---@return table<integer>, table<string>
-M.generate_extmark = function(bufnr, ns_id)
+function M.generate_extmark(bufnr, ns_id)
     local extm_ids = {}
     local sentences = {}
     for i = 1, 4 do
@@ -50,7 +50,7 @@ end
 ---@param bufnr integer
 ---@param ns_id integer
 ---@return table<integer>, table<string>
-M.update_extmarks = function(sentences, extm_ids, bufnr, ns_id)
+function M.update_extmarks(sentences, extm_ids, bufnr, ns_id)
     -- TODO: configure backspace behaviour
     local line = vim.fn.line(".")
     local col = vim.fn.col(".")
@@ -80,9 +80,12 @@ end
 ---@param extm_ids table
 ---@param bufnr integer
 ---@param ns_id integer
-M.clear_extmarks_and_text = function(extm_ids, bufnr, ns_id)
+function M.clear_extmarks_and_text(extm_ids, bufnr, ns_id)
     api.nvim_buf_set_lines(bufnr, 0, -1, false, {
-        " ", " ", " ", " ",
+        " ",
+        " ",
+        " ",
+        " ",
     })
     for _, id in ipairs(extm_ids) do
         api.nvim_buf_del_extmark(bufnr, ns_id, id)
