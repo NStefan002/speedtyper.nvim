@@ -11,12 +11,19 @@ function M.calc_size(size, viewport)
     return math.min(size, viewport)
 end
 
+---@return integer, integer
+function M.get_cursor_pos()
+    local line = vim.fn.line(".")
+    local col = vim.fn.col(".")
+    return line, col
+end
+
 ---@return string
 function M.generate_sentence()
     local win_width = api.nvim_win_get_width(0)
     local sentence = ""
     local word = words[math.random(1, #words)]
-    while #sentence + #word < 0.9 * win_width do
+    while #sentence + #word < 0.85 * win_width do
         sentence = word .. " " .. sentence
         word = words[math.random(1, #words)]
     end
@@ -26,7 +33,8 @@ end
 ---@param bufnr integer
 ---@param ns_id integer
 ---@return table<integer>, table<string>
-function M.generate_extmark(bufnr, ns_id)
+function M.generate_extmarks(bufnr, ns_id)
+    M.clear_text(bufnr)
     local extm_ids = {}
     local sentences = {}
     for i = 1, 4 do
@@ -52,8 +60,7 @@ end
 ---@return table<integer>, table<string>
 function M.update_extmarks(sentences, extm_ids, bufnr, ns_id)
     -- TODO: configure backspace behaviour
-    local line = vim.fn.line(".")
-    local col = vim.fn.col(".")
+    local line, col = M.get_cursor_pos()
 
     -- move cursor to the beginning of the next line after the final space in the previous line
     if col - 2 == #sentences[line] then
@@ -62,8 +69,8 @@ function M.update_extmarks(sentences, extm_ids, bufnr, ns_id)
 
     if line == 4 and col - 2 == #sentences[line] then
         vim.cmd.normal("gg0")
-        M.clear_extmarks_and_text(extm_ids, bufnr, ns_id)
-        extm_ids, sentences = M.generate_extmark(bufnr, ns_id)
+        M.clear_extmarks(extm_ids, bufnr, ns_id)
+        extm_ids, sentences = M.generate_extmarks(bufnr, ns_id)
     else
         api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
             id = extm_ids[line],
@@ -80,16 +87,20 @@ end
 ---@param extm_ids table
 ---@param bufnr integer
 ---@param ns_id integer
-function M.clear_extmarks_and_text(extm_ids, bufnr, ns_id)
-    api.nvim_buf_set_lines(bufnr, 0, -1, false, {
-        " ",
-        " ",
-        " ",
-        " ",
-    })
+function M.clear_extmarks(extm_ids, bufnr, ns_id)
     for _, id in ipairs(extm_ids) do
         api.nvim_buf_del_extmark(bufnr, ns_id, id)
     end
+end
+
+---@param bufnr integer
+function M.clear_text(bufnr)
+    api.nvim_buf_set_lines(0, 0, 4, false, {
+        "",
+        "",
+        "",
+        "",
+    })
 end
 
 return M

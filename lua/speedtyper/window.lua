@@ -22,12 +22,6 @@ function M.open_float(opts)
         title_pos = "center",
         noautocmd = true,
     })
-    -- creating space for extmarks
-    for _ = 1, 3 do
-        vim.cmd.normal("o")
-    end
-    vim.cmd.normal("gg")
-    vim.cmd.startinsert()
     return winnr, bufnr
 end
 

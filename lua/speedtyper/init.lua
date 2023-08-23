@@ -2,6 +2,7 @@ local M = {}
 local api = vim.api
 local runner = require("speedtyper.runner")
 local window = require("speedtyper.window")
+local timer = require("speedtyper.timer")
 local helper = require("speedtyper.helper")
 local util = require("speedtyper.util")
 
@@ -29,11 +30,15 @@ function M.setup(opts)
         local ns_id = api.nvim_create_namespace("Speedtyper")
         local winnr, bufnr = window.open_float(opts.window)
         runner.start(bufnr, ns_id)
-        runner.create_timer(time, bufnr, ns_id)
+        timer.create_timer(time, bufnr, ns_id)
         if package.loaded["cmp"] then
             -- disable cmp if loaded, we don't want the completion while practising typing :)
             require("cmp").setup.buffer({ enabled = false })
         end
+        vim.bo[bufnr].filetype = "speedtyper"
+        vim.opt_local.nu = false
+        vim.opt_local.rnu = false
+        vim.opt_local.fillchars = { eob = " " }
     end, {
         nargs = "*",
         desc = "Start Speedtyper with <arg> (or default if not provided) time on the clock.",
