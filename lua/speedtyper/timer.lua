@@ -3,6 +3,7 @@ local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local helper = require("speedtyper.helper")
 local stats = require("speedtyper.stats")
+local runner = require("speedtyper.runner")
 
 ---@param time_sec number
 ---@param bufnr integer
@@ -21,7 +22,7 @@ function M.create_timer(time_sec, bufnr)
             api.nvim_buf_del_extmark(bufnr, ns_id, extm_id)
             M.start_countdown(bufnr, time_sec)
         end,
-        desc = "Start timer."
+        desc = "Start the timer.",
     })
 end
 
@@ -34,6 +35,7 @@ function M.start_countdown(bufnr, time_sec)
         },
         virt_text_pos = "right_align",
     })
+    local t = time_sec
     local timer
     if vim.uv ~= nil then
         timer = vim.uv.new_timer()
@@ -45,7 +47,7 @@ function M.start_countdown(bufnr, time_sec)
         0,
         1000,
         vim.schedule_wrap(function()
-            if time_sec <= 0 then
+            if t <= 0 then
                 extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
                     virt_text = {
                         { "Time's up!", "WarningMsg" },
@@ -54,17 +56,18 @@ function M.start_countdown(bufnr, time_sec)
                     id = extm_id,
                 })
                 api.nvim_del_augroup_by_name("SpeedtyperTyping")
+                stats.display_stats(bufnr, runner.num_of_typos, time_sec)
                 timer:stop()
                 timer:close()
             else
                 extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
                     virt_text = {
-                        { "Time: " .. tostring(time_sec) .. "    ", "Error" },
+                        { "Time: " .. tostring(t) .. "    ", "Error" },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,
                 })
-                time_sec = time_sec - 1
+                t = t - 1
             end
         end)
     )

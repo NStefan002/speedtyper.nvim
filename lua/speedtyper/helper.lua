@@ -62,7 +62,7 @@ function M.update_extmarks(sentences, extm_ids, bufnr)
     local line, col = M.get_cursor_pos()
 
     -- move cursor to the beginning of the next line after the final space in the previous line
-    if col - 2 == #sentences[line] then
+    if col - 1 == #sentences[line] then
         vim.cmd.normal("j0")
     end
 
