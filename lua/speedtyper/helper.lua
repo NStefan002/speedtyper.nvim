@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
-local words = require("speedtyper.words")
+local words = require("speedtyper.langs").get_words()
 
 ---@param size integer | float
 ---@param viewport integer

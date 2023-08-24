@@ -29,6 +29,7 @@
 {
     "NStefan002/speedtyper.nvim",
     branch = "main",
+    cmd = "Speedtyper",
     opts = {
     -- your config
     }
@@ -89,6 +90,7 @@ PRs and issues are always welcome.
 - [ ] Add support for more languages
 - [x] Display current game stats
 - [ ] Add stats tracking
+- [ ] Add custom highlight groups
 
 ## 🎭 Inspiration
 
