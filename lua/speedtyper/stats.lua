@@ -2,6 +2,9 @@ local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 
+---@param bufnr integer
+---@param n_mistakes integer
+---@param time_sec number
 function M.display_stats(bufnr, n_mistakes, time_sec)
     local n_chars = 0
     local lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)

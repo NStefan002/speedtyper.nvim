@@ -3,14 +3,15 @@ local api = vim.api
 
 math.randomseed(os.time())
 
+---@type table<string, any>
 M.default_opts = {
     time = 30,
     window = {
-        height = 0.15, -- integer grater than 0 or float in range (0, 1)
-        width = 0.55, -- integer grater than 0 or float in range (0, 1)
+        height = 0.15,      -- integer grater than 0 or float in range (0, 1)
+        width = 0.55,       -- integer grater than 0 or float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en", -- currently only only supports English
+    language = "en",        -- currently only only supports English
 }
 
 ---@param opts table<string, any>

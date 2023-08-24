@@ -4,6 +4,9 @@ local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local helper = require("speedtyper.helper")
 local typo = require("speedtyper.typo")
 
+---similar to table.remove
+---@param typos table
+---@param typo_pos any
 local function remove_typo(typos, typo_pos)
     for i, value in ipairs(typos) do
         if value.line == typo_pos.line and value.col == typo_pos.col then
@@ -12,6 +15,7 @@ local function remove_typo(typos, typo_pos)
     end
 end
 
+---@type integer
 M.num_of_typos = 0
 
 ---@param bufnr integer

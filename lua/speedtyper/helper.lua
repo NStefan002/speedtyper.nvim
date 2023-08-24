@@ -3,7 +3,8 @@ local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.langs").get_words()
 
----@param size integer | float
+---calculate the dimension of the floating window
+---@param size number
 ---@param viewport integer
 function M.calc_size(size, viewport)
     if size <= 1 then
@@ -12,7 +13,8 @@ function M.calc_size(size, viewport)
     return math.min(size, viewport)
 end
 
----@return integer, integer
+---@return integer
+---@return integer
 function M.get_cursor_pos()
     local line = vim.fn.line(".")
     local col = vim.fn.col(".")
@@ -32,7 +34,8 @@ function M.generate_sentence()
 end
 
 ---@param bufnr integer
----@return table<integer>, table<string>
+---@return integer[]
+---@return string[]
 function M.generate_extmarks(bufnr)
     M.clear_text(bufnr)
     local extm_ids = {}
@@ -53,10 +56,12 @@ function M.generate_extmarks(bufnr)
     return extm_ids, sentences
 end
 
----@param sentences table
----@param extm_ids table
+---update extmarks according to the cursor position
+---@param sentences string[]
+---@param extm_ids integer[]
 ---@param bufnr integer
----@return table<integer>, table<string>
+---@return integer[]
+---@return string[]
 function M.update_extmarks(sentences, extm_ids, bufnr)
     -- TODO: configure backspace behaviour
     local line, col = M.get_cursor_pos()
@@ -83,7 +88,7 @@ function M.update_extmarks(sentences, extm_ids, bufnr)
     return extm_ids, sentences
 end
 
----@param extm_ids table
+---@param extm_ids integer[]
 ---@param bufnr integer
 function M.clear_extmarks(extm_ids, bufnr)
     for _, id in ipairs(extm_ids) do

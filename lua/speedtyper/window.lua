@@ -2,8 +2,9 @@ local M = {}
 local api = vim.api
 local helper = require("speedtyper.helper")
 
----@param opts table
----@return integer, integer
+---@param opts table<string, any>
+---@return integer
+---@return integer
 function M.open_float(opts)
     local lines = vim.o.lines - vim.o.cmdheight
     local columns = vim.o.columns

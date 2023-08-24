@@ -1,7 +1,6 @@
 local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
-local helper = require("speedtyper.helper")
 local stats = require("speedtyper.stats")
 local runner = require("speedtyper.runner")
 
