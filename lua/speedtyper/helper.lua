@@ -1,5 +1,6 @@
 local M = {}
 local api = vim.api
+local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.words")
 
 ---@param size integer | float
@@ -31,9 +32,8 @@ function M.generate_sentence()
 end
 
 ---@param bufnr integer
----@param ns_id integer
 ---@return table<integer>, table<string>
-function M.generate_extmarks(bufnr, ns_id)
+function M.generate_extmarks(bufnr)
     M.clear_text(bufnr)
     local extm_ids = {}
     local sentences = {}
@@ -56,9 +56,8 @@ end
 ---@param sentences table
 ---@param extm_ids table
 ---@param bufnr integer
----@param ns_id integer
 ---@return table<integer>, table<string>
-function M.update_extmarks(sentences, extm_ids, bufnr, ns_id)
+function M.update_extmarks(sentences, extm_ids, bufnr)
     -- TODO: configure backspace behaviour
     local line, col = M.get_cursor_pos()
 
@@ -69,8 +68,8 @@ function M.update_extmarks(sentences, extm_ids, bufnr, ns_id)
 
     if line == 4 and col - 2 == #sentences[line] then
         vim.cmd.normal("gg0")
-        M.clear_extmarks(extm_ids, bufnr, ns_id)
-        extm_ids, sentences = M.generate_extmarks(bufnr, ns_id)
+        M.clear_extmarks(extm_ids, bufnr)
+        extm_ids, sentences = M.generate_extmarks(bufnr)
     else
         api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
             id = extm_ids[line],
@@ -86,8 +85,7 @@ end
 
 ---@param extm_ids table
 ---@param bufnr integer
----@param ns_id integer
-function M.clear_extmarks(extm_ids, bufnr, ns_id)
+function M.clear_extmarks(extm_ids, bufnr)
     for _, id in ipairs(extm_ids) do
         api.nvim_buf_del_extmark(bufnr, ns_id, id)
     end
@@ -95,7 +93,8 @@ end
 
 ---@param bufnr integer
 function M.clear_text(bufnr)
-    api.nvim_buf_set_lines(0, 0, 4, false, {
+    api.nvim_buf_set_lines(bufnr, 0, 5, false, {
+        "",
         "",
         "",
         "",

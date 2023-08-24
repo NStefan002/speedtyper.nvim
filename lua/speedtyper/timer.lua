@@ -1,12 +1,13 @@
 local M = {}
 local api = vim.api
+local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local helper = require("speedtyper.helper")
+local stats = require("speedtyper.stats")
 
 ---@param time_sec number
 ---@param bufnr integer
----@param ns_id integer
-function M.create_timer(time_sec, bufnr, ns_id)
-    local extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
+function M.create_timer(time_sec, bufnr)
+    local extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
         virt_text = {
             { "Press 'i' to start the game.", "WarningMsg" },
         },
@@ -18,13 +19,16 @@ function M.create_timer(time_sec, bufnr, ns_id)
         once = true,
         callback = function()
             api.nvim_buf_del_extmark(bufnr, ns_id, extm_id)
-            M.start_countdown(time_sec, bufnr, ns_id)
+            M.start_countdown(bufnr, time_sec)
         end,
+        desc = "Start timer."
     })
 end
 
-function M.start_countdown(time_sec, bufnr, ns_id)
-    local extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
+---@param bufnr integer
+---@param time_sec number
+function M.start_countdown(bufnr, time_sec)
+    local extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
         virt_text = {
             { "Time: " .. tostring(time_sec) .. "    ", "Error" },
         },
@@ -42,17 +46,18 @@ function M.start_countdown(time_sec, bufnr, ns_id)
         1000,
         vim.schedule_wrap(function()
             if time_sec <= 0 then
-                extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
+                extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
                     virt_text = {
                         { "Time's up!", "WarningMsg" },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,
                 })
+                api.nvim_del_augroup_by_name("SpeedtyperTyping")
                 timer:stop()
                 timer:close()
             else
-                extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
+                extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
                     virt_text = {
                         { "Time: " .. tostring(time_sec) .. "    ", "Error" },
                     },

@@ -1,5 +1,6 @@
 local M = {}
 local api = vim.api
+local ns_id = api.nvim_create_namespace("Speedtyper")
 local runner = require("speedtyper.runner")
 local window = require("speedtyper.window")
 local timer = require("speedtyper.timer")
@@ -11,8 +12,8 @@ math.randomseed(os.time())
 M.default_opts = {
     time = 30,
     window = {
-        height = 0.15, -- integer grater than 0 or float in range (0, 1)
-        width = 0.55, -- integer grater than 0 or float in range (0, 1)
+        height = 0.15,      -- integer grater than 0 or float in range (0, 1)
+        width = 0.55,       -- integer grater than 0 or float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
 }
@@ -27,10 +28,9 @@ function M.setup(opts)
             return
         end
         local time = tonumber(event.fargs[1]) or opts.time
-        local ns_id = api.nvim_create_namespace("Speedtyper")
         local winnr, bufnr = window.open_float(opts.window)
-        runner.start(bufnr, ns_id)
-        timer.create_timer(time, bufnr, ns_id)
+        runner.start(bufnr)
+        timer.create_timer(time, bufnr)
         if package.loaded["cmp"] then
             -- disable cmp if loaded, we don't want the completion while practising typing :)
             require("cmp").setup.buffer({ enabled = false })
