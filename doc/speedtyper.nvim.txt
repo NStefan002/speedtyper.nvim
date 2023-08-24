@@ -33,7 +33,7 @@ lazy <https://github.com/folke/lazy.nvim>
 
 >lua
     {
-        "speedtyper.nvim",
+        "NStefan002/speedtyper.nvim",
         branch = "main",
         opts = {
         -- your config
@@ -45,7 +45,7 @@ packer <https://github.com/wbthomason/packer.nvim>
 
 >lua
     use {
-        "speedtyper.nvim",
+        "NStefan002/speedtyper.nvim",
         branch = "main",
         config = function()
             require('speedtyper').setup({
@@ -68,6 +68,7 @@ Full list of options with their default values ~
             width = 0.55, -- integer grater than 0 or float in range (0, 1)
             border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
         }
+        language = "en" -- currently only only supports English
     }
 <
 
