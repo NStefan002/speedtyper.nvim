@@ -93,13 +93,7 @@ end
 
 ---@param bufnr integer
 function M.clear_text(bufnr)
-    api.nvim_buf_set_lines(bufnr, 0, 5, false, {
-        "",
-        "",
-        "",
-        "",
-        "",
-    })
+    api.nvim_buf_set_lines(bufnr, 0, 5, false, { "", "", "", "", "", })
 end
 
 return M
