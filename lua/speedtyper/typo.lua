@@ -15,7 +15,8 @@ end
 function M.check_curr_word(bufnr, sentences)
     local line, col = helper.get_cursor_pos()
     col = col - 1 -- when autocmd for CursorMovedI is fired the cursor is 1 char behind the one we need
-    local char_under_cursor = api.nvim_buf_get_text(bufnr, line - 1, col - 1, line - 1, col + 1, {})[1]
+    local char_under_cursor =
+        api.nvim_buf_get_text(bufnr, line - 1, col - 1, line - 1, col + 1, {})[1]
     local typo_found = false
     if char_under_cursor ~= string.sub(sentences[line], col, col) then
         M.mark_word(bufnr, line, col)
