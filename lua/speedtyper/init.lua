@@ -12,13 +12,13 @@ math.randomseed(os.time())
 M.default_opts = {
     time = 30,
     window = {
-        height = 0.15,      -- integer grater than 0 or float in range (0, 1)
-        width = 0.55,       -- integer grater than 0 or float in range (0, 1)
+        height = 0.15, -- integer grater than 0 or float in range (0, 1)
+        width = 0.55, -- integer grater than 0 or float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
 }
 
----@param opts table
+---@param opts table<string, any>
 function M.setup(opts)
     opts = opts or M.default_opts
     -- one or zero arguments
