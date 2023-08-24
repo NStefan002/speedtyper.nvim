@@ -35,6 +35,7 @@ lazy <https://github.com/folke/lazy.nvim>
     {
         "NStefan002/speedtyper.nvim",
         branch = "main",
+        cmd = "Speedtyper",
         opts = {
         -- your config
         }
@@ -96,6 +97,7 @@ TODO                                         *speedtyper.nvim-speedtyper-todo*
 - Add support for more languages
 - Display current game stats
 - Add stats tracking
+- Add custom highlight groups
 
 
 INSPIRATION                           *speedtyper.nvim-speedtyper-inspiration*
