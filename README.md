@@ -27,7 +27,7 @@
 
 ```lua
 {
-    "speedtyper.nvim",
+    "NStefan002/speedtyper.nvim",
     branch = "main",
     opts = {
     -- your config
@@ -39,7 +39,7 @@
 
 ```lua
 use {
-    "speedtyper.nvim",
+    "NStefan002/speedtyper.nvim",
     branch = "main",
     config = function()
         require('speedtyper').setup({
@@ -66,6 +66,7 @@ use {
         width = 0.55, -- integer grater than 0 or float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     }
+    language = "en" -- currently only only supports English
 }
 ```
 
