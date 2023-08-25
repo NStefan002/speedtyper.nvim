@@ -46,7 +46,7 @@ function M.display_stats(bufnr, n_keypresses, n_mistakes, time_sec)
         "",
     })
     api.nvim_buf_add_highlight(bufnr, ns_id, "Error", 1, 0, #wpm_text)
-    api.nvim_buf_add_highlight(bufnr, ns_id, "WarningMsg", 3, 0, #acc_text)
+    api.nvim_buf_add_highlight(bufnr, ns_id, "DiagnosticsInfo", 3, 0, #acc_text)
 end
 
 return M
