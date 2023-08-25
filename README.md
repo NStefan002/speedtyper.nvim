@@ -9,8 +9,7 @@
 <!-- <div align="center"> -->
 <!--  -->
 <!-- _[GIF version of the showcase video for Github mobile users](SHOWCASE_GIF_LINK)_ -->
-
-</div>
+<!-- </div> -->
 
 ## ⚡️ Features
 
@@ -49,10 +48,6 @@ use {
     end
 }
 ```
-
-<!-- ## ☄ Getting started -->
-<!--  -->
-<!-- > Describe how to use the plugin the simplest way -->
 
 ## ⚙ Default configuration
 

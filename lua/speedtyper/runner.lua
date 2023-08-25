@@ -18,6 +18,9 @@ end
 ---@type integer
 M.num_of_typos = 0
 
+---@type integer
+M.num_of_keypresses = 0
+
 ---@param bufnr integer
 function M.start(bufnr)
     local extm_ids, sentences = helper.generate_extmarks(bufnr)
@@ -26,17 +29,28 @@ function M.start(bufnr)
         group = api.nvim_create_augroup("SpeedtyperTyping", { clear = true }),
         buffer = bufnr,
         callback = function()
-            extm_ids, sentences = helper.update_extmarks(sentences, extm_ids, bufnr)
-            local curr_typo = typo.check_curr_word(bufnr, sentences)
-            if curr_typo.typo_found then
-                table.insert(typos, curr_typo.typo_pos)
+            local curr_char = typo.check_curr_char(bufnr, sentences)
+            if curr_char.typo_found then
+                table.insert(typos, curr_char.typo_pos)
             else
-                remove_typo(typos, curr_typo.typo_pos)
+                remove_typo(typos, curr_char.typo_pos)
             end
             M.num_of_typos = #typos
+            M.num_of_keypresses = M.num_of_keypresses + 1
+            extm_ids, sentences = helper.update_extmarks(sentences, extm_ids, bufnr)
         end,
         desc = "Update extmarks and mark mistakes while typing.",
     })
+end
+
+---@param bufnr integer
+function M.stop(bufnr)
+    api.nvim_del_augroup_by_name("SpeedtyperTyping")
+    -- exit insert mode
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    -- clear data for next game
+    M.num_of_keypresses = 0
+    M.num_of_typos = 0
 end
 
 return M

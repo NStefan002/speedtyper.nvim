@@ -24,9 +24,10 @@ end
 ---@return string
 function M.generate_sentence()
     local win_width = api.nvim_win_get_width(0)
+    local width_percentage = .85
     local sentence = ""
     local word = words[math.random(1, #words)]
-    while #sentence + #word < 0.85 * win_width do
+    while #sentence + #word < width_percentage * win_width do
         sentence = word .. " " .. sentence
         word = words[math.random(1, #words)]
     end
@@ -63,35 +64,34 @@ end
 ---@return integer[]
 ---@return string[]
 function M.update_extmarks(sentences, extm_ids, bufnr)
-    -- TODO: configure backspace behaviour
+    -- TODO: configure backspace edge-case behaviour
     local line, col = M.get_cursor_pos()
 
     -- move cursor to the beginning of the next line after the final space in the previous line
     if col - 1 == #sentences[line] then
-        vim.cmd.normal("j0")
+        if line == 4 then
+            vim.cmd.normal("gg0")
+            M.clear_extmarks(bufnr, extm_ids)
+            return M.generate_extmarks(bufnr)
+        else
+            vim.cmd.normal("j0")
+        end
     end
-
-    if line == 4 and col - 2 == #sentences[line] then
-        vim.cmd.normal("gg0")
-        M.clear_extmarks(extm_ids, bufnr)
-        extm_ids, sentences = M.generate_extmarks(bufnr)
-    else
-        api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
-            id = extm_ids[line],
-            virt_text = {
-                { string.sub(sentences[line], col), "Comment" },
-            },
-            virt_text_win_col = col - 1,
-        })
-    end
+    api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
+        id = extm_ids[line],
+        virt_text = {
+            { string.sub(sentences[line], col), "Comment" },
+        },
+        virt_text_win_col = col - 1,
+    })
 
     return extm_ids, sentences
 end
 
----@param extm_ids integer[]
 ---@param bufnr integer
-function M.clear_extmarks(extm_ids, bufnr)
-    for _, id in ipairs(extm_ids) do
+---@param extm_ids integer[]
+function M.clear_extmarks(bufnr, extm_ids)
+    for _, id in pairs(extm_ids) do
         api.nvim_buf_del_extmark(bufnr, ns_id, id)
     end
 end

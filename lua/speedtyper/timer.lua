@@ -47,6 +47,8 @@ function M.start_countdown(bufnr, time_sec)
         1000,
         vim.schedule_wrap(function()
             if t <= 0 then
+                stats.display_stats(bufnr, runner.num_of_keypresses, runner.num_of_typos, time_sec)
+                runner.stop(bufnr)
                 extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, 4, 0, {
                     virt_text = {
                         { "Time's up!", "WarningMsg" },
@@ -54,8 +56,7 @@ function M.start_countdown(bufnr, time_sec)
                     virt_text_pos = "right_align",
                     id = extm_id,
                 })
-                api.nvim_del_augroup_by_name("SpeedtyperTyping")
-                stats.display_stats(bufnr, runner.num_of_typos, time_sec)
+
                 timer:stop()
                 timer:close()
             else
