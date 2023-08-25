@@ -27,8 +27,14 @@ function M.display_stats(bufnr, n_keypresses, n_mistakes, time_sec)
 
     -- NOTE: count every five characters as one word for easier calculation
     local wpm = (n_chars - n_mistakes) / 5 * (60 / time_sec)
+    if wpm < 0 then
+        wpm = 0
+    end
     -- NOTE: accuracy is defined as the percentage of correct entries out of the total entries typed
     local accuracy = (n_chars - n_mistakes) / n_keypresses * 100
+    if accuracy < 0 then
+        accuracy = 0
+    end
 
     local wpm_text = string.format("WPM: %.2f", wpm)
     local acc_text = string.format("Accuracy: %.2f%%", accuracy)
