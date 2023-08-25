@@ -79,12 +79,7 @@ use {
 PRs and issues are always welcome.
 
 ## ✅☑️ TODO
-
-- [ ] Add more options
-- [ ] Add support for more languages
-- [x] Display current game stats
-- [ ] Add stats tracking
-- [ ] Add custom highlight groups
+See _[this](https://github.com/NStefan002/speedtyper.nvim/blob/main/TODO.md)_.
 
 ## 🎭 Inspiration
 
