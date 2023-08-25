@@ -2,14 +2,16 @@
 
 >Practise typing while bored.
 
-<!-- <div align="center"> -->
-<!--     > Drag your video (<10MB) here to host it for free on GitHub. -->
-<!-- </div> -->
-<!--  -->
-<!-- <div align="center"> -->
-<!--  -->
-<!-- _[GIF version of the showcase video for Github mobile users](SHOWCASE_GIF_LINK)_ -->
-<!-- </div> -->
+## 📺 Showcase
+
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
+
+
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/d21f0f26-4166-4098-8bc4-ae869ea3579e
+
+
+_[GIF version of the showcase video for Github mobile users](https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e)_
+
 
 ## ⚡️ Features
 
