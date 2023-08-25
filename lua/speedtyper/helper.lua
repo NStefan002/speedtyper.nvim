@@ -24,7 +24,7 @@ end
 ---@return string
 function M.generate_sentence()
     local win_width = api.nvim_win_get_width(0)
-    local width_percentage = .85
+    local width_percentage = 0.85
     local sentence = ""
     local word = words[math.random(1, #words)]
     while #sentence + #word < width_percentage * win_width do
