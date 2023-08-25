@@ -102,11 +102,7 @@ PRs and issues are always welcome.
 
 TODO                                         *speedtyper.nvim-speedtyper-todo*
 
-- Add more options
-- Add support for more languages
-- Display current game stats
-- Add stats tracking
-- Add custom highlight groups
+See _this_.
 
 
 INSPIRATION                           *speedtyper.nvim-speedtyper-inspiration*
