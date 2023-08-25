@@ -4,6 +4,7 @@
 Table of Contents                          *speedtyper.nvim-table-of-contents*
 
 1. Speedtyper                                     |speedtyper.nvim-speedtyper|
+  - Showcase                             |speedtyper.nvim-speedtyper-showcase|
   - Features                             |speedtyper.nvim-speedtyper-features|
   - Installation                     |speedtyper.nvim-speedtyper-installation|
   - Default configuration   |speedtyper.nvim-speedtyper-default-configuration|
@@ -17,6 +18,17 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
 
 
   Practise typing while bored.
+
+SHOWCASE                                 *speedtyper.nvim-speedtyper-showcase*
+
+
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
+
+
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/d21f0f26-4166-4098-8bc4-ae869ea3579e
+
+_GIF version of the showcase video for Github mobile users_
+
 
 FEATURES                                 *speedtyper.nvim-speedtyper-features*
 
