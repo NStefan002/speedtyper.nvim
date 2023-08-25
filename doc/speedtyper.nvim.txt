@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 24
+*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 25
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -23,7 +23,7 @@ FEATURES                                 *speedtyper.nvim-speedtyper-features*
 - **Languages**Currently only supports English.
 - **Customized Game Duration**Set the time limit for the game.
 - **Feedback**Receive instant updates on your words per minute (WPM) and accuracy.
-- **Play Offline**No need to connect to the internet. **Coming soon:** Online mode with a larger variety of words.
+- **Play Offline**No need to connect to the internet. 
 - **Distraction-Free Typing**Temporarily disable cmp <https://github.com/hrsh7th/nvim-cmp> to focus on the game.
 
 
