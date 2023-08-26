@@ -84,3 +84,11 @@ See _[this](https://github.com/NStefan002/speedtyper.nvim/blob/main/TODO.md)_.
 ## 🎭 Inspiration
 
 * [monkeytype](https://monkeytype.com/)
+
+## 👀 Checkout similar projects
+
+* **Neovim based:**
+    - [duckytype.nvim](https://github.com/kwakzalver/duckytype.nvim)
+* **Other:**
+    - [SpeedTyper.dev](https://www.speedtyper.dev/)  Somehow I didn't know about this one until the day I made speedtyper.nvim public... My bad 😅
+    - [toipe](https://github.com/Samyak2/toipe)
