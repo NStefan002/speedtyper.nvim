@@ -7,8 +7,8 @@ math.randomseed(os.time())
 M.default_opts = {
     time = 30,
     window = {
-        height = 0.15, -- integer grater than 0 or float in range (0, 1)
-        width = 0.55, -- integer grater than 0 or float in range (0, 1)
+        height = 5, -- integer >= 5 | float in range (0, 1)
+        width = 0.55, -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
     language = "en", -- currently only only supports English
@@ -38,7 +38,6 @@ function M.setup(opts)
             -- disable cmp if loaded, we don't want the completion while practising typing :)
             require("cmp").setup.buffer({ enabled = false })
         end
-        vim.bo[bufnr].filetype = "speedtyper"
         vim.opt_local.nu = false
         vim.opt_local.rnu = false
         vim.opt_local.fillchars = { eob = " " }

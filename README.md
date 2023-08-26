@@ -57,11 +57,11 @@ use {
 {
     time = 30,
     window = {
-        height = 0.15, -- integer grater than 0 or float in range (0, 1)
-        width = 0.55, -- integer grater than 0 or float in range (0, 1)
+        height = 5, -- integer >= 5 | float in range (0, 1)
+        width = 0.55, -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
-    }
-    language = "en" -- currently only only supports English
+    },
+    language = "en", -- currently only only supports English
 }
 ```
 
