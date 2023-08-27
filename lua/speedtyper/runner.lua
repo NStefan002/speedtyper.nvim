@@ -29,6 +29,7 @@ function M.start(bufnr)
         group = api.nvim_create_augroup("SpeedtyperTyping", { clear = true }),
         buffer = bufnr,
         callback = function()
+            extm_ids, sentences = helper.update_extmarks(sentences, extm_ids, bufnr)
             local curr_char = typo.check_curr_char(bufnr, sentences)
             if curr_char.typo_found then
                 table.insert(typos, curr_char.typo_pos)
@@ -37,7 +38,6 @@ function M.start(bufnr)
             end
             M.num_of_typos = #typos
             M.num_of_keypresses = M.num_of_keypresses + 1
-            extm_ids, sentences = helper.update_extmarks(sentences, extm_ids, bufnr)
         end,
         desc = "Update extmarks and mark mistakes while typing.",
     })
