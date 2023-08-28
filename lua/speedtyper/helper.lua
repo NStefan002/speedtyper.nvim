@@ -35,16 +35,15 @@ function M.generate_sentence()
     return sentence
 end
 
----@param bufnr integer
 ---@return integer[]
 ---@return string[]
-function M.generate_extmarks(bufnr)
-    M.clear_text(bufnr)
+function M.generate_extmarks()
+    M.clear_text()
     local extm_ids = {}
     local sentences = {}
     for i = 1, 4 do
         local sentence = M.generate_sentence()
-        local extm_id = api.nvim_buf_set_extmark(bufnr, ns_id, i - 1, 0, {
+        local extm_id = api.nvim_buf_set_extmark(0, ns_id, i - 1, 0, {
             virt_text = {
                 { sentence, "Comment" },
             },
@@ -67,10 +66,9 @@ M.prev_col = 0
 ---update extmarks according to the cursor position
 ---@param sentences string[]
 ---@param extm_ids integer[]
----@param bufnr integer
 ---@return integer[]
 ---@return string[]
-function M.update_extmarks(sentences, extm_ids, bufnr)
+function M.update_extmarks(sentences, extm_ids)
     local line, col = M.get_cursor_pos()
 
     -- NOTE: so I don't forget what is going on here
@@ -89,7 +87,7 @@ function M.update_extmarks(sentences, extm_ids, bufnr)
             so we need to restore the deleted line with 'o' (could be done with api functions) and re-add the virtual text ]]
             normal("o")
             normal("k$")
-            api.nvim_buf_set_extmark(bufnr, ns_id, line, 0, {
+            api.nvim_buf_set_extmark(0, ns_id, line, 0, {
                 id = extm_ids[line + 1],
                 virt_text = {
                     { sentences[line + 1], "Comment" },
@@ -99,14 +97,14 @@ function M.update_extmarks(sentences, extm_ids, bufnr)
         elseif line == 4 then
             -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
             normal("gg0")
-            M.clear_extmarks(bufnr, extm_ids)
-            return M.generate_extmarks(bufnr)
+            M.clear_extmarks(extm_ids)
+            return M.generate_extmarks()
         else
             -- move cursor to the beginning of the next line after the final space in the previous line
             normal("j0")
         end
     end
-    api.nvim_buf_set_extmark(bufnr, ns_id, line - 1, 0, {
+    api.nvim_buf_set_extmark(0, ns_id, line - 1, 0, {
         id = extm_ids[line],
         virt_text = {
             { string.sub(sentences[line], col), "Comment" },
@@ -120,17 +118,15 @@ function M.update_extmarks(sentences, extm_ids, bufnr)
     return extm_ids, sentences
 end
 
----@param bufnr integer
 ---@param extm_ids integer[]
-function M.clear_extmarks(bufnr, extm_ids)
+function M.clear_extmarks(extm_ids)
     for _, id in pairs(extm_ids) do
-        api.nvim_buf_del_extmark(bufnr, ns_id, id)
+        api.nvim_buf_del_extmark(0, ns_id, id)
     end
 end
 
----@param bufnr integer
-function M.clear_text(bufnr)
-    api.nvim_buf_set_lines(bufnr, 0, 5, false, { "", "", "", "", "" })
+function M.clear_text()
+    api.nvim_buf_set_lines(0, 0, 5, false, { "", "", "", "", "" })
 end
 
 return M

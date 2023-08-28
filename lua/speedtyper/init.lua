@@ -3,37 +3,20 @@ local api = vim.api
 
 math.randomseed(os.time())
 
----@type table<string, any>
-M.default_opts = {
-    time = 30,
-    window = {
-        height = 5, -- integer >= 5 | float in range (0, 1)
-        width = 0.55, -- integer | float in range (0, 1)
-        border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
-    },
-    language = "en", -- currently only only supports English
-}
-
 ---@param opts table<string, any>
 function M.setup(opts)
-    opts = opts or {}
-    opts = vim.tbl_deep_extend("force", M.default_opts, opts)
-    require("speedtyper.langs").set_lang(opts.language)
+    require("speedtyper.config").override_opts(opts)
     local ns_id = api.nvim_create_namespace("Speedtyper")
     local runner = require("speedtyper.runner")
     local window = require("speedtyper.window")
-    local timer = require("speedtyper.timer")
     local util = require("speedtyper.util")
-    -- one or zero arguments
     api.nvim_create_user_command("Speedtyper", function(event)
-        if #event.fargs > 1 then
+        if #event.fargs > 0 then
             util.error("Too many arguments!")
             return
         end
-        local time = tonumber(event.fargs[1]) or opts.time
         local winnr, bufnr = window.open_float(opts.window)
-        runner.start(bufnr)
-        timer.create_timer(time, bufnr)
+        runner.start()
         if package.loaded["cmp"] then
             -- disable cmp if loaded, we don't want the completion while practising typing :)
             require("cmp").setup.buffer({ enabled = false })

@@ -5,7 +5,8 @@ local helper = require("speedtyper.helper")
 ---@param opts table<string, any>
 ---@return integer
 ---@return integer
-function M.open_float(opts)
+function M.open_float()
+    local opts = require("speedtyper.config").opts.window
     local lines = vim.o.lines - vim.o.cmdheight
     local columns = vim.o.columns
     local height = helper.calc_size(opts.height, lines)
