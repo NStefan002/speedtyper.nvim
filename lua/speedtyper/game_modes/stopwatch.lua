@@ -51,7 +51,7 @@ function M.start_stopwatch()
         0,
         100,
         vim.schedule_wrap(function()
-            M.time_sec = M.time_sec + .1
+            M.time_sec = M.time_sec + 0.1
         end)
     )
 end
