@@ -2,7 +2,6 @@ local M = {}
 
 ---@type table<string, any>
 M.default_opts = {
-    time = 30,
     window = {
         height = 5,         -- integer >= 5 | float in range (0, 1)
         width = 0.55,       -- integer | float in range (0, 1)

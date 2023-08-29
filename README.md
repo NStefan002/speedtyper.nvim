@@ -55,13 +55,23 @@ use {
 
 ```lua
 {
-    time = 30,
     window = {
-        height = 5, -- integer >= 5 | float in range (0, 1)
-        width = 0.55, -- integer | float in range (0, 1)
+        height = 5,         -- integer >= 5 | float in range (0, 1)
+        width = 0.55,       -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en", -- currently only only supports English
+    language = "en",        -- currently only only supports English
+    game_modes = {          -- prefered settings for different game modes
+        -- type until time expires
+        countdown = {
+            time = 30
+        },
+        -- type until you complete one page
+        stopwatch = {
+
+        }
+    }
+    -- MORE COMING SOON
 }
 ```
 
