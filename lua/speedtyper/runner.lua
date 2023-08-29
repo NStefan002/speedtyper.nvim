@@ -1,8 +1,6 @@
 local M = {}
 local api = vim.api
-local config = require("speedtyper.config")
 local game = require("speedtyper.game_modes")
-local menu = require("speedtyper.menu")
 local helper = require("speedtyper.helper")
 local typo = require("speedtyper.typo")
 
@@ -19,12 +17,7 @@ end
 
 function M.start()
     M.typing()
-    local opts = config.opts
-    if opts.show_menu then
-        menu.show()
-    else
-        game.start_game_mode(opts.game_mode)
-    end
+    game.start_game()
 end
 
 ---@type integer
@@ -40,7 +33,6 @@ function M.typing()
         group = api.nvim_create_augroup("SpeedtyperTyping", { clear = true }),
         buffer = 0,
         callback = function()
-            extm_ids, sentences = helper.update_extmarks(sentences, extm_ids)
             local curr_char = typo.check_curr_char(sentences)
             if curr_char.typo_found then
                 table.insert(typos, curr_char.typo_pos)
@@ -49,6 +41,7 @@ function M.typing()
             end
             M.num_of_typos = #typos
             M.num_of_keypresses = M.num_of_keypresses + 1
+            extm_ids, sentences = helper.update_extmarks(sentences, extm_ids)
         end,
         desc = "Update extmarks and mark mistakes while typing.",
     })

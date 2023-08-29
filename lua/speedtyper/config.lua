@@ -4,20 +4,24 @@ local M = {}
 M.default_opts = {
     time = 30,
     window = {
-        height = 5,          -- integer >= 5 | float in range (0, 1)
-        width = 0.55,        -- integer | float in range (0, 1)
-        border = "rounded",  -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
+        height = 5,         -- integer >= 5 | float in range (0, 1)
+        width = 0.55,       -- integer | float in range (0, 1)
+        border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en",         -- currently only only supports English
-    show_menu = false,       -- enable choosing between different game modes
-    game_mode = "countdown", -- "limitless" | "code_snippets", this field will be ignored if show_menu is set
-    highlights = {           -- set hl-groups for game components
-        typo = "SpeedtyperTypo",
-        wpm = "SpeedtyperWpm",
-        accuracy = "SpeedtyperAccuracy"
+    language = "en",        -- currently only only supports English
+    game_modes = {          -- prefered settings for different game modes
+        -- type until time expires
+        countdown = {
+            time = 30
+        },
+        -- type until you complete one page
+        stopwatch = {
+
+        }
     }
 }
 
+---@type table<string, any>
 M.opts = {}
 
 ---@param opts table<string, any>

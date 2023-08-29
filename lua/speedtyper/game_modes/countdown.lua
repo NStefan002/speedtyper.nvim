@@ -3,11 +3,21 @@ local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local stats = require("speedtyper.stats")
 local runner = require("speedtyper.runner")
-local config = require("speedtyper.config")
+local opts = require("speedtyper.config").opts.game_modes.countdown
+
+M.timer = nil
 
 function M.start()
-    local opts = config.opts
     M.create_timer(opts.time)
+end
+
+function M.stop()
+    if M.timer then
+        M.timer:stop()
+        M.timer:close()
+        stats.display_stats(runner.num_of_keypresses, runner.num_of_typos, opts.time)
+        runner.stop()
+    end
 end
 
 ---@param time_sec number
@@ -39,20 +49,18 @@ function M.start_countdown(time_sec)
         virt_text_pos = "right_align",
     })
     local t = time_sec
-    local timer
     if vim.uv ~= nil then
-        timer = vim.uv.new_timer()
+        M.timer = vim.uv.new_timer()
     else
-        timer = vim.loop.new_timer()
+        M.timer = vim.loop.new_timer()
     end
 
-    timer:start(
+    M.timer:start(
         0,
         1000,
         vim.schedule_wrap(function()
             if t <= 0 then
-                stats.display_stats(runner.num_of_keypresses, runner.num_of_typos, time_sec)
-                runner.stop()
+                M.stop()
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
                         { "Time's up!", "WarningMsg" },
@@ -60,9 +68,6 @@ function M.start_countdown(time_sec)
                     virt_text_pos = "right_align",
                     id = extm_id,
                 })
-
-                timer:stop()
-                timer:close()
             else
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {

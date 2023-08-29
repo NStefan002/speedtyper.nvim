@@ -1,18 +1,9 @@
 local M = {}
 local api = vim.api
+local game = require("speedtyper.game_modes")
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.langs").get_words()
 local normal = vim.cmd.normal
-
----calculate the dimension of the floating window
----@param size number
----@param viewport integer
-function M.calc_size(size, viewport)
-    if size <= 1 then
-        return math.ceil(size * viewport)
-    end
-    return math.min(size, viewport)
-end
 
 ---@return integer
 ---@return integer
@@ -70,7 +61,6 @@ M.prev_col = 0
 ---@return string[]
 function M.update_extmarks(sentences, extm_ids)
     local line, col = M.get_cursor_pos()
-
     -- NOTE: so I don't forget what is going on here
     --[[
         - a lot of +- 1 because of inconsistent indexing in provided functions
@@ -95,10 +85,16 @@ function M.update_extmarks(sentences, extm_ids)
                 virt_text_win_col = 0,
             })
         elseif line == 4 then
-            -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
-            normal("gg0")
-            M.clear_extmarks(extm_ids)
-            return M.generate_extmarks()
+            if game.game_mode == "stopwatch" or game.game_mode == "code_snippets" then
+                M.clear_extmarks(extm_ids)
+                game.end_game()
+                return {}, {}
+            else
+                -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
+                normal("gg0")
+                M.clear_extmarks(extm_ids)
+                return M.generate_extmarks()
+            end
         else
             -- move cursor to the beginning of the next line after the final space in the previous line
             normal("j0")
