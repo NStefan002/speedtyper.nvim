@@ -3,18 +3,20 @@ local M = {}
 ---@type table<string, any>
 M.default_opts = {
     window = {
-        height = 5, -- integer >= 5 | float in range (0, 1)
-        width = 0.55, -- integer | float in range (0, 1)
+        height = 5,         -- integer >= 5 | float in range (0, 1)
+        width = 0.55,       -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en", -- currently only only supports English
-    game_modes = { -- prefered settings for different game modes
+    language = "en",        -- currently only only supports English
+    game_modes = {          -- prefered settings for different game modes
         -- type until time expires
         countdown = {
             time = 30,
         },
         -- type until you complete one page
-        stopwatch = {},
+        stopwatch = {
+            hide_time = true -- hide time while typing
+        },
     },
 }
 

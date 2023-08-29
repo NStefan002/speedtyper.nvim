@@ -41,6 +41,15 @@ function M.create_timer()
 end
 
 function M.start_stopwatch()
+    local extm_id
+    if not opts.hide_time then
+        extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+            virt_text = {
+                { string.format("Time: %.1f    ", M.time_sec), "Error" },
+            },
+            virt_text_pos = "right_align",
+        })
+    end
     if vim.uv ~= nil then
         M.timer = vim.uv.new_timer()
     else
@@ -52,6 +61,15 @@ function M.start_stopwatch()
         100,
         vim.schedule_wrap(function()
             M.time_sec = M.time_sec + 0.1
+            if not opts.hide_time then
+                extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+                    virt_text = {
+                        { string.format("Time: %.1f    ", M.time_sec), "Error" },
+                    },
+                    virt_text_pos = "right_align",
+                    id = extm_id,
+                })
+            end
         end)
     )
 end

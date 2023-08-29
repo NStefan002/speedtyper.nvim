@@ -17,7 +17,12 @@ _[GIF version of the showcase video for Github mobile users](https://github.com/
 - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
 - **Play Offline**: No need to connect to the internet. <!-- **_Coming soon:_** Online mode with a larger variety of words. -->
 - **Distraction-Free Typing**: Temporarily disable [cmp](https://github.com/hrsh7th/nvim-cmp) to focus on the game.
-<!-- - **Play Online and Offline**: Enjoy a broader word selection online, and still practice offline. -->
+- **Different game modes:**
+    * _countdown_ - Type as much words as possible before the time runs out.
+    * _stopwatch_ - Type an entire page of text as fast and as accurate as possible.
+
+    **Coming soon:** _code snippets_: Enhance your coding speed and accuracy by typing various code snippets.
+
 
 ## 📋 Installation
 
@@ -64,13 +69,13 @@ use {
     game_modes = {          -- prefered settings for different game modes
         -- type until time expires
         countdown = {
-            time = 30
+            time = 30,
         },
         -- type until you complete one page
         stopwatch = {
-
-        }
-    }
+            hide_time = true, -- hide time while typing
+        },
+    },
     -- MORE COMING SOON
 }
 ```
@@ -81,8 +86,7 @@ use {
 
 |   Command   |         Description        |
 |-------------|----------------------------|
-|  `:Speedtyper <time>`  |     Runs typing test with `<time>` seconds on the clock.    |
-|  `:Speedtyper`  |     Runs typing test with default time setting on the clock.    |
+|  `:Speedtyper`  | Select the game mode and enjoy playing! |
 
 ## 🤝 Contributing
 
