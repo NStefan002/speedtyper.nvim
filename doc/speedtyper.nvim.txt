@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 29
+*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 31
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -35,6 +35,10 @@ FEATURES                                 *speedtyper.nvim-speedtyper-features*
 - **Feedback**Receive instant updates on your words per minute (WPM) and accuracy.
 - **Play Offline**No need to connect to the internet. 
 - **Distraction-Free Typing**Temporarily disable cmp <https://github.com/hrsh7th/nvim-cmp> to focus on the game.
+- **Different game modes:**
+    - _countdown_ - Type as much words as possible before the time runs out.
+    - _stopwatch_ - Type an entire page of text as fast and as accurate as possible.
+    **Coming soon:** _code snippets_Enhance your coding speed and accuracy by typing various code snippets.
 
 
 INSTALLATION                         *speedtyper.nvim-speedtyper-installation*
@@ -82,13 +86,13 @@ Full list of options with their default values ~
         game_modes = {          -- prefered settings for different game modes
             -- type until time expires
             countdown = {
-                time = 30
+                time = 30,
             },
             -- type until you complete one page
             stopwatch = {
-    
-            }
-        }
+                hide_time = true, -- hide time while typing
+            },
+        },
         -- MORE COMING SOON
     }
 <
@@ -96,15 +100,9 @@ Full list of options with their default values ~
 
 COMMANDS                                 *speedtyper.nvim-speedtyper-commands*
 
-  -----------------------------------------------------------------------
-  Command                Description
-  ---------------------- ------------------------------------------------
-  :Speedtyper <time>     Runs typing test with <time> seconds on the
-                         clock.
-
-  :Speedtyper            Runs typing test with default time setting on
-                         the clock.
-  -----------------------------------------------------------------------
+  Command       Description
+  ------------- -----------------------------------------
+  :Speedtyper   Select the game mode and enjoy playing!
 
 CONTRIBUTING                         *speedtyper.nvim-speedtyper-contributing*
 
