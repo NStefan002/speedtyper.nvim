@@ -9,3 +9,4 @@
 - [x] Display current game stats
 - [ ] Add stats tracking
 - [ ] Add custom highlight groups
+- [ ] Add falling words gamemode

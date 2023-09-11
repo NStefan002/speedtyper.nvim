@@ -49,11 +49,7 @@ function M.start_countdown(time_sec)
         virt_text_pos = "right_align",
     })
     local t = time_sec
-    if vim.uv ~= nil then
-        M.timer = vim.uv.new_timer()
-    else
-        M.timer = vim.loop.new_timer()
-    end
+    M.timer = (vim.uv or vim.loop).new_timer()
 
     M.timer:start(
         0,
