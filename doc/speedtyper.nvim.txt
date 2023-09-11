@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*      For Neovim >= 0.9.1     Last change: 2023 August 31
+*speedtyper.nvim.txt*    For Neovim >= 0.9.1    Last change: 2023 September 11
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
