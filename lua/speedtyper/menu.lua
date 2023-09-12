@@ -23,7 +23,12 @@ function M.show()
             util.error("Please select game mode.")
             return
         end
-        local winnr, bufnr = window.open_float()
+
+        local opts = require("speedtyper.config").opts
+        if selected == "rain" and opts.game_modes.rain.direction == "vertical" then
+            opts.window.height = opts.window.width
+        end
+        local winnr, bufnr = window.open_float(opts.window)
         game.set_game_mode(selected)
         disable()
         require("speedtyper.runner").start()

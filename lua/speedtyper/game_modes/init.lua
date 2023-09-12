@@ -5,6 +5,7 @@ M.available_game_modes = {
     "countdown",
     "stopwatch",
     -- "code_snippets",
+    "rain",
 }
 
 M.game_mode = ""
