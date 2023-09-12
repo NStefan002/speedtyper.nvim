@@ -22,6 +22,7 @@ end
 
 ---@param time_sec number
 function M.create_timer(time_sec)
+    M.timer = (vim.uv or vim.loop).new_timer()
     local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
         virt_text = {
             { "Press 'i' to start the game.", "WarningMsg" },
@@ -49,7 +50,6 @@ function M.start_countdown(time_sec)
         virt_text_pos = "right_align",
     })
     local t = time_sec
-    M.timer = (vim.uv or vim.loop).new_timer()
 
     M.timer:start(
         0,
