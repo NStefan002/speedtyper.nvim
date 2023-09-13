@@ -12,7 +12,7 @@ _[GIF version of the showcase video for Github mobile users](https://github.com/
 
 ## ⚡️ Features
 
-- **Languages**: Currently only supports English.
+- **Languages**: Currently only supports English and Serbian.
 - **Customized Game Duration**: Set the time limit for the game.
 - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
 - **Play Offline**: No need to connect to the internet. <!-- **_Coming soon:_** Online mode with a larger variety of words. -->
@@ -65,7 +65,7 @@ use {
         width = 0.55,       -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en",        -- currently only only supports English
+    language = "en",        -- "en" | "sr" currently only only supports English and Serbian
     game_modes = {          -- prefered settings for different game modes
         -- type until time expires
         countdown = {
