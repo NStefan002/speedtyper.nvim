@@ -19,7 +19,7 @@ M.default_opts = {
         },
         rain = {
             direction = "vertical", -- "vertical" | "horizontal", if "vertical" then window height is the same as width
-            throttle = 1, -- increase speed every x seconds
+            throttle = 7, -- increase speed every x seconds
             lives = 3,
         },
     },

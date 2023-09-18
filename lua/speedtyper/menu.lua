@@ -31,7 +31,7 @@ function M.show()
         local winnr, bufnr = window.open_float(opts.window)
         game.set_game_mode(selected)
         disable()
-        require("speedtyper.runner").start()
+        game.start_game()
     end)
 end
 

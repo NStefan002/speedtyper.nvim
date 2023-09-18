@@ -2,13 +2,38 @@ local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local stats = require("speedtyper.stats")
-local runner = require("speedtyper.runner")
+local stopwatch_util = require("speedtyper.game_modes.stopwatch.util")
+local typo = require("speedtyper.typo")
 local opts = require("speedtyper.config").opts.game_modes.stopwatch
 
 M.timer = nil
 M.time_sec = 0
 
+---@type integer
+M.num_of_typos = 0
+
+---@type integer
+M.num_of_keypresses = 0
+
 function M.start()
+    local extm_ids, sentences = stopwatch_util.generate_extmarks()
+    local typos = {}
+    api.nvim_create_autocmd("CursorMovedI", {
+        group = api.nvim_create_augroup("SpeedtyperStopwatch", { clear = true }),
+        buffer = 0,
+        callback = function()
+            local curr_char = typo.check_curr_char(sentences)
+            if curr_char.typo_found then
+                table.insert(typos, curr_char.typo_pos)
+            else
+                typo.remove_typo(typos, curr_char.typo_pos)
+            end
+            M.num_of_typos = #typos
+            M.num_of_keypresses = M.num_of_keypresses + 1
+            extm_ids, sentences = stopwatch_util.update_extmarks(sentences, extm_ids)
+        end,
+        desc = "Update extmarks and mark mistakes while typing.",
+    })
     M.create_timer()
 end
 
@@ -16,9 +41,17 @@ function M.stop()
     if M.timer then
         M.timer:stop()
         M.timer:close()
-        stats.display_stats(runner.num_of_keypresses, runner.num_of_typos, M.time_sec)
-        runner.stop()
+        M.timer = nil
     end
+    stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.time_sec)
+    -- runner.stop()
+    api.nvim_del_augroup_by_name("SpeedtyperStopwatch")
+    -- exit insert mode
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    -- clear data for next game
+    M.num_of_keypresses = 0
+    M.num_of_typos = 0
+    M.time_sec = 0
 end
 
 function M.create_timer()
