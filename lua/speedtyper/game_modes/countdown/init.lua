@@ -7,14 +7,17 @@ local typo = require("speedtyper.typo")
 local opts = require("speedtyper.config").opts.game_modes.countdown
 
 M.timer = nil
-
 ---@type integer
 M.num_of_typos = 0
-
 ---@type integer
 M.num_of_keypresses = 0
 
 function M.start()
+    -- clear data for next game
+    M.num_of_keypresses = 0
+    M.num_of_typos = 0
+    M.timer = nil
+
     local extm_ids, sentences = countdown_util.generate_extmarks()
     local typos = {}
     api.nvim_create_autocmd("CursorMovedI", {
@@ -45,10 +48,6 @@ function M.stop()
     api.nvim_del_augroup_by_name("SpeedtyperCountdown")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
-    -- clear data for next game
-    M.num_of_keypresses = 0
-    M.num_of_typos = 0
-    M.timer = nil
 end
 
 ---@param time_sec number
