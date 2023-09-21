@@ -25,7 +25,7 @@ function M.show()
         end
 
         local opts = require("speedtyper.config").opts
-        if selected == "rain" and opts.game_modes.rain.direction == "vertical" then
+        if selected == "rain" then
             opts.window.height = opts.window.width
         end
         local winnr, bufnr = window.open_float(opts.window)

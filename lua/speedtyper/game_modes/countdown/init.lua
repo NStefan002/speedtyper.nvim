@@ -2,7 +2,6 @@ local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local stats = require("speedtyper.stats")
-local util = require("speedtyper.util")
 local countdown_util = require("speedtyper.game_modes.countdown.util")
 local typo = require("speedtyper.typo")
 local opts = require("speedtyper.config").opts.game_modes.countdown
@@ -41,16 +40,15 @@ function M.stop()
     if M.timer then
         M.timer:stop()
         M.timer:close()
-        M.timer = nil
     end
     stats.display_stats(M.num_of_keypresses, M.num_of_typos, opts.time)
-    -- runner.stop()
     api.nvim_del_augroup_by_name("SpeedtyperCountdown")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
     -- clear data for next game
     M.num_of_keypresses = 0
     M.num_of_typos = 0
+    M.timer = nil
 end
 
 ---@param time_sec number

@@ -7,11 +7,10 @@ local typo = require("speedtyper.typo")
 local opts = require("speedtyper.config").opts.game_modes.stopwatch
 
 M.timer = nil
-M.time_sec = 0
-
+---@type number
+M.total_time_sec = 0
 ---@type integer
 M.num_of_typos = 0
-
 ---@type integer
 M.num_of_keypresses = 0
 
@@ -41,9 +40,8 @@ function M.stop()
     if M.timer then
         M.timer:stop()
         M.timer:close()
-        M.timer = nil
     end
-    stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.time_sec)
+    stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.total_time_sec)
     -- runner.stop()
     api.nvim_del_augroup_by_name("SpeedtyperStopwatch")
     -- exit insert mode
@@ -51,7 +49,8 @@ function M.stop()
     -- clear data for next game
     M.num_of_keypresses = 0
     M.num_of_typos = 0
-    M.time_sec = 0
+    M.total_time_sec = 0
+    M.timer = nil
 end
 
 function M.create_timer()
@@ -79,7 +78,7 @@ function M.start_stopwatch()
     if not opts.hide_time then
         extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
             virt_text = {
-                { string.format("Time: %.1f    ", M.time_sec), "Error" },
+                { string.format("Time: %.1f    ", M.total_time_sec), "Error" },
             },
             virt_text_pos = "right_align",
         })
@@ -89,11 +88,11 @@ function M.start_stopwatch()
         0,
         100,
         vim.schedule_wrap(function()
-            M.time_sec = M.time_sec + 0.1
+            M.total_time_sec = M.total_time_sec + 0.1
             if not opts.hide_time then
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
-                        { string.format("Time: %.1f    ", M.time_sec), "Error" },
+                        { string.format("Time: %.1f    ", M.total_time_sec), "Error" },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,

@@ -34,7 +34,6 @@ function M.clear_extmarks(extm_ids)
     for _, id in pairs(extm_ids) do
         api.nvim_buf_del_extmark(0, api.nvim_get_namespaces()["Speedtyper"], id)
     end
-    extm_ids = {}
 end
 
 ---@param n integer number of lines to clear
