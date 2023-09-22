@@ -6,6 +6,7 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
 1. Speedtyper                                     |speedtyper.nvim-speedtyper|
   - Showcase                             |speedtyper.nvim-speedtyper-showcase|
   - Features                             |speedtyper.nvim-speedtyper-features|
+  - Recommended                       |speedtyper.nvim-speedtyper-recommended|
   - Installation                     |speedtyper.nvim-speedtyper-installation|
   - Default configuration   |speedtyper.nvim-speedtyper-default-configuration|
   - Commands                             |speedtyper.nvim-speedtyper-commands|
@@ -23,9 +24,7 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
 SHOWCASE                                 *speedtyper.nvim-speedtyper-showcase*
 
 
-https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
-
-_GIF version of the showcase video for Github mobile users_
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e
 
 
 FEATURES                                 *speedtyper.nvim-speedtyper-features*
@@ -38,7 +37,14 @@ FEATURES                                 *speedtyper.nvim-speedtyper-features*
 - **Different game modes:**
     - _countdown_ - Type as much words as possible before the time runs out.
     - _stopwatch_ - Type an entire page of text as fast and as accurate as possible.
+    - _rain_ - Words fall from the top of the screen, type them before they hit the bottom.
     **Coming soon:** _code snippets_Enhance your coding speed and accuracy by typing various code snippets.
+
+
+RECOMMENDED                           *speedtyper.nvim-speedtyper-recommended*
+
+- dressing.nvim <https://github.com/stevearc/dressing.nvim>
+- patched fonts
 
 
 INSTALLATION                         *speedtyper.nvim-speedtyper-installation*
@@ -48,7 +54,6 @@ lazy <https://github.com/folke/lazy.nvim>
 >lua
     {
         "NStefan002/speedtyper.nvim",
-        branch = "main",
         cmd = "Speedtyper",
         opts = {
         -- your config
@@ -61,7 +66,6 @@ packer <https://github.com/wbthomason/packer.nvim>
 >lua
     use {
         "NStefan002/speedtyper.nvim",
-        branch = "main",
         config = function()
             require('speedtyper').setup({
                 -- your config
@@ -78,12 +82,12 @@ Full list of options with their default values ~
 >lua
     {
         window = {
-            height = 5,         -- integer >= 5 | float in range (0, 1)
-            width = 0.55,       -- integer | float in range (0, 1)
+            height = 5, -- integer >= 5 | float in range (0, 1)
+            width = 0.55, -- integer | float in range (0, 1)
             border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
         },
-        language = "en",        -- "en" | "sr" currently only only supports English and Serbian
-        game_modes = {          -- prefered settings for different game modes
+        language = "en", -- "en" | "sr" currently only only supports English and Serbian
+        game_modes = { -- prefered settings for different game modes
             -- type until time expires
             countdown = {
                 time = 30,
@@ -92,8 +96,12 @@ Full list of options with their default values ~
             stopwatch = {
                 hide_time = true, -- hide time while typing
             },
+            -- NOTE: window height and width will be the same
+            rain = {
+                throttle = 7, -- increase speed every x seconds
+                lives = 3,
+            },
         },
-        -- MORE COMING SOON
     }
 <
 
