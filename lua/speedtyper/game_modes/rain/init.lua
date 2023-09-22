@@ -35,11 +35,13 @@ function M.start()
         callback = function()
             if util_rain.update_extmarks(M.words_set) then
                 M.word_count = M.word_count + 1
+                util_rain.update_stats(M.lives, M.word_count)
             end
         end,
         desc = "Update text and mark mistakes while typing.",
     })
     util.clear_text(api.nvim_win_get_height(0))
+    util_rain.update_stats(M.lives, M.word_count)
     api.nvim_win_set_cursor(0, { api.nvim_win_get_height(0), 0 })
     M.create_timer()
 end
@@ -92,6 +94,7 @@ function M.rain()
             if M.lives == 0 then
                 M.stop()
                 util.clear_text(n_lines)
+                api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
                 api.nvim_buf_set_lines(0, 2, 3, false, { "Your score: " .. M.word_count })
             end
             M.t_sec = M.t_sec + 0.1
@@ -144,6 +147,7 @@ function M.rain()
             if M.words_set[1].line == n_lines - 1 then
                 if M.words_set[1].hl == "ErrorMsg" then
                     M.lives = M.lives - 1
+                    util_rain.update_stats(M.lives, M.word_count)
                 end
                 table.remove(M.words_set, 1)
             end
