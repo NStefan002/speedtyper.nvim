@@ -6,7 +6,6 @@ local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 ---@param n_mistakes integer
 ---@param time_sec number
 function M.display_stats(n_keypresses, n_mistakes, time_sec)
-    local runner = require("speedtyper.runner")
     local n_chars = 0
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
     for _, line in pairs(lines) do

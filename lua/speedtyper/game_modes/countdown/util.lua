@@ -1,17 +1,9 @@
 local M = {}
 local api = vim.api
-local game = require("speedtyper.game_modes")
+local util = require("speedtyper.util")
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.langs").get_words()
 local normal = vim.cmd.normal
-
----@return integer
----@return integer
-function M.get_cursor_pos()
-    local line = vim.fn.line(".")
-    local col = vim.fn.col(".")
-    return line, col
-end
 
 ---@return string
 function M.generate_sentence()
@@ -29,7 +21,7 @@ end
 ---@return integer[]
 ---@return string[]
 function M.generate_extmarks()
-    M.clear_text()
+    util.clear_text(5)
     local extm_ids = {}
     local sentences = {}
     for i = 1, 4 do
@@ -60,7 +52,7 @@ M.prev_col = 0
 ---@return integer[]
 ---@return string[]
 function M.update_extmarks(sentences, extm_ids)
-    local line, col = M.get_cursor_pos()
+    local line, col = util.get_cursor_pos()
     -- NOTE: so I don't forget what is going on here
     --[[
         - a lot of +- 1 because of inconsistent indexing in provided functions
@@ -68,7 +60,7 @@ function M.update_extmarks(sentences, extm_ids)
         - "CursorMovedI" is triggered for the 'next' (the one that has yet to be typed) character,
         so we need to examine 'previous' cursor positon
         - col - 1 and col - 2 is the product of the above statement and the fact that every line
-        ends with " " (see speedtyper.helper.generate_sentence), there is no logical explanation,
+        ends with " " (see speedtyper.util.generate_sentence), there is no logical explanation,
         the problem was aligning 0-based and 1-based indexing
       ]]
     if col - 1 == #sentences[line] or col - 2 == #sentences[line] then
@@ -85,16 +77,10 @@ function M.update_extmarks(sentences, extm_ids)
                 virt_text_win_col = 0,
             })
         elseif line == 4 then
-            if game.game_mode == "stopwatch" or game.game_mode == "code_snippets" then
-                M.clear_extmarks(extm_ids)
-                game.end_game()
-                return {}, {}
-            else
-                -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
-                normal("gg0")
-                M.clear_extmarks(extm_ids)
-                return M.generate_extmarks()
-            end
+            -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
+            normal("gg0")
+            util.clear_extmarks(extm_ids)
+            return M.generate_extmarks()
         else
             -- move cursor to the beginning of the next line after the final space in the previous line
             normal("j0")
@@ -112,17 +98,6 @@ function M.update_extmarks(sentences, extm_ids)
     M.prev_col = col
 
     return extm_ids, sentences
-end
-
----@param extm_ids integer[]
-function M.clear_extmarks(extm_ids)
-    for _, id in pairs(extm_ids) do
-        api.nvim_buf_del_extmark(0, ns_id, id)
-    end
-end
-
-function M.clear_text()
-    api.nvim_buf_set_lines(0, 0, 5, false, { "", "", "", "", "" })
 end
 
 return M

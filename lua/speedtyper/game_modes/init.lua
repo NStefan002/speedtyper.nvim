@@ -4,6 +4,7 @@ local util = require("speedtyper.util")
 M.available_game_modes = {
     "countdown",
     "stopwatch",
+    "rain",
     -- "code_snippets",
 }
 

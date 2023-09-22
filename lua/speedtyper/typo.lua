@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
-local helper = require("speedtyper.helper")
+local util = require("speedtyper.util")
 
 ---@param line integer
 ---@param col integer index of the char that needs to be highlighted
@@ -13,7 +13,7 @@ end
 ---@param sentences string[]
 ---@return table
 function M.check_curr_char(sentences)
-    local line, col = helper.get_cursor_pos()
+    local line, col = util.get_cursor_pos()
     -- when autocmd for CursorMovedI is fired the cursor is 1 char ahead of the one we need
     col = col - 1
     local char_under_cursor = api.nvim_buf_get_text(0, line - 1, col - 1, line - 1, col, {})[1]
@@ -26,6 +26,17 @@ function M.check_curr_char(sentences)
         typo_pos = { line = line, col = col },
         typo_found = typo_found,
     }
+end
+
+---similar to table.remove
+---@param typos table
+---@param typo_pos any
+function M.remove_typo(typos, typo_pos)
+    for i, value in ipairs(typos) do
+        if value.line == typo_pos.line and value.col == typo_pos.col then
+            table.remove(typos, i)
+        end
+    end
 end
 
 return M
