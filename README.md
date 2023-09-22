@@ -4,10 +4,10 @@
 
 ## 📺 Showcase
 
-https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
+<!-- https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef -->
 
 
-_[GIF version of the showcase video for Github mobile users](https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e)_
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e
 
 
 ## ⚡️ Features
@@ -20,9 +20,14 @@ _[GIF version of the showcase video for Github mobile users](https://github.com/
 - **Different game modes:**
     * _countdown_ - Type as much words as possible before the time runs out.
     * _stopwatch_ - Type an entire page of text as fast and as accurate as possible.
+    * _rain_ - Words fall from the top of the screen, type them before they hit the bottom.
 
     **Coming soon:** _code snippets_: Enhance your coding speed and accuracy by typing various code snippets.
 
+
+## ✨ Recommended
+- [dressing.nvim](https://github.com/stevearc/dressing.nvim)
+- patched fonts
 
 ## 📋 Installation
 
@@ -31,7 +36,6 @@ _[GIF version of the showcase video for Github mobile users](https://github.com/
 ```lua
 {
     "NStefan002/speedtyper.nvim",
-    branch = "main",
     cmd = "Speedtyper",
     opts = {
     -- your config
@@ -44,7 +48,6 @@ _[GIF version of the showcase video for Github mobile users](https://github.com/
 ```lua
 use {
     "NStefan002/speedtyper.nvim",
-    branch = "main",
     config = function()
         require('speedtyper').setup({
             -- your config
@@ -61,12 +64,12 @@ use {
 ```lua
 {
     window = {
-        height = 5,         -- integer >= 5 | float in range (0, 1)
-        width = 0.55,       -- integer | float in range (0, 1)
+        height = 5, -- integer >= 5 | float in range (0, 1)
+        width = 0.55, -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en",        -- "en" | "sr" currently only only supports English and Serbian
-    game_modes = {          -- prefered settings for different game modes
+    language = "en", -- "en" | "sr" currently only only supports English and Serbian
+    game_modes = { -- prefered settings for different game modes
         -- type until time expires
         countdown = {
             time = 30,
@@ -75,8 +78,12 @@ use {
         stopwatch = {
             hide_time = true, -- hide time while typing
         },
+        -- NOTE: window height and width will be the same
+        rain = {
+            throttle = 7, -- increase speed every x seconds
+            lives = 3,
+        },
     },
-    -- MORE COMING SOON
 }
 ```
 

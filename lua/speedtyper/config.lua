@@ -7,7 +7,7 @@ M.default_opts = {
         width = 0.55, -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
-    language = "en", -- currently only only supports English
+    language = "en", -- "en" | "sr" currently only only supports English and Serbian
     game_modes = { -- prefered settings for different game modes
         -- type until time expires
         countdown = {
@@ -17,7 +17,7 @@ M.default_opts = {
         stopwatch = {
             hide_time = true, -- hide time while typing
         },
-        -- window height and width will be swapped
+        -- NOTE: window height and width will be swapped
         rain = {
             throttle = 7, -- increase speed every x seconds
             lives = 3,
