@@ -1,4 +1,4 @@
-}
+return {
     "adresa",
     "advokat",
     "advokati",
@@ -5060,7 +5060,6 @@
     "restorana",
     "restoranu",
     "retko",
-return {
     "revolucija",
     "rez",
     "rezultat",
@@ -8020,3 +8019,4 @@ return {
     "zvucis",
     "zvuk",
     "zvuka",
+}

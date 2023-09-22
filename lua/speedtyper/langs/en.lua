@@ -1,4 +1,4 @@
-}
+return {
     "a",
     "abandon",
     "abbey",
@@ -3713,7 +3713,6 @@
     "retired",
     "retirement",
     "return",
-return {
     "reunion",
     "reveal",
     "revenge",
@@ -5000,3 +4999,4 @@ return {
     "zone",
     "zoo",
     "zoom",
+}
