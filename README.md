@@ -25,17 +25,23 @@ https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd
 
    ## ⚡️ Features
 
-- **Languages**: Currently only supports English and Serbian.
-- **Customized Game Duration**: Set the time limit for the game.
-- **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
-- **Play Offline**: No need to connect to the internet. <!-- **_Coming soon:_** Online mode with a larger variety of words. -->
-- **Distraction-Free Typing**: Temporarily disable [cmp](https://github.com/hrsh7th/nvim-cmp) to focus on the game.
 - **Different game modes:**
-    * _countdown_ - Type as much words as possible before the time runs out.
-    * _stopwatch_ - Type an entire page of text as fast and as accurate as possible.
-    * _rain_ - Words fall from the top of the screen, type them before they hit the bottom.
+    1) _countdown_ :
+        - **Objective:** Type as much words as possible before the time runs out.
+        - **Customize Game Duration**
+        - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
+    2) _stopwatch_ :
+        - **Objective:** Type an entire page of text as fast and as accurate as possible.
+        - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
+    3) _rain_ :
+        - **Objective:** Words fall from the top of the screen, type them before they hit the bottom.
+        - **Choose the number of lives**
+        - **Customize rain speed**
 
     **Coming soon:** _code snippets_: Enhance your coding speed and accuracy by typing various code snippets.
+- **Languages**: Currently only supports English and Serbian.
+- **Play Offline**: No need to connect to the internet. <!-- **_Coming soon:_** Online mode with a larger variety of words. -->
+- **Distraction-Free Typing**: Temporarily disable [cmp](https://github.com/hrsh7th/nvim-cmp) to focus on the game.
 
 
 ## ✨ Recommended
