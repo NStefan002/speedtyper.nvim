@@ -4,13 +4,26 @@
 
 ## 📺 Showcase
 
-<!-- https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef -->
+<p align="center">
+  <h4 align="center">⌛ Countdown game mode</h4>
+</p>
+
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
+
+<br>
+
+<p align="center">
+  <h4 align="center">🌧️ Rain game mode</h4>
+</p>
+
+https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd1-91d9-4d31b5bef7e7
 
 
-https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e
+<!-- _[GIF version](https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e)_ -->
 
 
-## ⚡️ Features
+
+   ## ⚡️ Features
 
 - **Languages**: Currently only supports English and Serbian.
 - **Customized Game Duration**: Set the time limit for the game.
