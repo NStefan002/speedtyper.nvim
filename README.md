@@ -4,17 +4,13 @@
 
 ## 📺 Showcase
 
-<p align="center">
-  <h4 align="center">⌛ Countdown game mode</h4>
-</p>
+<h4 align="center">⌛ Countdown game mode</h4>
 
 https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
 
 <br>
 
-<p align="center">
-  <h4 align="center">🌧️ Rain game mode</h4>
-</p>
+<h4 align="center">🌧️ Rain game mode</h4>
 
 https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd1-91d9-4d31b5bef7e7
 
@@ -23,17 +19,17 @@ https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd
 
 
 
-   ## ⚡️ Features
+## ⚡️ Features
 
 - **Different game modes:**
-    1) _countdown_ :
+    * _Countdown_ :
         - **Objective:** Type as much words as possible before the time runs out.
         - **Customize Game Duration**
         - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
-    2) _stopwatch_ :
+    * _Stopwatch_ :
         - **Objective:** Type an entire page of text as fast and as accurate as possible.
         - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
-    3) _rain_ :
+    * _Rain_ :
         - **Objective:** Words fall from the top of the screen, type them before they hit the bottom.
         - **Choose the number of lives**
         - **Customize rain speed**
