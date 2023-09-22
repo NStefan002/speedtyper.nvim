@@ -19,15 +19,11 @@ end
 ---@param lives integer
 ---@param word_count integer
 function M.update_stats(lives, word_count)
-    local hearts = ""
-    for _ = 1, lives do
-        hearts = hearts .. "󰣐"
-    end
     api.nvim_buf_clear_namespace(0, ns_id, api.nvim_win_get_height(0) - 1, -1)
     api.nvim_buf_set_extmark(0, ns_id, api.nvim_win_get_height(0) - 1, 0, {
         virt_text = {
             { " " .. tostring(word_count) .. " | ", "WarningMsg" },
-            { hearts .. " ", "ErrorMsg" },
+            { string.rep("󰣐", lives, "") .. " ", "ErrorMsg" },
         },
         virt_text_pos = "right_align",
     })

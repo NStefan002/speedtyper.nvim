@@ -48,7 +48,6 @@ function M.stop()
         M.timer:close()
     end
     stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.total_time_sec)
-    -- runner.stop()
     api.nvim_del_augroup_by_name("SpeedtyperStopwatch")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
@@ -79,7 +78,7 @@ function M.start_stopwatch()
     if not opts.hide_time then
         extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
             virt_text = {
-                { string.format("Time: %.1f    ", M.total_time_sec), "Error" },
+                { string.format("󱑆 %.1f    ", M.total_time_sec), "Error" },
             },
             virt_text_pos = "right_align",
         })
@@ -93,7 +92,7 @@ function M.start_stopwatch()
             if not opts.hide_time then
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
-                        { string.format("Time: %.1f    ", M.total_time_sec), "Error" },
+                        { string.format("󱑆 %.1f    ", M.total_time_sec), "Error" },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,

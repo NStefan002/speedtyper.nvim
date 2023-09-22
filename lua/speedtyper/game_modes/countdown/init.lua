@@ -75,7 +75,7 @@ end
 function M.start_countdown(time_sec)
     local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
         virt_text = {
-            { "Time: " .. tostring(time_sec) .. "    ", "Error" },
+            { "󱑆 " .. tostring(time_sec) .. "    ", "Error" },
         },
         virt_text_pos = "right_align",
     })
@@ -97,7 +97,7 @@ function M.start_countdown(time_sec)
             else
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
-                        { "Time: " .. tostring(t) .. "    ", "Error" },
+                        { "󱑆 " .. tostring(t) .. "    ", "Error" },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,

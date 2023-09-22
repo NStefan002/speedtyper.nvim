@@ -93,9 +93,10 @@ function M.rain()
         vim.schedule_wrap(function()
             if M.lives == 0 then
                 M.stop()
-                util.clear_text(n_lines)
                 api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
+                util.clear_text(n_lines)
                 api.nvim_buf_set_lines(0, 2, 3, false, { "Your score: " .. M.word_count })
+                return
             end
             M.t_sec = M.t_sec + 0.1
             M.speed_up = M.speed_up + 0.1
