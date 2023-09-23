@@ -93,9 +93,10 @@ use {
         stopwatch = {
             hide_time = true, -- hide time while typing
         },
-        -- NOTE: window height and width will be the same
+        -- NOTE: the window height will become the same as the window width
         rain = {
-            throttle = 7, -- increase speed every x seconds
+            initial_speed = 1.5, -- words fall down by one line every x seconds
+            throttle = 7, -- increase speed every x seconds (set to -1 for constant speed)
             lives = 3,
         },
     },

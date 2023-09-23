@@ -14,7 +14,7 @@ M.speed_up = 0
 ---@type integer
 M.lives = opts.lives
 ---@type number
-M.interval = 1.5 -- move by one line every <interval> seconds
+M.interval = opts.initial_speed -- move by one line every <interval> seconds
 ---@type integer
 M.word_count = 0
 ---@type table<string, any> words with their line and column numbers and highlight
@@ -24,7 +24,7 @@ function M.start()
     -- clear data for next game
     M.t_sec = 0
     M.lives = opts.lives
-    M.interval = 1.5
+    M.interval = opts.initial_speed
     M.timer = nil
     M.word_count = 0
     M.words_set = {}
@@ -103,10 +103,11 @@ function M.rain()
             if util.equal(M.speed_up, opts.throttle) then
                 M.speed_up = 0
                 M.interval = M.interval - 0.1
+                M.t_sec = M.t_sec - 0.1
                 if M.interval <= 0.1 then
                     M.interval = 0.1
+                    M.t_sec = 0.1
                 end
-                M.t_sec = M.t_sec - 0.1
             end
             if not util.equal(M.t_sec, M.interval) then
                 return

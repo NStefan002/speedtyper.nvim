@@ -1,6 +1,5 @@
 local M = {}
 local api = vim.api
-local menu = require("speedtyper.menu")
 
 math.randomseed(os.time())
 
@@ -14,10 +13,10 @@ function M.setup(opts)
             util.error("Too many arguments!")
             return
         end
-        menu.show()
+        require("speedtyper.menu").show()
     end, {
-        nargs = "*",
-        desc = "Start Speedtyper with <arg> (or default if not provided) time on the clock.",
+        nargs = 0,
+        desc = "Start Speedtyper.",
     })
 end
 
