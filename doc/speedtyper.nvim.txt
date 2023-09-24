@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*    For Neovim >= 0.9.1    Last change: 2023 September 23
+*speedtyper.nvim.txt*    For Neovim >= 0.9.1    Last change: 2023 September 24
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -55,7 +55,8 @@ FEATURES                                 *speedtyper.nvim-speedtyper-features*
 RECOMMENDED                           *speedtyper.nvim-speedtyper-recommended*
 
 - dressing.nvim <https://github.com/stevearc/dressing.nvim>
-- patched fonts
+- nvim-notify <https://github.com/rcarriga/nvim-notify>
+- patched font
 
 
 INSTALLATION                         *speedtyper.nvim-speedtyper-installation*
@@ -113,6 +114,16 @@ Full list of options with their default values ~
                 throttle = 7, -- increase speed every x seconds (set to -1 for constant speed)
                 lives = 3,
             },
+        },
+        -- specify highlight group for each component
+        highlights = {
+            untyped_text = "Comment",
+            typo = "ErrorMsg",
+            clock = "ErrorMsg",
+            falling_word_typed = "DiagnostcOk",
+            falling_word = "Normal",
+            falling_word_warning1 = "WarningMsg",
+            falling_word_warning2 = "ErrorMsg",
         },
     }
 <
