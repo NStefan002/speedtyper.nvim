@@ -4,7 +4,9 @@ local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local stats = require("speedtyper.stats")
 local stopwatch_util = require("speedtyper.game_modes.stopwatch.util")
 local typo = require("speedtyper.typo")
-local opts = require("speedtyper.config").opts.game_modes.stopwatch
+local config = require("speedtyper.config")
+local opts = config.opts.game_modes.stopwatch
+local hl = config.opts.highlights
 
 M.timer = nil
 ---@type number
@@ -78,7 +80,7 @@ function M.start_stopwatch()
     if not opts.hide_time then
         extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
             virt_text = {
-                { string.format("󱑆 %.1f    ", M.total_time_sec), "Error" },
+                { string.format("󱑆 %.1f    ", M.total_time_sec), hl.clock },
             },
             virt_text_pos = "right_align",
         })
@@ -92,7 +94,7 @@ function M.start_stopwatch()
             if not opts.hide_time then
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
-                        { string.format("󱑆 %.1f    ", M.total_time_sec), "Error" },
+                        { string.format("󱑆 %.1f    ", M.total_time_sec), hl.clock },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,

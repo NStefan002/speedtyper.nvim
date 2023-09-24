@@ -1,12 +1,13 @@
 local M = {}
 local api = vim.api
+local hl = require("speedtyper.config").opts.highlights
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local util = require("speedtyper.util")
 
 ---@param line integer
 ---@param col integer index of the char that needs to be highlighted
 function M.mark_typo(line, col)
-    api.nvim_buf_add_highlight(0, ns_id, "Error", line - 1, col - 1, col)
+    api.nvim_buf_add_highlight(0, ns_id, hl.typo, line - 1, col - 1, col)
 end
 
 ---returns the information about the character under the cursor (is it typo or not)

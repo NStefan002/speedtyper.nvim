@@ -3,7 +3,9 @@ local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local util = require("speedtyper.util")
 local util_rain = require("speedtyper.game_modes.rain.util")
-local opts = require("speedtyper.config").opts.game_modes.rain
+local config = require("speedtyper.config")
+local opts = config.opts.game_modes.rain
+local hl = config.opts.highlights
 local words = require("speedtyper.langs").get_words()
 
 M.timer = nil
@@ -85,7 +87,7 @@ function M.rain()
     if col > #new_word then
         col = col - #new_word
     end
-    table.insert(M.words_set, { word = new_word, line = 0, col = col, hl = "Normal" })
+    table.insert(M.words_set, { word = new_word, line = 0, col = col, hl = hl.falling_word })
     local next_word_in = math.random(2, 5)
     M.timer:start(
         0,
@@ -127,11 +129,11 @@ function M.rain()
             util.clear_extmarks(extm_ids)
             extm_ids = {}
             for _, word_info in pairs(M.words_set) do
-                if word_info.hl ~= "DiagnosticOk" then
+                if word_info.hl ~= hl.falling_word_typed then
                     if word_info.line > n_lines / 3 and word_info.line < n_lines * 2 / 3 then
-                        word_info.hl = "WarningMsg"
+                        word_info.hl = hl.falling_word_warning1
                     elseif word_info.line > n_lines * 2 / 3 then
-                        word_info.hl = "ErrorMsg"
+                        word_info.hl = hl.falling_word_warning2
                     end
                 end
                 table.insert(
@@ -147,7 +149,7 @@ function M.rain()
                 word_info.line = word_info.line + 1
             end
             if M.words_set[1].line == n_lines - 1 then
-                if M.words_set[1].hl == "ErrorMsg" then
+                if M.words_set[1].hl ~= hl.falling_word_typed then
                     M.lives = M.lives - 1
                     util_rain.update_stats(M.lives, M.word_count)
                 end

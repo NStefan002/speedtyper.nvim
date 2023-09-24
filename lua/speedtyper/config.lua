@@ -24,6 +24,16 @@ M.default_opts = {
             lives = 3,
         },
     },
+    -- specify highlight group for each component
+    highlights = {
+        untyped_text = "Comment",
+        typo = "ErrorMsg",
+        clock = "ErrorMsg",
+        falling_word_typed = "DiagnostcOk",
+        falling_word = "Normal",
+        falling_word_warning1 = "WarningMsg",
+        falling_word_warning2 = "ErrorMsg",
+    },
 }
 
 ---@type table<string, any>

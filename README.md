@@ -42,7 +42,8 @@ https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd
 
 ## ✨ Recommended
 - [dressing.nvim](https://github.com/stevearc/dressing.nvim)
-- patched fonts
+- [nvim-notify](https://github.com/rcarriga/nvim-notify)
+- patched font
 
 ## 📋 Installation
 
@@ -99,6 +100,16 @@ use {
             throttle = 7, -- increase speed every x seconds (set to -1 for constant speed)
             lives = 3,
         },
+    },
+    -- specify highlight group for each component
+    highlights = {
+        untyped_text = "Comment",
+        typo = "ErrorMsg",
+        clock = "ErrorMsg",
+        falling_word_typed = "DiagnostcOk",
+        falling_word = "Normal",
+        falling_word_warning1 = "WarningMsg",
+        falling_word_warning2 = "ErrorMsg",
     },
 }
 ```

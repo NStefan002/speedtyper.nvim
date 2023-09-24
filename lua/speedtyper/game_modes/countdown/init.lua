@@ -4,7 +4,9 @@ local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local stats = require("speedtyper.stats")
 local countdown_util = require("speedtyper.game_modes.countdown.util")
 local typo = require("speedtyper.typo")
-local opts = require("speedtyper.config").opts.game_modes.countdown
+local config = require("speedtyper.config")
+local opts = config.opts.game_modes.countdown
+local hl = config.opts.highlights
 
 M.timer = nil
 ---@type integer
@@ -55,7 +57,7 @@ function M.create_timer(time_sec)
     M.timer = (vim.uv or vim.loop).new_timer()
     local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
         virt_text = {
-            { "Press 'i' to start the game.", "WarningMsg" },
+            { "Press 'i' to start the game.", "DiagnosticOk" },
         },
         virt_text_pos = "right_align",
     })
@@ -75,7 +77,7 @@ end
 function M.start_countdown(time_sec)
     local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
         virt_text = {
-            { "󱑆 " .. tostring(time_sec) .. "    ", "Error" },
+            { "󱑆 " .. tostring(time_sec) .. "    ", hl.clock },
         },
         virt_text_pos = "right_align",
     })
@@ -97,7 +99,7 @@ function M.start_countdown(time_sec)
             else
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
-                        { "󱑆 " .. tostring(t) .. "    ", "Error" },
+                        { "󱑆 " .. tostring(t) .. "    ", hl.clock },
                     },
                     virt_text_pos = "right_align",
                     id = extm_id,

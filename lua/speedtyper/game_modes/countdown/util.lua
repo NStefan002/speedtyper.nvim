@@ -3,6 +3,7 @@ local api = vim.api
 local util = require("speedtyper.util")
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.langs").get_words()
+local hl = require("speedtyper.config").opts.highlights
 local normal = vim.cmd.normal
 
 ---@return string
@@ -28,7 +29,7 @@ function M.generate_extmarks()
         local sentence = M.generate_sentence()
         local extm_id = api.nvim_buf_set_extmark(0, ns_id, i - 1, 0, {
             virt_text = {
-                { sentence, "Comment" },
+                { sentence, hl.untyped_text },
             },
             hl_mode = "combine",
             virt_text_win_col = 0,
@@ -72,7 +73,7 @@ function M.update_extmarks(sentences, extm_ids)
             api.nvim_buf_set_extmark(0, ns_id, line, 0, {
                 id = extm_ids[line + 1],
                 virt_text = {
-                    { sentences[line + 1], "Comment" },
+                    { sentences[line + 1], hl.untyped_text },
                 },
                 virt_text_win_col = 0,
             })
@@ -89,7 +90,7 @@ function M.update_extmarks(sentences, extm_ids)
     api.nvim_buf_set_extmark(0, ns_id, line - 1, 0, {
         id = extm_ids[line],
         virt_text = {
-            { string.sub(sentences[line], col), "Comment" },
+            { string.sub(sentences[line], col), hl.untyped_text },
         },
         virt_text_win_col = col - 1,
     })
