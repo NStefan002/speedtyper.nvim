@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*    For Neovim >= 0.9.1    Last change: 2023 September 24
+*speedtyper.nvim.txt*    For Neovim >= 0.9.1    Last change: 2023 September 27
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -23,8 +23,8 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
 
 SHOWCASE                                 *speedtyper.nvim-speedtyper-showcase*
 
-Countdown game mode
-https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
+Countdown game modespeedtyper_countdown_showcase.webm
+<https://github.com/NStefan002/speedtyper.nvim/assets/100767853/767464b2-96d6-4ea9-9486-4aa98135d0ae>
 
 
 
