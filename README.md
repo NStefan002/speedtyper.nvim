@@ -6,7 +6,7 @@
 
 <h4 align="center">⌛ Countdown game mode</h4>
 
-https://github.com/NStefan002/speedtyper.nvim/assets/100767853/b42ed6ee-648d-4fd8-be4a-e3f3611319ef
+[speedtyper_countdown_showcase.webm](https://github.com/NStefan002/speedtyper.nvim/assets/100767853/767464b2-96d6-4ea9-9486-4aa98135d0ae)
 
 <br>
 
