@@ -8,6 +8,8 @@ M.default_opts = {
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
     language = "en", -- "en" | "sr" currently only only supports English and Serbian
+    custom_text_file = nil, -- provide a path to file that contains your custom text (if this is not nil, language option will be ignored)
+    randomize = false, -- randomize words from custom_text_file
     game_modes = { -- prefered settings for different game modes
         -- type until time expires
         countdown = {
@@ -42,6 +44,9 @@ M.opts = {}
 ---@param opts table<string, any>
 function M.override_opts(opts)
     M.opts = vim.tbl_deep_extend("force", M.default_opts, opts or {})
+    if opts.custom_text_file then
+        M.opts.language = "custom"
+    end
     require("speedtyper.langs").set_lang(M.opts.language)
 end
 
