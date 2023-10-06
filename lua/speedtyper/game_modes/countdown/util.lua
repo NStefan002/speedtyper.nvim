@@ -31,7 +31,7 @@ function M.generate_sentence()
         word = M.new_word()
         sentence = sentence .. " " .. word
     end
-    return sentence
+    return sentence .. " "
 end
 
 ---@return integer[]
