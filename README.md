@@ -35,7 +35,7 @@ https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd
         - **Customize rain speed**
 
     **Coming soon:** _code snippets_: Enhance your coding speed and accuracy by typing various code snippets.
-- **Languages**: Currently only supports English and Serbian.
+- **Languages**: Currently only supports English and Serbian. There is also an option to provide a file with your prefered text.
 - **Play Offline**: No need to connect to the internet. <!-- **_Coming soon:_** Online mode with a larger variety of words. -->
 - **Distraction-Free Typing**: Temporarily disable [cmp](https://github.com/hrsh7th/nvim-cmp) to focus on the game.
 
@@ -85,6 +85,8 @@ use {
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
     },
     language = "en", -- "en" | "sr" currently only only supports English and Serbian
+    custom_text_file = nil, -- provide a path to file that contains your custom text (if this is not nil, language option will be ignored)
+    randomize = false, -- randomize words from custom_text_file
     game_modes = { -- prefered settings for different game modes
         -- type until time expires
         countdown = {

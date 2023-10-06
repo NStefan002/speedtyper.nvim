@@ -3,18 +3,33 @@ local api = vim.api
 local util = require("speedtyper.util")
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.langs").get_words()
+local opts = require("speedtyper.config").opts
 local hl = require("speedtyper.config").opts.highlights
 local normal = vim.cmd.normal
+
+M.next_word_id = 0
+
+---@return string
+function M.new_word()
+    if M.next_word_id == #words then
+        M.next_word_id = 0
+    end
+    if opts.custom_text_file and not opts.randomize then
+        M.next_word_id = M.next_word_id + 1
+        return words[M.next_word_id]
+    end
+    return words[math.random(1, #words)]
+end
 
 ---@return string
 function M.generate_sentence()
     local win_width = api.nvim_win_get_width(0)
     local width_percentage = 0.85
-    local sentence = ""
-    local word = words[math.random(1, #words)]
+    local word = M.new_word()
+    local sentence = word
     while #sentence + #word < width_percentage * win_width do
-        sentence = word .. " " .. sentence
-        word = words[math.random(1, #words)]
+        word = M.new_word()
+        sentence = sentence .. " " .. word
     end
     return sentence
 end

@@ -45,4 +45,23 @@ function M.clear_text(n)
     api.nvim_buf_set_lines(0, 0, n, false, repl)
 end
 
+---@param file_path string
+function M.read_file(file_path)
+    local reader = io.open(file_path, "r")
+    if reader == nil then
+        M.error("Failed to read from file: " .. file_path)
+        return
+    end
+
+    local words = {}
+    for line in reader:lines("*l") do
+        for word in string.gmatch(line, "%S+") do
+            table.insert(words, word)
+        end
+    end
+
+    io.close(reader)
+    return words
+end
+
 return M

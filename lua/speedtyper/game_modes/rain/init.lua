@@ -6,7 +6,6 @@ local util_rain = require("speedtyper.game_modes.rain.util")
 local config = require("speedtyper.config")
 local opts = config.opts.game_modes.rain
 local hl = config.opts.highlights
-local words = require("speedtyper.langs").get_words()
 
 M.timer = nil
 ---@type number
@@ -82,7 +81,7 @@ function M.rain()
     local extm_ids = {}
     local n_lines = api.nvim_win_get_height(0)
     local n_cols = api.nvim_win_get_width(0)
-    local new_word = words[math.random(1, #words)]
+    local new_word = util_rain.new_word()
     local col = math.random(1, n_cols - #new_word - 1)
     if col > #new_word then
         col = col - #new_word
@@ -117,7 +116,7 @@ function M.rain()
             M.t_sec = 0
             next_word_in = next_word_in - 1
             if next_word_in == 0 then
-                new_word = words[math.random(1, #words)]
+                new_word = util_rain.new_word()
                 col = math.random(1, n_cols - #new_word - 1)
                 if col > #new_word then
                     col = col - #new_word

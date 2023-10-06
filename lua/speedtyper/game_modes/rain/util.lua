@@ -1,7 +1,23 @@
 local M = {}
 local api = vim.api
-local hl = require("speedtyper.config").opts.highlights
+local opts = require("speedtyper.config").opts
+local hl = opts.highlights
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
+local words = require("speedtyper.langs").get_words()
+
+M.next_word_id = 0
+
+---@return string
+function M.new_word()
+    if M.next_word_id == #words then
+        M.next_word_id = 0
+    end
+    if opts.custom_text_file and not opts.randomize then
+        M.next_word_id = M.next_word_id + 1
+        return words[M.next_word_id]
+    end
+    return words[math.random(1, #words)]
+end
 
 ---@param words_set table<string, any>
 ---@return boolean
