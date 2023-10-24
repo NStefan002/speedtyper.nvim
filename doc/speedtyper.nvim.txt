@@ -46,10 +46,13 @@ FEATURES                                 *speedtyper.nvim-speedtyper-features*
         - **Objective:**Words fall from the top of the screen, type them before they hit the bottom.
         - **Choose the number of lives**
         - **Customize rain speed**
-    **Coming soon:** _code snippets_Enhance your coding speed and accuracy by typing various code snippets.
-- **Languages**Currently only supports English and Serbian. There is also an option to provide a file with your prefered text.
-- **Play Offline**No need to connect to the internet. 
-- **Distraction-Free Typing**Temporarily disable cmp <https://github.com/hrsh7th/nvim-cmp> to focus on the game.
+    **Coming soon:** _code snippets_Enhance your coding speed and accuracy by
+    typing various code snippets.
+- **Languages**Currently only supports English and Serbian. There is also an
+    option to provide a file with your prefered text.
+- **Play Offline**No need to connect to the internet.
+- **Distraction-Free Typing**Temporarily disable cmp
+    <https://github.com/hrsh7th/nvim-cmp> to focus on the game.
 
 
 RECOMMENDED                           *speedtyper.nvim-speedtyper-recommended*
@@ -76,14 +79,14 @@ lazy <https://github.com/folke/lazy.nvim>
 packer <https://github.com/wbthomason/packer.nvim>
 
 >lua
-    use {
+    use({
         "NStefan002/speedtyper.nvim",
         config = function()
-            require('speedtyper').setup({
+            require("speedtyper").setup({
                 -- your config
             })
-        end
-    }
+        end,
+    })
 <
 
 
@@ -126,6 +129,11 @@ Full list of options with their default values ~
             falling_word = "Normal",
             falling_word_warning1 = "WarningMsg",
             falling_word_warning2 = "ErrorMsg",
+        },
+        -- this values will be restored to your prefered settings after the game ends
+        vim_opt = {
+            -- only applies to insert mode, while playing the game
+            guicursor = nil, -- "ver25" | "hor20" | "block" | nil means do not change
         },
     }
 <
