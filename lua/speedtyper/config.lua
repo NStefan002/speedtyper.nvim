@@ -36,6 +36,16 @@ M.default_opts = {
         falling_word_warning1 = "WarningMsg",
         falling_word_warning2 = "ErrorMsg",
     },
+    -- this values will be restored to your prefered settings after the game ends
+    vim_opt = {
+        -- only applies to insert mode, while playing the game
+        guicursor = nil, -- "ver25" | "hor20" | "block" | nil means do not change (for more options see :help 'guicursor')
+    },
+}
+
+---@type table<string, any>
+M.values_to_restore = {
+    guicursor = vim.opt.guicursor:get(),
 }
 
 ---@type table<string, any>
@@ -48,6 +58,15 @@ function M.override_opts(opts)
         M.opts.language = "custom"
     end
     require("speedtyper.langs").set_lang(M.opts.language)
+    if M.opts.vim_opt.guicursor then
+        vim.opt.guicursor = "i:" .. M.opts.vim_opt.guicursor
+    end
+end
+
+function M.restore_opts()
+    for option, val in pairs(M.values_to_restore) do
+        vim.opt[option] = val
+    end
 end
 
 return M

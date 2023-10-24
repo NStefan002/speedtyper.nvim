@@ -55,6 +55,7 @@ function M.stop()
     api.nvim_del_augroup_by_name("SpeedtyperRain")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    config.restore_opts()
 end
 
 function M.create_timer()

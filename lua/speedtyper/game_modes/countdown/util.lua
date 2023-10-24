@@ -7,6 +7,7 @@ local opts = require("speedtyper.config").opts
 local hl = require("speedtyper.config").opts.highlights
 local normal = vim.cmd.normal
 
+---@type integer
 M.next_word_id = 0
 
 ---@return string

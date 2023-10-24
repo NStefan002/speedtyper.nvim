@@ -5,6 +5,7 @@ local hl = opts.highlights
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local words = require("speedtyper.langs").get_words()
 
+---@type integer
 M.next_word_id = 0
 
 ---@return string

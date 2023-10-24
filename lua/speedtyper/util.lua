@@ -49,7 +49,7 @@ end
 function M.read_file(file_path)
     local reader = io.open(file_path, "r")
     if reader == nil then
-        M.error("Failed to read from file: " .. file_path)
+        M.error("Failed to read from the file: " .. file_path)
         return
     end
 

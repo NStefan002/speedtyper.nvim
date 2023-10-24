@@ -50,6 +50,7 @@ function M.stop()
     api.nvim_del_augroup_by_name("SpeedtyperCountdown")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    config.restore_opts()
 end
 
 ---@param time_sec number
