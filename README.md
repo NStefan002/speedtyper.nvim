@@ -1,6 +1,6 @@
 # ⌨️ Speedtyper
 
->Practise typing while bored.
+> Practise typing while bored.
 
 ## 📺 Showcase
 
@@ -14,33 +14,30 @@
 
 https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd1-91d9-4d31b5bef7e7
 
-
-<!-- _[GIF version](https://github.com/NStefan002/speedtyper.nvim/assets/100767853/207f0573-86f4-4d27-bf58-90d62a1a1b3e)_ -->
-
-
-
 ## ⚡️ Features
 
 - **Different game modes:**
-    * _Countdown_ :
-        - **Objective:** Type as much words as possible before the time runs out.
-        - **Customize Game Duration**
-        - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
-    * _Stopwatch_ :
-        - **Objective:** Type an entire page of text as fast and as accurate as possible.
-        - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
-    * _Rain_ :
-        - **Objective:** Words fall from the top of the screen, type them before they hit the bottom.
-        - **Choose the number of lives**
-        - **Customize rain speed**
 
-    **Coming soon:** _code snippets_: Enhance your coding speed and accuracy by typing various code snippets.
+  - _Countdown_ :
+    - **Objective:** Type as much words as possible before the time runs out.
+    - **Customize Game Duration**
+    - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
+  - _Stopwatch_ :
+    - **Objective:** Type an entire page of text as fast and as accurate as possible.
+    - **Feedback**: Receive instant updates on your words per minute (WPM) and accuracy.
+  - _Rain_ :
+    - **Objective:** Words fall from the top of the screen, type them before they hit the bottom.
+    - **Choose the number of lives**
+    - **Customize rain speed**
+
+  **Coming soon:** _code snippets_: Enhance your coding speed and accuracy by typing various code snippets.
+
 - **Languages**: Currently only supports English and Serbian. There is also an option to provide a file with your prefered text.
 - **Play Offline**: No need to connect to the internet. <!-- **_Coming soon:_** Online mode with a larger variety of words. -->
 - **Distraction-Free Typing**: Temporarily disable [cmp](https://github.com/hrsh7th/nvim-cmp) to focus on the game.
 
-
 ## ✨ Recommended
+
 - [dressing.nvim](https://github.com/stevearc/dressing.nvim)
 - [nvim-notify](https://github.com/rcarriga/nvim-notify)
 - patched font
@@ -62,14 +59,14 @@ https://github.com/NStefan002/speedtyper.nvim/assets/100767853/e84e05e9-d3f1-4fd
 [packer](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use {
+use({
     "NStefan002/speedtyper.nvim",
     config = function()
-        require('speedtyper').setup({
+        require("speedtyper").setup({
             -- your config
         })
-    end
-}
+    end,
+})
 ```
 
 ## ⚙ Default configuration
@@ -113,6 +110,11 @@ use {
         falling_word_warning1 = "WarningMsg",
         falling_word_warning2 = "ErrorMsg",
     },
+    -- this values will be restored to your prefered settings after the game ends
+    vim_opt = {
+        -- only applies to insert mode, while playing the game
+        guicursor = nil, -- "ver25" | "hor20" | "block" | nil means do not change
+    },
 }
 ```
 
@@ -120,25 +122,26 @@ use {
 
 ## 🧰 Commands
 
-|   Command   |         Description        |
-|-------------|----------------------------|
-|  `:Speedtyper`  | Select the game mode and enjoy playing! |
+| Command       | Description                             |
+| ------------- | --------------------------------------- |
+| `:Speedtyper` | Select the game mode and enjoy playing! |
 
 ## 🤝 Contributing
 
 PRs and issues are always welcome.
 
 ## ✅☑️ TODO
+
 See _[this](https://github.com/NStefan002/speedtyper.nvim/blob/main/TODO.md)_.
 
 ## 🎭 Inspiration
 
-* [monkeytype](https://monkeytype.com/)
+- [monkeytype](https://monkeytype.com/)
 
 ## 👀 Checkout similar projects
 
-* **Neovim based:**
-    - [duckytype.nvim](https://github.com/kwakzalver/duckytype.nvim)
-* **Other:**
-    - [SpeedTyper.dev](https://www.speedtyper.dev/)  Somehow I didn't know about this one until the day I made speedtyper.nvim public... My bad 😅
-    - [toipe](https://github.com/Samyak2/toipe)
+- **Neovim based:**
+  - [duckytype.nvim](https://github.com/kwakzalver/duckytype.nvim)
+- **Other:**
+  - [SpeedTyper.dev](https://www.speedtyper.dev/) Somehow I didn't know about this one until the day I made speedtyper.nvim public... My bad 😅
+  - [toipe](https://github.com/Samyak2/toipe)

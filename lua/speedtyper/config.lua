@@ -39,7 +39,7 @@ M.default_opts = {
     -- this values will be restored to your prefered settings after the game ends
     vim_opt = {
         -- only applies to insert mode, while playing the game
-        guicursor = nil, -- "ver25" | "hor20" | "block" | nil means do not change (for more options see :help 'guicursor')
+        guicursor = nil, -- "ver25" | "hor20" | "block" | nil means do not change
     },
 }
 
