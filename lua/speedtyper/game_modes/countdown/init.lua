@@ -41,12 +41,15 @@ function M.start()
     M.create_timer(opts.time)
 end
 
-function M.stop()
+---@param ok boolean did the user force stop the game before it ended (do not show stats if game is exited prematurely)
+function M.stop(ok)
     if M.timer then
         M.timer:stop()
         M.timer:close()
     end
-    stats.display_stats(M.num_of_keypresses, M.num_of_typos, opts.time)
+    if ok then
+        stats.display_stats(M.num_of_keypresses, M.num_of_typos, opts.time)
+    end
     api.nvim_del_augroup_by_name("SpeedtyperCountdown")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
@@ -88,7 +91,7 @@ function M.start_countdown(time_sec)
         1000,
         vim.schedule_wrap(function()
             if t <= 0 then
-                M.stop()
+                M.stop(true)
                 extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
                     virt_text = {
                         { "Time's up!", "WarningMsg" },

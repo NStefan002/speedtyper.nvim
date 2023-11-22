@@ -95,7 +95,7 @@ function M.update_extmarks(sentences, extm_ids)
             })
         elseif line == 4 then
             util.clear_extmarks(extm_ids)
-            game.end_game()
+            game.end_game(true)
             return {}, {}
         else
             -- move cursor to the beginning of the next line after the final space in the previous line

@@ -44,12 +44,15 @@ function M.start()
     M.create_timer()
 end
 
-function M.stop()
+---@param ok boolean did the user force stop the game before it ended (do not show stats if game is exited prematurely)
+function M.stop(ok)
     if M.timer then
         M.timer:stop()
         M.timer:close()
     end
-    stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.total_time_sec)
+    if ok then
+        stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.total_time_sec)
+    end
     api.nvim_del_augroup_by_name("SpeedtyperStopwatch")
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)

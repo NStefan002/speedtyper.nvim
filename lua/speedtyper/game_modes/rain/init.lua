@@ -47,7 +47,8 @@ function M.start()
     M.create_timer()
 end
 
-function M.stop()
+---@param ok boolean did the user force stop the game before it ended (does not have that much impact on this game mode)
+function M.stop(ok)
     if M.timer then
         M.timer:stop()
         M.timer:close()
@@ -93,7 +94,7 @@ function M.rain()
         100,
         vim.schedule_wrap(function()
             if M.lives == 0 then
-                M.stop()
+                M.stop(true)
                 api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
                 util.clear_text(n_lines)
                 api.nvim_buf_set_lines(0, 2, 3, false, { "Your score: " .. M.word_count })
