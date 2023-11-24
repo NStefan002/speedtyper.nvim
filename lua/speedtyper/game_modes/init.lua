@@ -25,6 +25,7 @@ function M.start_game()
             M.end_game(false)
             api.nvim_buf_delete(0, { force = true })
             api.nvim_win_close(0, true)
+            util.error("You have left the game. Exiting.")
         end,
         desc = "End game when leaving buffer.",
     })
