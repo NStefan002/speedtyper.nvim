@@ -3,6 +3,7 @@ local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 local stats = require("speedtyper.stats")
 local countdown_util = require("speedtyper.game_modes.countdown.util")
+local util = require("speedtyper.util")
 local typo = require("speedtyper.typo")
 local config = require("speedtyper.config")
 local opts = config.opts.game_modes.countdown
@@ -43,16 +44,19 @@ end
 
 ---@param ok boolean did the user force stop the game before it ended (do not show stats if game is exited prematurely)
 function M.stop(ok)
+    if ok then
+        stats.display_stats(M.num_of_keypresses, M.num_of_typos, opts.time)
+        -- exit insert mode
+        api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    elseif M.timer ~= nil then
+        util.info("You have left the game. Exiting...")
+    end
     if M.timer then
         M.timer:stop()
         M.timer:close()
+        M.timer = nil
     end
-    if ok then
-        stats.display_stats(M.num_of_keypresses, M.num_of_typos, opts.time)
-    end
-    api.nvim_del_augroup_by_name("SpeedtyperCountdown")
-    -- exit insert mode
-    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    pcall(api.nvim_del_augroup_by_name, "SpeedtyperCountdown")
     config.restore_opts()
 end
 

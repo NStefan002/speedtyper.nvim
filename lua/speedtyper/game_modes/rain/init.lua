@@ -49,13 +49,18 @@ end
 
 ---@param ok boolean did the user force stop the game before it ended (does not have that much impact on this game mode)
 function M.stop(ok)
+    if ok then
+        -- exit insert mode
+        api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    elseif M.timer ~= nil then
+        util.info("You have left the game. Exiting...")
+    end
     if M.timer then
         M.timer:stop()
         M.timer:close()
+        M.timer = nil
     end
-    api.nvim_del_augroup_by_name("SpeedtyperRain")
-    -- exit insert mode
-    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    pcall(api.nvim_del_augroup_by_name, "SpeedtyperRain")
     config.restore_opts()
 end
 
