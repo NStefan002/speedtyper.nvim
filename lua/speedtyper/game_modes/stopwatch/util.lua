@@ -11,6 +11,9 @@ local normal = vim.cmd.normal
 ---@type integer
 M.next_word_id = 0
 
+-- used to make number of lines = window height
+local n_lines = opts.window.height
+
 ---@return string
 function M.new_word()
     if M.next_word_id == #words then
@@ -39,10 +42,10 @@ end
 ---@return integer[]
 ---@return string[]
 function M.generate_extmarks()
-    util.clear_text(5)
+    util.clear_text(n_lines)
     local extm_ids = {}
     local sentences = {}
-    for i = 1, 4 do
+    for i = 1, n_lines - 1 do
         local sentence = M.generate_sentence()
         local extm_id = api.nvim_buf_set_extmark(0, ns_id, i - 1, 0, {
             virt_text = {
@@ -94,7 +97,7 @@ function M.update_extmarks(sentences, extm_ids)
                 },
                 virt_text_win_col = 0,
             })
-        elseif line == 4 then
+        elseif line == n_lines - 1 then
             util.clear_extmarks(extm_ids)
             game.end_game(true)
             return {}, {}

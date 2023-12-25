@@ -7,6 +7,7 @@ local util = require("speedtyper.util")
 local typo = require("speedtyper.typo")
 local config = require("speedtyper.config")
 local opts = config.opts.game_modes.stopwatch
+local n_lines = config.opts.window.height
 local hl = config.opts.highlights
 
 M.timer = nil
@@ -65,7 +66,7 @@ end
 
 function M.create_timer()
     M.timer = (vim.uv or vim.loop).new_timer()
-    local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+    local extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
         virt_text = {
             { "Press 'i' to start the game.", "WarningMsg" },
         },
@@ -86,7 +87,7 @@ end
 function M.start_stopwatch()
     local extm_id
     if not opts.hide_time then
-        extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+        extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
             virt_text = {
                 { string.format("󱑆 %.1f    ", M.total_time_sec), hl.clock },
             },
@@ -100,7 +101,7 @@ function M.start_stopwatch()
         vim.schedule_wrap(function()
             M.total_time_sec = M.total_time_sec + 0.1
             if not opts.hide_time then
-                extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+                extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
                     virt_text = {
                         { string.format("󱑆 %.1f    ", M.total_time_sec), hl.clock },
                     },

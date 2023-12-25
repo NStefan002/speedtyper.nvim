@@ -12,29 +12,29 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len)
         n_chars = text_len
     end
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
+    local n_lines = #lines
+    -- clear all lines
+    local empty_lines = {}
+    for _ = 1, n_lines do
+        table.insert(empty_lines, "")
+    end
+    api.nvim_buf_set_lines(0, 0, n_lines, false, empty_lines)
+
     for _, line in pairs(lines) do
         n_chars = n_chars + #line
     end
 
-    if n_chars / 5 < n_mistakes then
-        api.nvim_buf_set_lines(0, 0, 5, false, {
-            "",
+    if n_chars / n_lines < n_mistakes then
+        api.nvim_buf_set_lines(0, 1, 1, false, {
             "Too many mistakes!",
-            "",
-            "",
-            "",
         })
         api.nvim_buf_add_highlight(0, ns_id, "Error", 1, 0, -1)
         return
     end
 
     if n_chars == 0 then
-        api.nvim_buf_set_lines(0, 0, 5, false, {
-            "",
+        api.nvim_buf_set_lines(0, 1, 1, false, {
             "AFK detected...",
-            "",
-            "",
-            "",
         })
         api.nvim_buf_add_highlight(0, ns_id, "Error", 1, 0, -1)
         return
