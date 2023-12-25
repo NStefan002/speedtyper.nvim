@@ -56,7 +56,7 @@ function M.stop(ok)
         -- exit insert mode
         api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
         -- disable modifications to the buffer
-        -- TODO this does lead to E21s: Cannot make changes, 'modifiable' is off
+        -- TODO this can lead to E21s: Cannot make changes, 'modifiable' is off
         api.nvim_buf_set_option(0, "modifiable", false)
     elseif M.timer ~= nil then
         util.info("You have left the game. Exiting...")
