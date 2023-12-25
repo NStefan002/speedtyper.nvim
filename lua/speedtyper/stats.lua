@@ -5,8 +5,12 @@ local ns_id = api.nvim_get_namespaces()["Speedtyper"]
 ---@param n_keypresses integer
 ---@param n_mistakes integer
 ---@param time_sec number
-function M.display_stats(n_keypresses, n_mistakes, time_sec)
+---@param text_len? integer
+function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len)
     local n_chars = 0
+    if text_len ~= nil then
+        n_chars = text_len
+    end
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
     for _, line in pairs(lines) do
         n_chars = n_chars + #line

@@ -9,6 +9,8 @@ local normal = vim.cmd.normal
 
 ---@type integer
 M.next_word_id = 0
+---@type integer
+M.num_of_chars = 0
 
 ---@return string
 function M.new_word()
@@ -97,6 +99,9 @@ function M.update_extmarks(sentences, extm_ids)
             -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
             normal("gg0")
             util.clear_extmarks(extm_ids)
+            for _, s in pairs(sentences) do
+                M.num_of_chars = M.num_of_chars + #s
+            end
             return M.generate_extmarks()
         else
             -- move cursor to the beginning of the next line after the final space in the previous line

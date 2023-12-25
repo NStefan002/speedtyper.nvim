@@ -20,6 +20,7 @@ function M.start()
     M.num_of_keypresses = 0
     M.num_of_typos = 0
     M.timer = nil
+    countdown_util.num_of_chars = 0
 
     local extm_ids, sentences = countdown_util.generate_extmarks()
     local typos = {}
@@ -45,7 +46,12 @@ end
 ---@param ok boolean did the user force stop the game before it ended (do not show stats if game is exited prematurely)
 function M.stop(ok)
     if ok then
-        stats.display_stats(M.num_of_keypresses, M.num_of_typos, opts.time)
+        stats.display_stats(
+            M.num_of_keypresses,
+            M.num_of_typos,
+            opts.time,
+            countdown_util.num_of_chars
+        )
         -- exit insert mode
         api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
     elseif M.timer ~= nil then
