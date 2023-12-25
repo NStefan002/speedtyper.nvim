@@ -7,6 +7,7 @@ local util = require("speedtyper.util")
 local typo = require("speedtyper.typo")
 local config = require("speedtyper.config")
 local opts = config.opts.game_modes.countdown
+local n_lines = config.opts.window.height
 local hl = config.opts.highlights
 
 M.timer = nil
@@ -69,7 +70,7 @@ end
 ---@param time_sec number
 function M.create_timer(time_sec)
     M.timer = (vim.uv or vim.loop).new_timer()
-    local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+    local extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
         virt_text = {
             { "Press 'i' to start the game.", "DiagnosticOk" },
         },
@@ -89,7 +90,7 @@ end
 
 ---@param time_sec number
 function M.start_countdown(time_sec)
-    local extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+    local extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
         virt_text = {
             { "󱑆 " .. tostring(time_sec) .. "    ", hl.clock },
         },
@@ -103,7 +104,7 @@ function M.start_countdown(time_sec)
         vim.schedule_wrap(function()
             if t <= 0 then
                 M.stop(true)
-                extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+                extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
                     virt_text = {
                         { "Time's up!", "WarningMsg" },
                     },
@@ -111,7 +112,7 @@ function M.start_countdown(time_sec)
                     id = extm_id,
                 })
             else
-                extm_id = api.nvim_buf_set_extmark(0, ns_id, 4, 0, {
+                extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
                     virt_text = {
                         { "󱑆 " .. tostring(t) .. "    ", hl.clock },
                     },
