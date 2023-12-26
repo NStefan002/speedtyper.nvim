@@ -50,8 +50,7 @@ end
 function M.stop(ok)
     if ok then
         stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.total_time_sec)
-        -- exit insert mode
-        api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+        util.disable_modifying_buffer()
     elseif M.timer ~= nil then
         util.info("You have left the game. Exiting...")
     end
