@@ -64,4 +64,12 @@ function M.read_file(file_path)
     return words
 end
 
+function M.disable_modifying_buffer()
+    -- exit insert mode
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    api.nvim_set_option_value("modifiable", false, {
+        buf = 0,
+    })
+end
+
 return M

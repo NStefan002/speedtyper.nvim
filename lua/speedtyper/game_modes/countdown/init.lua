@@ -53,8 +53,7 @@ function M.stop(ok)
             opts.time,
             countdown_util.num_of_chars
         )
-        -- exit insert mode
-        api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+        util.disable_modifying_buffer()
     elseif M.timer ~= nil then
         util.info("You have left the game. Exiting...")
     end
