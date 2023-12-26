@@ -1,4 +1,4 @@
-local Round = require("speedtyper.round")
+local Util = require("speedtyper.util")
 
 ---@class SpeedTyperUI
 ---@field bufnr integer
@@ -66,8 +66,7 @@ function SpeedTyperUI:_open(settings)
     self.active = true
 
     if winnr == 0 then
-        print("Failed to open window")
-        error("Failed to open window")
+        Util.error("Failed to open window")
         self:_close()
     end
 

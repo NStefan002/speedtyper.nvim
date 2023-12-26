@@ -3,7 +3,8 @@ local SpeedTyperUtil = {}
 ---@param msg string
 function SpeedTyperUtil.error(msg)
     -- "\n" for nvim configs that don't use nvim-notify
-    vim.notify("\n" .. msg, vim.log.levels.WARN, { title = "Speedtyper" })
+    vim.notify("\n" .. msg, vim.log.levels.ERROR, { title = "Speedtyper" })
+    error(msg)
 end
 
 ---@param msg string
