@@ -6,7 +6,26 @@ local Util = require("speedtyper.util")
 ---@field bufnr integer
 ---@field typos Position[]
 
----@alias Position { line: integer, col: integer }
+---@class Position
+---@field line integer
+---@field col integer
+
+local Position = {}
+
+---@param line integer
+---@param col integer
+function Position:new(line, col)
+    local pos = setmetatable({ line = line, col = col }, self)
+    self.__index = self
+    return pos
+end
+
+---@param o Position
+---@param p Position
+---@return boolean
+function Position.equal(o, p)
+    return o.line == p.line and o.col == p.col
+end
 
 local SpeedTyperTyposTracker = {}
 
@@ -32,10 +51,10 @@ function SpeedTyperTyposTracker:check_curr_char(should_be)
     local typed = vim.api.nvim_buf_get_text(self.bufnr, line - 1, col - 1, line - 1, col, {})[1]
     if typed ~= should_be then
         self.typos = self.typos or {}
-        table.insert(self.typos, { line, col })
+        table.insert(self.typos, Position:new(line, col))
     else
-        Util.remove_element(self.typos, { line, col }, function(a, b)
-            return a[1] == b[1] and a[2] == b[2]
+        Util.remove_element(self.typos, Position:new(line, col), function(a, b)
+            return Position.equal(a, b)
         end)
     end
 end
