@@ -14,7 +14,7 @@ end
 describe("Typo tracker tests", function()
     before_each(function()
         require("plenary.reload").reload_module("speedtyper")
-        tracker = T:new(0, hl)
+        tracker = T:new(hl, 0)
         normal("Gdgg")
     end)
     it("check current character", function()

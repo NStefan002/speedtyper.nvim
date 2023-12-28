@@ -30,13 +30,13 @@ function SpeedTyperUtil.equals(a, b)
 end
 
 ---@param n integer number of empty lines
----@return string[]
-function SpeedTyperUtil.clear_text(n)
+---@param bufnr? integer
+function SpeedTyperUtil.clear_buffer_text(n, bufnr)
     local repl = {}
     for _ = 1, n do
         table.insert(repl, "")
     end
-    return repl
+    vim.api.nvim_buf_set_lines(bufnr or 0, 0, n, false, repl)
 end
 
 ---@param file_path string
@@ -85,6 +85,14 @@ function SpeedTyperUtil.find_element(tbl, el, eq)
         end
     end
     return 0
+end
+
+---@param tbl table
+---@param el any
+---@param eq fun(a: any, b: any) : boolean returns true if elements are the same
+---@return boolean
+function SpeedTyperUtil.tbl_contains(tbl, el, eq)
+    return SpeedTyperUtil.find_element(tbl, el, eq) > 0
 end
 
 ---@param tbl table

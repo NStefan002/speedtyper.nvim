@@ -13,8 +13,13 @@ describe("Util test", function()
         eq(Util.equals(1.0000000000, 1.00000000000), true)
     end)
     it("clear text", function()
-        eq(Util.clear_text(5), { "", "", "", "", "" })
-        eq(Util.clear_text(0), {})
+        Util.clear_buffer_text(5)
+        local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+        for i, line in ipairs(buf_lines) do
+            if i <= 5 then
+                eq(line, "")
+            end
+        end
     end)
     it("trim", function()
         eq(Util.trim("  a"), "a")

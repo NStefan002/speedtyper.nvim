@@ -29,13 +29,13 @@ end
 
 local SpeedTyperTyposTracker = {}
 
----@param bufnr integer
 ---@param highlight string
-function SpeedTyperTyposTracker:new(bufnr, highlight)
+---@param bufnr? integer
+function SpeedTyperTyposTracker:new(highlight, bufnr)
     local typo = setmetatable({
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         typos = {},
-        bufnr = bufnr,
+        bufnr = bufnr or 0,
         highlight = highlight,
     }, self)
     self.__index = self
