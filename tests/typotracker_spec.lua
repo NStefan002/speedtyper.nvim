@@ -5,10 +5,14 @@ local T = require("speedtyper.typo")
 local tracker = T:new(0, hl)
 local eq = assert.are.same
 local normal = vim.cmd.normal
+
+local function key(k)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(k, true, false, true), "x", true)
+end
 local function write(str)
     -- "a" to enter insert mode
     str = "a" .. str
-    vim.cmd.normal(str)
+    key(str)
 end
 
 describe("Typo tracker tests", function()
@@ -28,7 +32,7 @@ describe("Typo tracker tests", function()
         eq(tracker.typos[1].line, 1)
         eq(tracker.typos[1].col, 2)
 
-        normal("o")
+        write("<CR>")
         write("a")
         tracker:check_curr_char("x")
         eq(tracker.typos[2].line, 2)
