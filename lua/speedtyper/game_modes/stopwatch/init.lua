@@ -25,6 +25,7 @@ function M.start()
     M.total_time_sec = 0
     M.timer = nil
     stopwatch_util.sentence = nil
+    stopwatch_util.text = {}
 
     local extm_ids, lines = stopwatch_util.generate_extmarks()
     local typos = {}
@@ -49,8 +50,16 @@ end
 
 ---@param ok boolean did the user force stop the game before it ended (do not show stats if game is exited prematurely)
 function M.stop(ok)
+    vim.print("stop game")
+    vim.print(ok)
     if ok then
-        stats.display_stats(M.num_of_keypresses, M.num_of_typos, M.total_time_sec)
+        stats.display_stats(
+          M.num_of_keypresses,
+          M.num_of_typos,
+          M.total_time_sec,
+          0,  -- text_length
+          stopwatch_util.text
+        )
         util.disable_modifying_buffer()
     elseif M.timer ~= nil then
         util.info("You have left the game. Exiting...")

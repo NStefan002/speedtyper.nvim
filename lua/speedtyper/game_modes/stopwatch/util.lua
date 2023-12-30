@@ -19,6 +19,8 @@ end
 M.next_word_id = 0
 ---@type string[]
 M.sentence = nil
+---@type string[]
+M.text = {}
 
 -- used to make number of lines = window height
 local n_lines = opts.window.height
@@ -53,9 +55,11 @@ function M.generate_line()
     local win_width = api.nvim_win_get_width(0)
     local width_percentage = 0.85
     local word = M.new_word()
+    table.insert(M.text, word)
     local line = word
     while #line + #word < width_percentage * win_width do
         word = M.new_word()
+        table.insert(M.text, word)
         line = line .. " " .. word
     end
     return line .. " "
@@ -90,11 +94,11 @@ M.prev_line = 0
 M.prev_col = 0
 
 ---update extmarks according to the cursor position
----@param sentences string[]
+---@param lines string[]
 ---@param extm_ids integer[]
 ---@return integer[]
 ---@return string[]
-function M.update_extmarks(sentences, extm_ids)
+function M.update_extmarks(lines, extm_ids)
     local line, col = util.get_cursor_pos()
     -- NOTE: so I don't forget what is going on here
     --[[
@@ -106,7 +110,7 @@ function M.update_extmarks(sentences, extm_ids)
         ends with " " (generate_sentence function), there is no logical explanation,
         the problem was aligning 0-based and 1-based indexing
       ]]
-    if col - 1 == #sentences[line] or col - 2 == #sentences[line] then
+    if col - 1 == #lines[line] or col - 2 == #lines[line] then
         if line < M.prev_line or col == M.prev_col then
             --[[ <bspace> will remove the current line and move the cursor to the beginning of the previous,
             so we need to restore the deleted line with 'o' (could be done with api functions) and re-add the virtual text ]]
@@ -115,7 +119,7 @@ function M.update_extmarks(sentences, extm_ids)
             api.nvim_buf_set_extmark(0, ns_id, line, 0, {
                 id = extm_ids[line + 1],
                 virt_text = {
-                    { sentences[line + 1], hl.untyped_text },
+                    { lines[line + 1], hl.untyped_text },
                 },
                 virt_text_win_col = 0,
             })
@@ -131,7 +135,7 @@ function M.update_extmarks(sentences, extm_ids)
     api.nvim_buf_set_extmark(0, ns_id, line - 1, 0, {
         id = extm_ids[line],
         virt_text = {
-            { string.sub(sentences[line], col), hl.untyped_text },
+            { string.sub(lines[line], col), hl.untyped_text },
         },
         virt_text_win_col = col - 1,
     })
@@ -139,7 +143,7 @@ function M.update_extmarks(sentences, extm_ids)
     M.prev_line = line
     M.prev_col = col
 
-    return extm_ids, sentences
+    return extm_ids, lines
 end
 
 return M

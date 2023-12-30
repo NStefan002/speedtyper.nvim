@@ -33,6 +33,8 @@ end
 
 ---@param ok boolean did the user force stop the game before it ended
 function M.end_game(ok)
+    print("end game")
+    print(ok)
     require("speedtyper.game_modes." .. M.game_mode).stop(ok)
 end
 
