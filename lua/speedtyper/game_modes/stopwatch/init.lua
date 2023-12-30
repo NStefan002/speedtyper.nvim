@@ -24,6 +24,7 @@ function M.start()
     M.num_of_typos = 0
     M.total_time_sec = 0
     M.timer = nil
+    stopwatch_util.sentence = nil
 
     local extm_ids, lines = stopwatch_util.generate_extmarks()
     local typos = {}
