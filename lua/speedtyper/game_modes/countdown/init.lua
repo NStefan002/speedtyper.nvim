@@ -23,13 +23,13 @@ function M.start()
     M.timer = nil
     countdown_util.num_of_chars = 0
 
-    local extm_ids, sentences = countdown_util.generate_extmarks()
+    local extm_ids, lines = countdown_util.generate_extmarks()
     local typos = {}
     api.nvim_create_autocmd("CursorMovedI", {
         group = api.nvim_create_augroup("SpeedtyperCountdown", { clear = true }),
         buffer = 0,
         callback = function()
-            local curr_char = typo.check_curr_char(sentences)
+            local curr_char = typo.check_curr_char(lines)
             if curr_char.typo_found then
                 table.insert(typos, curr_char.typo_pos)
             else
@@ -37,7 +37,7 @@ function M.start()
             end
             M.num_of_typos = #typos
             M.num_of_keypresses = M.num_of_keypresses + 1
-            extm_ids, sentences = countdown_util.update_extmarks(sentences, extm_ids)
+            extm_ids, lines = countdown_util.update_extmarks(lines, extm_ids)
         end,
         desc = "Update extmarks and mark mistakes while typing.",
     })

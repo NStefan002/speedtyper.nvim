@@ -2,21 +2,43 @@ local M = {}
 local api = vim.api
 local util = require("speedtyper.util")
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
-local words = require("speedtyper.langs").get_words()
 local opts = require("speedtyper.config").opts
 local hl = require("speedtyper.config").opts.highlights
 local normal = vim.cmd.normal
+
+local sentences = {}
+local words = {}
+if opts.sentence_mode then
+    sentences = require("speedtyper.langs").get_sentences()
+else
+    words = require("speedtyper.langs").get_words()
+end
 
 ---@type integer
 M.next_word_id = 0
 ---@type integer
 M.num_of_chars = 0
+---@type string[]
+M.sentence = nil
 
 -- used to make number of lines = window height
 local n_lines = opts.window.height
 
+---@return string[]
+function M.new_sentence()
+    return vim.split(sentences[math.random(1, #sentences)], " ")
+end
+
 ---@return string
 function M.new_word()
+    if opts.sentence_mode then
+        M.next_word_id = M.next_word_id + 1
+        if M.sentence == nil or M.next_word_id == #M.sentence then
+            M.sentence = M.new_sentence()
+            M.next_word_id = 0
+        end
+        return M.sentence[M.next_word_id + 1]
+    end
     if M.next_word_id == #words then
         M.next_word_id = 0
     end
@@ -28,16 +50,16 @@ function M.new_word()
 end
 
 ---@return string
-function M.generate_sentence()
+function M.generate_line()
     local win_width = api.nvim_win_get_width(0)
     local width_percentage = 0.85
     local word = M.new_word()
-    local sentence = word
-    while #sentence + #word < width_percentage * win_width do
+    local line = word
+    while #line + #word < width_percentage * win_width do
         word = M.new_word()
-        sentence = sentence .. " " .. word
+        line = line .. " " .. word
     end
-    return sentence .. " "
+    return line .. " "
 end
 
 ---@return integer[]
@@ -47,7 +69,7 @@ function M.generate_extmarks()
     local extm_ids = {}
     local sentences = {}
     for i = 1, n_lines - 1 do
-        local sentence = M.generate_sentence()
+        local sentence = M.generate_line()
         local extm_id = api.nvim_buf_set_extmark(0, ns_id, i - 1, 0, {
             virt_text = {
                 { sentence, hl.untyped_text },
