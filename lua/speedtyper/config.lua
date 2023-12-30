@@ -11,6 +11,8 @@ M.default_opts = {
     sentence_mode = false, -- if true, whole sentences will be used
     custom_text_file = nil, -- provide a path to file that contains your custom text (if this is not nil, language option will be ignored)
     randomize = false, -- randomize words from custom_text_file
+    real_wpm = false, -- calculate wpm using the words typed
+    -- if set to false WPM is estimated by dividing the number of typed characters by 5
     game_modes = { -- prefered settings for different game modes
         -- type until time expires
         countdown = {

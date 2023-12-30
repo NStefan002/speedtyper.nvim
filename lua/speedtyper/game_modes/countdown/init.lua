@@ -51,7 +51,8 @@ function M.stop(ok)
             M.num_of_keypresses,
             M.num_of_typos,
             opts.time,
-            countdown_util.num_of_chars
+            countdown_util.num_of_chars,
+            countdown_util.text
         )
         util.disable_modifying_buffer()
     elseif M.timer ~= nil then
