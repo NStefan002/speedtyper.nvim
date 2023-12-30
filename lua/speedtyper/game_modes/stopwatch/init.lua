@@ -25,13 +25,13 @@ function M.start()
     M.total_time_sec = 0
     M.timer = nil
 
-    local extm_ids, sentences = stopwatch_util.generate_extmarks()
+    local extm_ids, lines = stopwatch_util.generate_extmarks()
     local typos = {}
     api.nvim_create_autocmd("CursorMovedI", {
         group = api.nvim_create_augroup("SpeedtyperStopwatch", { clear = true }),
         buffer = 0,
         callback = function()
-            local curr_char = typo.check_curr_char(sentences)
+            local curr_char = typo.check_curr_char(lines)
             if curr_char.typo_found then
                 table.insert(typos, curr_char.typo_pos)
             else
@@ -39,7 +39,7 @@ function M.start()
             end
             M.num_of_typos = #typos
             M.num_of_keypresses = M.num_of_keypresses + 1
-            extm_ids, sentences = stopwatch_util.update_extmarks(sentences, extm_ids)
+            extm_ids, lines = stopwatch_util.update_extmarks(lines, extm_ids)
         end,
         desc = "Update extmarks and mark mistakes while typing.",
     })
