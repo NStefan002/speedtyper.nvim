@@ -103,6 +103,8 @@ Full list of options with their default values ~
         },
         language = "en", -- "en" | "sr" currently only only supports English and Serbian
         sentence_mode = false, -- if true, whole sentences will be used
+        final_words_typed_wpm = false, -- if set to true calculate wpm using the final words typed
+        -- if set to false WPM is estimated by dividing the number of typed characters by 5
         custom_text_file = nil, -- provide a path to file that contains your custom text (if this is not nil, language option will be ignored)
         randomize = false, -- randomize words from custom_text_file
         game_modes = { -- prefered settings for different game modes
