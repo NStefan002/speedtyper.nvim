@@ -14,7 +14,6 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
         n_chars = text_len
     end
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
-    vim.print(lines)
     local n_lines = #lines
     -- clear all lines
     local empty_lines = {}
@@ -48,24 +47,44 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
     local wpm = 0
     local accuracy = 0
     if opts.real_wpm then
-        -- convert lines to a table of words
-        local words_target = {}
-        local words_typed = {}
-        for _, line in pairs(lines) do
-            table.insert(words_typed, vim.split(line, " "))
+        local words_typed = vim.split(table.concat(lines, ""), " ")
+        -- loop though each word typed and compare to the target text
+        local n_correct = 0
+        n_mistakes = 0  -- redefine n_mistakes to the end version
+        for i, word in pairs(words_typed) do
+            if word == text[i] then
+                n_correct = n_correct + 1
+            else
+                n_mistakes = n_mistakes + 1
+            end
         end
-        vim.print("words typed: " .. words_typed)
+        -- if the user didn't finish typing the last word then don't count it
+        local n_words = #words_typed
+        vim.print("last word: " .. words_typed[n_words])
+        if words_typed[n_words] ~= text[n_words] then
+            n_words = #words_typed - 1
+            n_mistakes = n_mistakes - 1
+        end
+        wpm = (n_correct - n_mistakes) / n_words * (60 / time_sec)
+        accuracy = n_correct / n_words * 100
+        vim.print("n_correct: " .. n_correct)
+        vim.print("n_mistakes: " .. n_mistakes)
+        vim.print("n_words: " .. n_words)
+        vim.print("(n_correct - n_mistakes) / n_words " .. (n_correct - n_mistakes) / n_words)
+        vim.print("60 / time_sec" .. 60 / time_sec )
+        vim.print("wpm: " .. wpm)
+        vim.print("accuracy: " .. accuracy)
     else
-        -- NOTE: count every five characters as one word for easier calculation
+        -- estimate wpm by counting every five characters as a word
+        -- this balances out the variation in word length
         wpm = (n_chars - n_mistakes) / 5 * (60 / time_sec)
-        if wpm < 0 then
-            wpm = 0
-        end
-        -- NOTE: accuracy is defined as the percentage of correct entries out of the total entries typed
         accuracy = (n_chars - n_mistakes) / n_keypresses * 100
-        if accuracy < 0 then
-            accuracy = 0
-        end
+    end
+    if wpm < 0 then
+        wpm = 0
+    end
+    if accuracy < 0 then
+        accuracy = 0
     end
 
     local wpm_text = string.format("WPM: %.2f", wpm)
