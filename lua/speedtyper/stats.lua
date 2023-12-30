@@ -52,7 +52,7 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
         local n_correct = 0
         n_mistakes = 0  -- redefine n_mistakes to the end version
         for i, word in pairs(words_typed) do
-            if word == text[i] then
+            if text[i] and word == text[i] then
                 n_correct = n_correct + 1
             else
                 n_mistakes = n_mistakes + 1
@@ -60,7 +60,7 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
         end
         -- if the user didn't finish typing the last word then don't count it
         local n_words = #words_typed
-        if words_typed[n_words] ~= text[n_words] then
+        if text[n_words] and words_typed[n_words] ~= text[n_words] then
             n_words = #words_typed - 1
             n_mistakes = n_mistakes - 1
         end
