@@ -67,7 +67,7 @@ function M.create_timer()
     M.timer = (vim.uv or vim.loop).new_timer()
     local extm_id = api.nvim_buf_set_extmark(0, ns_id, n_lines - 1, 0, {
         virt_text = {
-            { "Press 'i' to start the game.", "WarningMsg" },
+            { "Press 'i' to start the game.", "DiagnosticOk" },
         },
         virt_text_pos = "right_align",
     })
