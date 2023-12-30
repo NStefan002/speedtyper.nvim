@@ -11,4 +11,4 @@
 - [x] Display current game stats
 - [ ] Add stats tracking
 - [ ] Add custom highlight groups
-- [ ] Add option for typing sentences (capitalization, punctuation, numbers, etc.)
+- [x] Add option for typing sentences (capitalization, punctuation, numbers, etc.) --> all credit goes to @garazov
