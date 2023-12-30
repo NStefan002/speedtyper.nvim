@@ -22,6 +22,7 @@ function M.start()
     M.num_of_typos = 0
     M.timer = nil
     countdown_util.num_of_chars = 0
+    countdown_util.sentence = nil
 
     local extm_ids, lines = countdown_util.generate_extmarks()
     local typos = {}
