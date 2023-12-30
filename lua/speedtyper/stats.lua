@@ -67,15 +67,6 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
         end
         wpm = n_words * (60 / time_sec)
         accuracy = n_correct / n_words * 100
-        vim.print("words_typed: ")
-        vim.print(words_typed)
-        vim.print("text: ")
-        vim.print(text)
-        -- vim.print("n_words: " .. n_words)
-        -- vim.print("n_mistakes: " .. n_mistakes)
-        -- vim.print("n_correct: " .. n_correct)
-        -- vim.print("wpm: " .. wpm)
-        -- vim.print("accuracy: " .. accuracy)
     else
         -- estimate wpm by counting every five characters as a word
         -- this balances out the variation in word length
