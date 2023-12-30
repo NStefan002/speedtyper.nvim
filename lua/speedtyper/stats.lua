@@ -1,17 +1,20 @@
 local M = {}
 local api = vim.api
 local ns_id = api.nvim_get_namespaces()["Speedtyper"]
+local opts = require("speedtyper.config").opts
 
 ---@param n_keypresses integer
 ---@param n_mistakes integer
 ---@param time_sec number
 ---@param text_len? integer
-function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len)
+---@param text? string[]
+function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
     local n_chars = 0
     if text_len ~= nil then
         n_chars = text_len
     end
     local lines = api.nvim_buf_get_lines(0, 0, -1, false)
+    vim.print(lines)
     local n_lines = #lines
     -- clear all lines
     local empty_lines = {}
@@ -24,7 +27,9 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len)
         n_chars = n_chars + #line
     end
 
-    if n_chars / n_lines < n_mistakes then
+    -- if number of mistakes is larger than the estimated number of words
+    -- assuming 5 characters per word
+    if n_chars / 5 < n_mistakes then
         api.nvim_buf_set_lines(0, 1, 1, false, {
             "Too many mistakes!",
         })
@@ -40,15 +45,27 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len)
         return
     end
 
-    -- NOTE: count every five characters as one word for easier calculation
-    local wpm = (n_chars - n_mistakes) / 5 * (60 / time_sec)
-    if wpm < 0 then
-        wpm = 0
-    end
-    -- NOTE: accuracy is defined as the percentage of correct entries out of the total entries typed
-    local accuracy = (n_chars - n_mistakes) / n_keypresses * 100
-    if accuracy < 0 then
-        accuracy = 0
+    local wpm = 0
+    local accuracy = 0
+    if opts.real_wpm then
+        -- convert lines to a table of words
+        local words_target = {}
+        local words_typed = {}
+        for _, line in pairs(lines) do
+            table.insert(words_typed, vim.split(line, " "))
+        end
+        vim.print("words typed: " .. words_typed)
+    else
+        -- NOTE: count every five characters as one word for easier calculation
+        wpm = (n_chars - n_mistakes) / 5 * (60 / time_sec)
+        if wpm < 0 then
+            wpm = 0
+        end
+        -- NOTE: accuracy is defined as the percentage of correct entries out of the total entries typed
+        accuracy = (n_chars - n_mistakes) / n_keypresses * 100
+        if accuracy < 0 then
+            accuracy = 0
+        end
     end
 
     local wpm_text = string.format("WPM: %.2f", wpm)

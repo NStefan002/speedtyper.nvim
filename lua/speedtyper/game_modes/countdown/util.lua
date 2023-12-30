@@ -20,6 +20,8 @@ M.next_word_id = 0
 M.num_of_chars = 0
 ---@type string[]
 M.sentence = nil
+---@type string[]
+M.text = {}
 
 -- used to make number of lines = window height
 local n_lines = opts.window.height
@@ -54,9 +56,11 @@ function M.generate_line()
     local win_width = api.nvim_win_get_width(0)
     local width_percentage = 0.85
     local word = M.new_word()
+    table.insert(M.text, word)
     local line = word
     while #line + #word < width_percentage * win_width do
         word = M.new_word()
+        table.insert(M.text, word)
         line = line .. " " .. word
     end
     return line .. " "
