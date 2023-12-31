@@ -65,7 +65,7 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
             n_words = #words_typed - 1
             n_mistakes = n_mistakes - 1
         end
-        wpm = n_words * (60 / time_sec)
+        wpm = n_correct * (60 / time_sec)
         accuracy = n_correct / n_words * 100
     else
         -- estimate wpm by counting every five characters as a word
