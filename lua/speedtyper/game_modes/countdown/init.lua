@@ -24,6 +24,7 @@ function M.start()
     countdown_util.num_of_chars = 0
     countdown_util.sentence = nil
     countdown_util.text = {}
+    countdown_util.lines = nil
 
     local extm_ids, lines = countdown_util.generate_extmarks()
     local typos = {}
@@ -54,7 +55,8 @@ function M.stop(ok)
             M.num_of_typos,
             opts.time,
             countdown_util.num_of_chars,
-            countdown_util.text
+            countdown_util.text,
+            countdown_util.lines
         )
         util.disable_modifying_buffer()
     elseif M.timer ~= nil then

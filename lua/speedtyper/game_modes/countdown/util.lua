@@ -22,6 +22,8 @@ M.num_of_chars = 0
 M.sentence = nil
 ---@type string[]
 M.text = {}
+---@type string[]
+M.lines = nil
 
 -- used to make number of lines = window height
 local n_lines = opts.window.height
@@ -126,6 +128,12 @@ function M.update_extmarks(sentences, extm_ids)
             })
         elseif line == n_lines - 1 then
             -- move cursor to the beginning of the first line and generate new sentences after the final space in the last line
+            local lines = api.nvim_buf_get_lines(0, 0, -1, false)
+            if M.lines == nil then
+                M.lines = lines
+            else
+                vim.list_extend(M.lines, lines)
+            end
             normal("gg0")
             util.clear_extmarks(extm_ids)
             for _, s in pairs(sentences) do

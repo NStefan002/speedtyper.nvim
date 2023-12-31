@@ -8,7 +8,15 @@ local opts = require("speedtyper.config").opts
 ---@param time_sec number
 ---@param text_len? integer
 ---@param text? string[]
-function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
+---@param words_typed? string[]
+function M.display_stats(
+  n_keypresses,
+  n_mistakes,
+  time_sec,
+  text_len,
+  text,
+  prev_lines
+)
     local n_chars = 0
     if text_len ~= nil then
         n_chars = text_len
@@ -47,8 +55,22 @@ function M.display_stats(n_keypresses, n_mistakes, time_sec, text_len, text)
     local wpm = 0
     local accuracy = 0
     if opts.real_wpm then
+        if prev_lines ~= nil then
+            lines = vim.list_extend(prev_lines, lines)
+        end
+        -- concatenate all lines as a single string
+        local lines_str = table.concat(lines, "")
+        -- substitute multiple spaces with a single space
+        vim.print(lines_str)
+        lines_str = lines_str:gsub("%s+", " ")
+        -- remove trailing spaces
+        lines_str = lines_str:gsub("%s$", "")
+        vim.print(lines_str)
+        -- split into words
+        local words_typed = vim.split(lines_str, " ")
         vim.print(lines)
-        local words_typed = vim.split(table.concat(lines, ""), " ")
+        vim.print(words_typed)
+        vim.print(text)
         -- loop though each word typed and compare to the target text
         local n_correct = 0
         n_mistakes = 0  -- redefine n_mistakes to the end version

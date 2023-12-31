@@ -50,8 +50,6 @@ end
 
 ---@param ok boolean did the user force stop the game before it ended (do not show stats if game is exited prematurely)
 function M.stop(ok)
-    vim.print("stop game")
-    vim.print(ok)
     if ok then
         stats.display_stats(
           M.num_of_keypresses,
