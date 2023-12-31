@@ -55,8 +55,12 @@ function M.generate_line()
     local width_percentage = 0.85
     local word = M.new_word()
     local line = word
-    while #line + #word < width_percentage * win_width do
+    while true do
         word = M.new_word()
+        if #line + #word >= width_percentage * win_width then
+            M.next_word_id = M.next_word_id - 1
+            break
+        end
         line = line .. " " .. word
     end
     return line .. " "
