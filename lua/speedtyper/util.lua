@@ -67,9 +67,30 @@ end
 function M.disable_modifying_buffer()
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
-    api.nvim_set_option_value("modifiable", false, {
-        buf = 0,
-    })
+    local keys_to_disable = {
+        "i",
+        "a",
+        "o",
+        "r",
+        "x",
+        "s",
+        "d",
+        "c",
+        "u",
+        "p",
+        "I",
+        "A",
+        "O",
+        "R",
+        "S",
+        "D",
+        "C",
+        "U",
+        "P",
+    }
+    for _, key in pairs(keys_to_disable) do
+        vim.keymap.set({ "n", "v" }, key, "<Nop>", { buffer = 0 })
+    end
 end
 
 return M
