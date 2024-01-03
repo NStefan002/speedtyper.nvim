@@ -87,6 +87,7 @@ function M.disable_modifying_buffer()
         "C",
         "U",
         "P",
+        ".",
     }
     for _, key in pairs(keys_to_disable) do
         vim.keymap.set({ "n", "v" }, key, "<Nop>", { buffer = 0 })
