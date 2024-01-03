@@ -52,12 +52,12 @@ end
 ---@return string
 function M.generate_line()
     local win_width = api.nvim_win_get_width(0)
-    local width_percentage = 0.85
+    local border_width = 4
     local word = M.new_word()
     local line = word
     while true do
         word = M.new_word()
-        if #line + #word >= width_percentage * win_width then
+        if #line + #word >= win_width - border_width then
             M.next_word_id = M.next_word_id - 1
             break
         end
