@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, undefined-global
 local Util = require("speedtyper.util")
 local eq = assert.are.same
 
