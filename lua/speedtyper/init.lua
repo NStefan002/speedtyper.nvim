@@ -6,21 +6,21 @@ local Config = require("speedtyper.config")
 ---@field ui SpeedTyperUI
 
 local SpeedTyper = {}
+SpeedTyper.__index = SpeedTyper
 
 ---@param partial_config? SpeedTyperPartialConfig
-function SpeedTyper:new(partial_config)
+function SpeedTyper.new(partial_config)
     local config = Config.merge_config(partial_config, Config.get_default_config())
-    local speedtyper = setmetatable({
+    local speedtyper = {
         config = config,
-        ui = Ui:new(config.window),
-    }, self)
-    self.__index = self
-    return speedtyper
+        ui = Ui.new(config.window),
+    }
+    return setmetatable(speedtyper, SpeedTyper)
 end
 
 ---@param partial_config? SpeedTyperPartialConfig
 function SpeedTyper.setup(partial_config)
-    local speedtyper = SpeedTyper:new(partial_config)
+    local speedtyper = SpeedTyper.new(partial_config)
     return speedtyper
 end
 

@@ -28,7 +28,7 @@ function Position.equal(o, p)
 end
 
 function Position:__eq(other)
-    return self:equal(other)
+    return Position.equal(self, other)
 end
 
 return Position

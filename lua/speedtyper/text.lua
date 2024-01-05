@@ -46,11 +46,11 @@ function SpeedTyperText:generate_sentence(win_width)
     local border_width = 2
     local extra_space = 1 -- at the end of the sentence
     local usable_width = win_width - 2 * border_width - extra_space -- 2 * border -> left and right border
-    local sentence = self:get_word()
-    local word = self:get_word()
+    local sentence = SpeedTyperText.get_word(self)
+    local word = SpeedTyperText.get_word(self)
     while #sentence + #word < usable_width do
         sentence = sentence .. " " .. word
-        word = self:get_word()
+        word = SpeedTyperText.get_word(self)
     end
     return sentence .. " "
 end

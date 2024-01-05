@@ -97,8 +97,11 @@ end
 
 ---@param tbl table
 ---@param el any
----@param eq fun(a: any, b: any) : boolean returns true if elements are the same
+---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 function SpeedTyperUtil.remove_element(tbl, el, eq)
+    eq = eq or function(a, b)
+        return a == b
+    end
     local idx = SpeedTyperUtil.find_element(tbl, el, eq)
     if idx > 0 then
         table.remove(tbl, idx)

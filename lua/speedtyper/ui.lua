@@ -1,23 +1,28 @@
 local Util = require("speedtyper.util")
+local Round = require("speedtyper.round")
 
 ---@class SpeedTyperUI
 ---@field bufnr integer
 ---@field winnr integer
 ---@field active boolean
 ---@field settings SpeedTyperWindowConfig
+---@field round  SpeedTyperRound
 
 local SpeedTyperUI = {}
+SpeedTyperUI.__index = SpeedTyperUI
 
 ---@param settings SpeedTyperWindowConfig
 ---@return SpeedTyperUI
-function SpeedTyperUI:new(settings)
-    local ui = setmetatable({
+function SpeedTyperUI.new(settings)
+    local ui = {
         bufnr = nil,
         winnr = nil,
         settings = settings,
-    }, self)
-    self.__index = self
-    return ui
+        active = false,
+        round = Round.new(),
+    }
+    ui.round:set_game_mode("countdown")
+    return setmetatable(ui, SpeedTyperUI)
 end
 
 function SpeedTyperUI:_create_autocmds()
@@ -31,7 +36,7 @@ function SpeedTyperUI:_create_autocmds()
         buffer = self.bufnr,
         once = true,
         callback = function()
-            self:_close()
+            SpeedTyperUI._close(self)
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
     })
@@ -67,11 +72,12 @@ function SpeedTyperUI:_open(settings)
 
     if winnr == 0 then
         Util.error("Failed to open window")
-        self:_close()
+        SpeedTyperUI._close(self)
     end
 
-    self:disable()
-    self:_create_autocmds()
+    SpeedTyperUI.disable(self)
+    SpeedTyperUI._create_autocmds(self)
+    Round.start_round(self.round)
 end
 
 function SpeedTyperUI:_close()
@@ -89,13 +95,15 @@ function SpeedTyperUI:_close()
     self.bufnr = nil
     self.winnr = nil
     self.active = false
+    self.round:end_round()
+    -- pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperGroup")
 end
 
 function SpeedTyperUI:toggle()
     if self.active then
-        SpeedTyperUI:_close()
+        SpeedTyperUI._close(self)
     else
-        SpeedTyperUI:_open(self.settings)
+        SpeedTyperUI._open(self, self.settings)
     end
 end
 
