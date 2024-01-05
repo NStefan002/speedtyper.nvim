@@ -28,7 +28,7 @@ function M.show()
         if selected == "rain" then
             opts.window.height = opts.window.width
         end
-        local winnr, bufnr = window.open_float(opts.window)
+        window.open_float(opts.window)
         game.set_game_mode(selected)
         disable()
         game.start_game()

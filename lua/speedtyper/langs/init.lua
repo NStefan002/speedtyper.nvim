@@ -17,7 +17,7 @@ M.lang = ""
 ---@param lang string
 function M.set_lang(lang)
     local supported = false
-    local supported_langs = {}
+    local supported_langs
     if opts.sentence_mode then
         supported_langs = M.supported_sentences
     else
