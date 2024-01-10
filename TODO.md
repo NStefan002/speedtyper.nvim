@@ -10,9 +10,11 @@
 -   [ ] Add support for more languages
 -   [x] Display current game stats
 -   [ ] Add stats tracking
--   [ ] Add custom highlight groups
+-   [x] Add custom highlight groups
 -   [ ] Add option for typing sentences (capitalization, punctuation, numbers, etc.)
 
 -   [ ] Rewrite plugin
 -   [ ] Add tests
 -   [ ] Make independent ui
+    -   [ ] Select game mode in new ui
+    -   [ ] Possibly make similar ui like monkeytype (+ rain mode)

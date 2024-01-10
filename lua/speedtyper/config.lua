@@ -1,3 +1,5 @@
+-- TODO: rework config according to menu
+
 ---@class SpeedTyperConfig
 ---@field language string
 -- TODO: next two need rework
@@ -23,8 +25,6 @@
 ---@field stopwatch SpeedTyperStopwatchConfig
 
 ---@class SpeedTyperWindowConfig
----@field width number
----@field height number
 ---@field border string
 
 ---@class SpeedTyperCountdownConfig
@@ -40,13 +40,15 @@
 ---@field hide_time? boolean
 
 ---@class SpeedTyperHighlightsConfig
----@field untyped_text? string
----@field typo? string
----@field clock? string
----@field falling_word_typed? string
----@field falling_word? string
----@field falling_word_warning1? string
----@field falling_word_warning2? string
+---@field button_active? string
+---@field button_inactive? string
+---@field text_typed? string
+---@field text_ok? string
+---@field text_untyped? string
+---@field text_error? string
+---@field text_warning? string
+---@field clock_normal? string
+---@field clock_warning? string
 
 ---@class SpeedTyperVimOptConfig
 ---@field guicursor? string
@@ -57,10 +59,8 @@ local Config = {}
 ---@return SpeedTyperConfig
 function Config.get_default_config()
     return {
-        -- NOTE: first thing to get changed in the future
+        -- NOTE: better than before
         window = {
-            height = 7,
-            width = 0.45,
             border = "rounded",
         },
         language = "en", -- "en" | "sr" currently only only supports English and Serbian
@@ -84,13 +84,15 @@ function Config.get_default_config()
         },
         -- specify highlight group for each component
         highlights = {
-            untyped_text = "Comment",
-            typo = "ErrorMsg",
-            clock = "ErrorMsg",
-            falling_word_typed = "DiagnosticOk",
-            falling_word = "Normal",
-            falling_word_warning1 = "WarningMsg",
-            falling_word_warning2 = "ErrorMsg",
+            button_active = "DiagnosticHint",
+            button_inactive = "Comment",
+            text_typed = "Normal",
+            text_ok = "DiagnosticOk",
+            text_untyped = "Comment",
+            text_warning = "WarningMsg",
+            text_error = "ErrorMsg",
+            clock_normal = "Normal",
+            clock_warning = "WarningMsg",
         },
         -- this values will be restored to your prefered settings after the game ends
         vim_opt = {
