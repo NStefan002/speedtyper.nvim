@@ -1,54 +1,45 @@
 ---@diagnostic disable: undefined-field, undefined-global
-local Config = require("speedtyper.config")
-local hl = Config.get_default_config().highlights.typo
 local T = require("speedtyper.typo")
-local tracker = T.new(0, hl)
+local tracker = T.new(0)
 local eq = assert.are.same
 local normal = vim.cmd.normal
-local Util = require("speedtyper.util")
-
----@param k string
-local function key(k)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(k, true, false, true), "x", true)
-end
-
----@param text string
-local function write(text)
-    -- a to enter insert mode, space to simulate cursor movement
-    key("a" .. text .. " ")
-end
 
 describe("Typo tracker tests", function()
     before_each(function()
         require("plenary.reload").reload_module("speedtyper")
-        tracker = T.new(hl, 0)
+        tracker = T.new(0)
         normal("Gdgg")
     end)
     it("check current character", function()
-        write("x")
+        -- space to simulate cursor movement (cursor end up one char to the right)
+        Util.simulate_input("x ")
         tracker:check_curr_char("x")
         eq(#tracker.typos, 0)
 
-        key("a<backspace>")
-        write("a")
+        Util.simulate_keypress("a<backspace>")
+        -- space to simulate cursor movement (cursor end up one char to the right)
+        Util.simulate_input("a ")
         tracker:check_curr_char("x")
         eq(tracker.typos[1].line, 1)
         eq(tracker.typos[1].col, 2)
 
-        key("a<CR>")
-        write("a")
+        Util.simulate_keypress("a<CR>")
+        -- space to simulate cursor movement (cursor end up one char to the right)
+        Util.simulate_input("a ")
         tracker:check_curr_char("x")
         eq(tracker.typos[2].line, 2)
         eq(tracker.typos[2].col, 1)
     end)
 
     it("correct typo", function()
-        write("a")
+        -- space to simulate cursor movement (cursor end up one char to the right)
+        Util.simulate_input("a ")
         tracker:check_curr_char("x")
         eq(#tracker.typos, 1)
 
         normal("Gdgg")
-        write("x")
+        -- space to simulate cursor movement (cursor end up one char to the right)
+        Util.simulate_input("x ")
         tracker:check_curr_char("x")
         eq(#tracker.typos, 0)
     end)

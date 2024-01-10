@@ -58,6 +58,39 @@ function SpeedTyperUtil.read_file(file_path)
     return words
 end
 
+-- HACK: disable buffer modification by disabling all modifying keys
+function SpeedTyperUtil.disable_buffer_modification()
+    -- exit insert mode
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    local keys_to_disable = {
+        "i",
+        "a",
+        "o",
+        "r",
+        "x",
+        "s",
+        "d",
+        "c",
+        "u",
+        "p",
+        "I",
+        "A",
+        "O",
+        "R",
+        "S",
+        "D",
+        "C",
+        "U",
+        "P",
+        "n",
+        "N",
+        ".",
+    }
+    for _, key in pairs(keys_to_disable) do
+        vim.keymap.set({ "n", "v" }, key, "<Nop>", { buffer = 0 })
+    end
+end
+
 ---@param str string
 function SpeedTyperUtil.trim(str)
     return str:gsub("^%s+", ""):gsub("%s+$", "")
@@ -76,9 +109,12 @@ end
 
 ---@param tbl table
 ---@param el any
----@param eq fun(a: any, b: any) : boolean returns true if elements are the same
+---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return integer idx index of the element `el` or 0 if `tbl` does not contain `el`
 function SpeedTyperUtil.find_element(tbl, el, eq)
+    eq = eq or function(a, b)
+        return a == b
+    end
     for idx, val in ipairs(tbl) do
         if eq(val, el) then
             return idx
@@ -89,9 +125,12 @@ end
 
 ---@param tbl table
 ---@param el any
----@param eq fun(a: any, b: any) : boolean returns true if elements are the same
+---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return boolean
 function SpeedTyperUtil.tbl_contains(tbl, el, eq)
+    eq = eq or function(a, b)
+        return a == b
+    end
     return SpeedTyperUtil.find_element(tbl, el, eq) > 0
 end
 
@@ -106,6 +145,16 @@ function SpeedTyperUtil.remove_element(tbl, el, eq)
     if idx > 0 then
         table.remove(tbl, idx)
     end
+end
+
+---@param key string
+function SpeedTyperUtil.simulate_keypress(key)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "x", true)
+end
+
+---@param text string
+function SpeedTyperUtil.simulate_input(text)
+    SpeedTyperUtil.simulate_keypress("a" .. text)
 end
 
 return SpeedTyperUtil

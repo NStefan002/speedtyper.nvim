@@ -2,10 +2,6 @@
 local st = require("speedtyper")
 local speedtyper = st.setup()
 local eq = assert.are.same
----@param k string
-local function key(k)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(k, true, false, true), "x", true)
-end
 
 describe("UI tests", function()
     before_each(function()
@@ -128,7 +124,7 @@ describe("UI tests", function()
         local bufnr = speedtyper.ui.bufnr
         local winnr = speedtyper.ui.winnr
 
-        key("<C-w><C-w>")
+        Util.simulate_keypress("<C-w><C-w>")
 
         eq(vim.api.nvim_buf_is_valid(bufnr), false)
         eq(vim.api.nvim_win_is_valid(winnr), false)
