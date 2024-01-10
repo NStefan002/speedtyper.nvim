@@ -10,13 +10,13 @@ describe("Position tests", function()
     it("update", function()
         local pos = Position.new(1, 1)
 
-        eq(pos.line, 1)
-        eq(pos.col, 1)
+        eq(1, pos.line)
+        eq(1, pos.col)
 
         pos:update(2, 3)
 
-        eq(pos.line, 2)
-        eq(pos.col, 3)
+        eq(2, pos.line)
+        eq(3, pos.col)
     end)
 
     it("equals", function()

@@ -16,30 +16,30 @@ describe("UI tests", function()
         local bufnr = speedtyper.ui.bufnr
         local winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
 
         speedtyper.ui:toggle()
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
 
         speedtyper.ui:toggle()
 
         bufnr = speedtyper.ui.bufnr
         winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
 
         speedtyper.ui:toggle()
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
     end)
 
     it("ui _open _close", function()
@@ -48,30 +48,30 @@ describe("UI tests", function()
         local bufnr = speedtyper.ui.bufnr
         local winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
 
         speedtyper.ui:_close()
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
 
         speedtyper.ui:_open(require("speedtyper.config").get_default_config().window)
 
         bufnr = speedtyper.ui.bufnr
         winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
 
         speedtyper.ui:_close()
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
     end)
 
     it("user exiting via :q", function()
@@ -82,18 +82,18 @@ describe("UI tests", function()
 
         vim.cmd("q")
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
 
         speedtyper.ui:toggle()
 
         bufnr = speedtyper.ui.bufnr
         winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
     end)
 
     it("user leaving the window with something like :bprev / :bnext", function()
@@ -104,18 +104,18 @@ describe("UI tests", function()
 
         vim.cmd("bprev")
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
 
         speedtyper.ui:toggle()
 
         bufnr = speedtyper.ui.bufnr
         winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
     end)
 
     it("user leaving the window with something like <C-w><C-w>", function()
@@ -126,17 +126,17 @@ describe("UI tests", function()
 
         Util.simulate_keypress("<C-w><C-w>")
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), false)
-        eq(vim.api.nvim_win_is_valid(winnr), false)
-        eq(speedtyper.ui.bufnr, nil)
-        eq(speedtyper.ui.winnr, nil)
+        eq(false, vim.api.nvim_buf_is_valid(bufnr))
+        eq(false, vim.api.nvim_win_is_valid(winnr))
+        eq(nil, speedtyper.ui.bufnr)
+        eq(nil, speedtyper.ui.winnr)
 
         speedtyper.ui:toggle()
 
         bufnr = speedtyper.ui.bufnr
         winnr = speedtyper.ui.winnr
 
-        eq(vim.api.nvim_buf_is_valid(bufnr), true)
-        eq(vim.api.nvim_win_is_valid(winnr), true)
+        eq(true, vim.api.nvim_buf_is_valid(bufnr))
+        eq(true, vim.api.nvim_win_is_valid(winnr))
     end)
 end)
