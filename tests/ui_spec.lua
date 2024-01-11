@@ -2,6 +2,7 @@
 local st = require("speedtyper")
 local speedtyper = st.setup()
 local eq = assert.are.same
+local Util = require("speedtyper.util")
 
 describe("UI tests", function()
     before_each(function()
