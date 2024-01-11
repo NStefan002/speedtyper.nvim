@@ -1,12 +1,12 @@
 local Util = require("speedtyper.util")
-local Round = require("speedtyper.round")
+local Menu = require("speedtyper.menu")
 
 ---@class SpeedTyperUI
 ---@field bufnr integer
 ---@field winnr integer
 ---@field active boolean
 ---@field settings SpeedTyperWindowConfig
----@field round  SpeedTyperRound
+---@field menu SpeedTyperMenu
 
 local SpeedTyperUI = {}
 SpeedTyperUI.__index = SpeedTyperUI
@@ -19,17 +19,15 @@ function SpeedTyperUI.new(settings)
         winnr = nil,
         settings = settings,
         active = false,
-        round = Round.new(),
+        menu = nil,
     }
-    ui.round:set_game_mode("countdown")
     return setmetatable(ui, SpeedTyperUI)
 end
 
 function SpeedTyperUI:_create_autocmds()
     local autocmd = vim.api.nvim_create_autocmd
     local augroup = vim.api.nvim_create_augroup
-
-    local grp = augroup("SpeedTyperGroup", {})
+    local grp = augroup("SpeedTyperUI", {})
 
     autocmd({ "BufLeave", "BufDelete", "BufWinLeave" }, {
         group = grp,
@@ -48,19 +46,25 @@ function SpeedTyperUI:_open(settings)
         return
     end
 
+    local preffered_height = 10
+    local preffered_width = 69
+    local nvim_uis = vim.api.nvim_list_uis()
+    if #nvim_uis > 0 then
+        if nvim_uis[1].height <= preffered_height or nvim_uis[1].width <= preffered_width then
+            Util.error("Increase the size of your Neovim instance.")
+        end
+    end
     local cols = vim.o.columns
     local lines = vim.o.lines - vim.o.cmdheight
-    local height = self.calc_size(settings.height, lines)
-    local width = self.calc_size(settings.width, cols)
     local bufnr = vim.api.nvim_create_buf(false, true)
     local winnr = vim.api.nvim_open_win(bufnr, true, {
         relative = "editor",
         anchor = "NW",
         title = "SpeedTyper",
-        row = math.floor((lines - height) / 2),
-        col = math.floor((cols - width) / 2),
-        width = width,
-        height = height,
+        row = math.floor((lines - preffered_height) / 2),
+        col = math.floor((cols - preffered_width) / 2),
+        width = preffered_width,
+        height = preffered_height,
         style = "minimal",
         border = settings.border,
         noautocmd = true,
@@ -77,7 +81,9 @@ function SpeedTyperUI:_open(settings)
 
     SpeedTyperUI.disable(self)
     SpeedTyperUI._create_autocmds(self)
-    Round.start_round(self.round)
+    Util.clear_buffer_text(10, self.bufnr)
+    self.menu = Menu.new(self.bufnr)
+    Menu.display_menu(self.menu)
 end
 
 function SpeedTyperUI:_close()
@@ -95,8 +101,11 @@ function SpeedTyperUI:_close()
     self.bufnr = nil
     self.winnr = nil
     self.active = false
-    self.round:end_round()
-    -- pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperGroup")
+    if self.menu then
+        self.menu.round:end_round()
+        self.menu = nil
+    end
+    pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperUI")
 end
 
 function SpeedTyperUI:toggle()
