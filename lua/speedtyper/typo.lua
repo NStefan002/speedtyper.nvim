@@ -3,22 +3,19 @@ local Position = require("speedtyper.position")
 
 ---@class SpeedTyperTyposTracker
 ---@field ns_id integer
----@field highlight string
 ---@field bufnr integer
 ---@field typos Position[]
 
 local SpeedTyperTyposTracker = {}
 SpeedTyperTyposTracker.__index = SpeedTyperTyposTracker
 
----@param highlight string
 ---@param bufnr? integer
-function SpeedTyperTyposTracker.new(highlight, bufnr)
+function SpeedTyperTyposTracker.new(bufnr)
     local typo = {
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         typos = {},
         num_typos = 0,
         bufnr = bufnr or 0,
-        highlight = highlight,
     }
     return setmetatable(typo, SpeedTyperTyposTracker)
 end
@@ -49,7 +46,14 @@ function SpeedTyperTyposTracker:check_curr_char(should_be)
 end
 
 function SpeedTyperTyposTracker:_mark_typo(line, col)
-    vim.api.nvim_buf_add_highlight(self.bufnr, self.ns_id, self.highlight, line - 1, col - 1, col)
+    vim.api.nvim_buf_add_highlight(
+        self.bufnr,
+        self.ns_id,
+        "SpeedTyperTextError",
+        line - 1,
+        col - 1,
+        col
+    )
 end
 
 function SpeedTyperTyposTracker:redraw()
