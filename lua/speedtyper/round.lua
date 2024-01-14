@@ -37,7 +37,7 @@ function SpeedTyperRound:set_game_mode(game_mode, ...)
         -- TODO: remove hard-coded values
         self.active_game_mode = Countdown.new(self.bufnr, 30)
     elseif game_mode == "words" then
-        self.active_game_mode = Stopwatch.new(self.bufnr)
+        self.active_game_mode = Stopwatch.new(self.bufnr, 15)
     elseif game_mode == "rain" then
         self.active_game_mode = Rain.new(self.bufnr)
     else
