@@ -30,10 +30,13 @@ function SpeedTyperRound.new(bufnr)
 end
 
 ---@param game_mode string
-function SpeedTyperRound:set_game_mode(game_mode)
-    if game_mode == "countdown" then
-        self.active_game_mode = Countdown.new(self.bufnr)
-    elseif game_mode == "stopwatch" then
+function SpeedTyperRound:set_game_mode(game_mode, ...)
+    -- TODO: parse args according to game mode (implement after implementing Stopwatch and Rain)
+    local args = { ... }
+    if game_mode == "time" then
+        -- TODO: remove hard-coded values
+        self.active_game_mode = Countdown.new(self.bufnr, 30)
+    elseif game_mode == "words" then
         self.active_game_mode = Stopwatch.new(self.bufnr)
     elseif game_mode == "rain" then
         self.active_game_mode = Rain.new(self.bufnr)

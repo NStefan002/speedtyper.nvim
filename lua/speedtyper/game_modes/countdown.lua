@@ -1,4 +1,3 @@
-local Config = require("speedtyper.config")
 local Util = require("speedtyper.util")
 local TyposTracker = require("speedtyper.typo")
 local Text = require("speedtyper.text")
@@ -6,6 +5,7 @@ local Position = require("speedtyper.position")
 
 ---@class SpeedTyperCountdown: SpeedTyperGameMode
 ---@field time_sec number
+---@field text_type string
 ---@field keypresses integer
 ---@field _prev_cursor_pos Position
 
@@ -13,13 +13,15 @@ local Countdown = {}
 Countdown.__index = Countdown
 
 ---@param bufnr integer
-function Countdown.new(bufnr)
-    local config = Config.get_default_config()
+---@param time number
+---@param text_type? string
+function Countdown.new(bufnr, time, text_type)
     local countdown = {
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
-        time_sec = config.game_modes.countdown.time,
+        time_sec = time,
+        text_type = text_type,
         keypresses = 0,
         extm_ids = {},
         text = {},

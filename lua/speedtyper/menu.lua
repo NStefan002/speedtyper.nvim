@@ -46,7 +46,7 @@ function Menu:display_menu()
     Menu._set_keymaps(self)
     Menu._highlight_buttons(self)
     -- default gamemode
-    self.round:set_game_mode("countdown")
+    self.round:set_game_mode("time", self.buttons.length, self.buttons.game_mode)
     self.round:start_round()
 end
 
@@ -68,16 +68,7 @@ function Menu:_activate_button(button)
         for b, _ in pairs(self.buttons.game_mode) do
             self.buttons.game_mode[b] = false
         end
-        self.round:end_round()
         self.buttons.game_mode[button] = true
-        if button == "time" then
-            self.round:set_game_mode("countdown")
-        elseif button == "words" then
-            self.round:set_game_mode("stopwatch")
-        elseif button == "rain" then
-            self.round:set_game_mode("rain")
-        end
-        self.round:start_round()
     elseif self.buttons.length[button] ~= nil then
         -- one needs to be active at all times
         for b, _ in pairs(self.buttons.length) do
@@ -85,6 +76,13 @@ function Menu:_activate_button(button)
         end
         self.buttons.length[button] = true
     end
+    self.round:end_round()
+    for b, active in pairs(self.buttons.game_mode) do
+        if active then
+            self.round:set_game_mode(b, self.buttons.length, self.buttons.game_mode)
+        end
+    end
+    self.round:start_round()
     Menu._highlight_buttons(self)
 end
 
