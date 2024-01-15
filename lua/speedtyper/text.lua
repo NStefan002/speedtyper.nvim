@@ -55,4 +55,34 @@ function SpeedTyperText:generate_sentence(win_width)
     return sentence .. " "
 end
 
+---@param win_width integer
+---@param n integer
+---@return string[]
+function SpeedTyperText:generate_n_words_text(win_width, n)
+    local text = {}
+
+    local border_width = 2
+    local extra_space = 1 -- at the end of the sentence
+    local usable_width = win_width - 2 * border_width - extra_space -- 2 * border -> left and right border
+
+    local sentence = SpeedTyperText.get_word(self)
+    local word = SpeedTyperText.get_word(self)
+    n = n - 1
+
+    while n > 0 do
+        if #sentence + #word >= usable_width then
+            table.insert(text, sentence .. " ")
+            sentence = SpeedTyperText.get_word(self)
+        else
+            sentence = sentence .. " " .. word
+        end
+        n = n - 1
+        word = SpeedTyperText.get_word(self)
+    end
+
+    table.insert(text, sentence .. " ")
+
+    return text
+end
+
 return SpeedTyperText
