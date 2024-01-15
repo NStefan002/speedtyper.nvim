@@ -55,9 +55,11 @@ function Countdown:stop()
         self.timer:close()
         self.timer = nil
     end
-    Util.disable_buffer_modification()
+    -- TODO: disable from stats
+    -- Util.disable_buffer_modification()
     Countdown._reset_values(self)
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
+    pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
 end
 
 function Countdown:_reset_values()
@@ -65,14 +67,13 @@ function Countdown:_reset_values()
     self.keypresses = 0
     self.extm_ids = {}
     self.text = {}
-    self.timer = nil
     self.typos_tracker.typos = {}
     self._prev_cursor_pos:update(3, 1)
 end
 
 function Countdown:_set_extmarks()
+    local win_width = vim.api.nvim_win_get_width(0)
     for i = 1, 3 do
-        local win_width = vim.api.nvim_win_get_width(0)
         local line = self.text_generator:generate_sentence(win_width)
         local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, i + 1, 0, {
             virt_text = { { line, "SpeedTyperTextUntyped" } },
@@ -88,7 +89,13 @@ function Countdown:_update_extmarks()
     -- NOTE: For now use the simmilar logic as in the version 1
     -- TODO: Possibly try to rewrite this mess
     local line, col = Util.get_cursor_pos()
-    self.typos_tracker:check_curr_char(string.sub(self.text[line - 2], col - 1, col - 1))
+    -- NOTE: don't check current character when going backwards (e.g. with backspace)
+    if
+        line > self._prev_cursor_pos.line
+        or (line == self._prev_cursor_pos.line and col > self._prev_cursor_pos.col)
+    then
+        self.typos_tracker:check_curr_char(string.sub(self.text[line - 2], col - 1, col - 1))
+    end
 
     if col - 1 == #self.text[line - 2] or col - 2 == #self.text[line - 2] then
         if line < self._prev_cursor_pos.line or col == self._prev_cursor_pos.col then

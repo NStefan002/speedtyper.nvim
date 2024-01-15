@@ -22,7 +22,7 @@ end
 
 ---@param should_be string
 function SpeedTyperTyposTracker:check_curr_char(should_be)
-    if #should_be > 1 then
+    if #should_be ~= 1 then
         return
     end
     local line, col = Util.get_cursor_pos()
