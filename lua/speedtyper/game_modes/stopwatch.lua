@@ -4,6 +4,7 @@ local Text = require("speedtyper.text")
 local Position = require("speedtyper.position")
 
 ---@class SpeedTyperStopwatch: SpeedTyperGameMode
+---@field time_sec number
 ---@field number_of_words integer
 ---@field text_type string
 ---@field keypresses integer
@@ -21,6 +22,7 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         keypresses = 0,
+        time_sec = 0.0,
         number_of_words = number_of_words,
         text_type = text_type,
         extm_ids = {},
@@ -29,6 +31,7 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         typos_tracker = TyposTracker.new(bufnr),
         _prev_cursor_pos = Position.new(3, 1),
     }
+    -- TODO: move the next line to menu
     stopwatch.text_generator:set_lang("en")
     return setmetatable(stopwatch, Stopwatch)
 end
@@ -36,7 +39,7 @@ end
 function Stopwatch:start()
     Stopwatch._reset_values(self)
     Stopwatch._set_extmarks(self)
-    -- Stopwatch._create_timer(self)
+    Stopwatch._create_timer(self)
     vim.api.nvim_create_autocmd("CursorMovedI", {
         group = vim.api.nvim_create_augroup("SpeedTyperStopwatch", {}),
         buffer = self.bufnr,
@@ -65,6 +68,7 @@ end
 function Stopwatch:_reset_values()
     pcall(vim.api.nvim_buf_clear_namespace, self.bufnr, self.ns_id, 2, -1)
     self.keypresses = 0
+    self.time_sec = 0.0
     self.extm_ids = {}
     self.text = {}
     self.timer = nil
@@ -158,6 +162,43 @@ function Stopwatch:_move_up()
         Util.remove_element(self.typos_tracker.typos, typo)
     end
     self.typos_tracker:redraw()
+end
+
+---------------------------- timer stuff ------------------------------------------
+
+function Stopwatch:_create_timer()
+    self.timer = (vim.uv or vim.loop).new_timer()
+    local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, 7, 0, {
+        virt_text = {
+            { "Press 'i' to start the game.", "SpeedTyperTextOk" },
+        },
+        virt_text_pos = "right_align",
+    })
+    vim.api.nvim_create_autocmd("InsertEnter", {
+        group = vim.api.nvim_create_augroup("SpeedTyperStopwatchTimer", {}),
+        buffer = self.bufnr,
+        once = true,
+        callback = function()
+            vim.api.nvim_feedkeys(
+                vim.api.nvim_replace_termcodes("<Esc>:3<CR>0i", true, false, true),
+                "!",
+                true
+            )
+            vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
+            Stopwatch._start_timer(self)
+        end,
+        desc = "Start the stopwatch game mode.",
+    })
+end
+
+function Stopwatch:_start_timer()
+    self.timer:start(
+        0,
+        50,
+        vim.schedule_wrap(function()
+            self.time_sec = self.time_sec + 0.05
+        end)
+    )
 end
 
 return Stopwatch
