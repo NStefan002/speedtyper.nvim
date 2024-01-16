@@ -181,7 +181,7 @@ function Countdown:_create_timer()
             vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
             Countdown._start_timer(self)
         end,
-        desc = "Countdown game mode runner.",
+        desc = "Start the countdown game mode.",
     })
 end
 
