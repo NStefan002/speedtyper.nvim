@@ -32,11 +32,34 @@ function SpeedTyperUI:_create_autocmds()
     autocmd({ "BufLeave", "BufDelete", "BufWinLeave" }, {
         group = grp,
         buffer = self.bufnr,
-        once = true,
         callback = function()
             SpeedTyperUI._close(self)
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
+    })
+    -- TODO: FIND OUT WHY THIS DOESN'T WORK FOR UNLISTED/SCRATCH BUFFERS EVEN THOUGH THEY GET HIDDEN
+    -- autocmd("BufHidden", {
+    --     group = grp,
+    --     -- buffer = self.bufnr,
+    --     pattern = "*",
+    --     callback = function(ev)
+    --         print(ev.event, ev.buf)
+    --     end,
+    -- })
+    -- HACK: should do the same as the BufHidden autocmd, currently only opening netrw inside Speedtyper window creates problems
+    autocmd("FileType", {
+        group = grp,
+        pattern = "*",
+        callback = function(ev)
+            if
+                ev.buf ~= self.bufnr
+                and self.active
+                and self.winnr == vim.api.nvim_get_current_win()
+            then
+                SpeedTyperUI._close(self)
+            end
+        end,
+        desc = "Close the SpeedTyper window if the user opens up netrw inside of it.",
     })
 end
 
