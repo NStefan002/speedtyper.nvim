@@ -29,10 +29,10 @@ function SpeedTyperRound.new(bufnr)
     return setmetatable(round, SpeedTyperRound)
 end
 
----@param game_mode string
-function SpeedTyperRound:set_game_mode(game_mode, ...)
+function SpeedTyperRound:set_game_mode(...)
     -- TODO: parse args according to game mode (implement after implementing Stopwatch and Rain)
     local args = { ... }
+    local game_mode = args[1]
     if game_mode == "time" then
         -- TODO: remove hard-coded values
         self.active_game_mode = Countdown.new(self.bufnr, 30)

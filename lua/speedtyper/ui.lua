@@ -32,22 +32,10 @@ function SpeedTyperUI:_create_autocmds()
     autocmd({ "BufLeave", "BufDelete", "BufWinLeave" }, {
         group = grp,
         buffer = self.bufnr,
-        once = true,
         callback = function()
             SpeedTyperUI._close(self)
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
-    })
-    autocmd("WinLeave", {
-        group = grp,
-        pattern = "*",
-        once = true,
-        callback = function()
-            if self.active then
-                SpeedTyperUI._close(self)
-            end
-        end,
-        desc = "If some bug occurs and somehow the user manages to accidentally open something other than SpeedTyper inside its window and then exists that window, update the ui internal state)",
     })
     -- TODO: FIND OUT WHY THIS DOESN'T WORK FOR UNLISTED/SCRATCH BUFFERS EVEN THOUGH THEY GET HIDDEN
     -- autocmd("BufHidden", {
@@ -62,9 +50,12 @@ function SpeedTyperUI:_create_autocmds()
     autocmd("FileType", {
         group = grp,
         pattern = "*",
-        once = true,
         callback = function(ev)
-            if ev.buf ~= self.bufnr and self.active then
+            if
+                ev.buf ~= self.bufnr
+                and self.active
+                and self.winnr == vim.api.nvim_get_current_win()
+            then
                 SpeedTyperUI._close(self)
             end
         end,
