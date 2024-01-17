@@ -51,13 +51,21 @@ function SpeedTyperUI:_create_autocmds()
         group = grp,
         pattern = "*",
         callback = function(ev)
-            if
-                ev.buf ~= self.bufnr
-                and self.active
-                and self.winnr == vim.api.nvim_get_current_win()
-            then
-                SpeedTyperUI._close(self)
-            end
+            --[[
+                HACK: I guess what happens is the following: the FileType autocmd closes the window when the 'filetype' option for netrw
+                has been set but it doesn't leave enough time for netrw to load which causes the netrw text to get 'merged' with
+                the buffer that was active before ':SpeedTyper' (see https://github.com/NStefan002/speedtyper.nvim/issues/30).
+                It seems like this works. I understand it, but I don't.
+            ]]
+            vim.schedule(function()
+                if
+                    ev.buf ~= self.bufnr
+                    and self.active
+                    and self.winnr == vim.api.nvim_get_current_win()
+                then
+                    SpeedTyperUI._close(self)
+                end
+            end)
         end,
         desc = "Close the SpeedTyper window if the user opens up netrw inside of it.",
     })
