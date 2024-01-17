@@ -58,11 +58,12 @@ function SpeedTyperUI:_create_autocmds()
                 It seems like this works. I understand it, but I don't.
             ]]
             vim.schedule(function()
-                if
-                    ev.buf ~= self.bufnr
-                    and self.active
-                    and self.winnr == vim.api.nvim_get_current_win()
-                then
+                local current_win = vim.api.nvim_get_current_win()
+                local current_win_buf = vim.api.nvim_win_get_buf(current_win)
+                if self.winnr ~= current_win or ev.buf ~= current_win_buf then
+                    return
+                end
+                if ev.buf ~= self.bufnr and self.active then
                     SpeedTyperUI._close(self)
                 end
             end)
