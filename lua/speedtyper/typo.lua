@@ -9,13 +9,13 @@ local Position = require("speedtyper.position")
 local SpeedTyperTyposTracker = {}
 SpeedTyperTyposTracker.__index = SpeedTyperTyposTracker
 
----@param bufnr? integer
+---@param bufnr integer
 function SpeedTyperTyposTracker.new(bufnr)
     local typo = {
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         typos = {},
         num_typos = 0,
-        bufnr = bufnr or 0,
+        bufnr = bufnr,
     }
     return setmetatable(typo, SpeedTyperTyposTracker)
 end

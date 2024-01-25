@@ -20,11 +20,11 @@ local Util = require("speedtyper.util")
 local SpeedTyperRound = {}
 SpeedTyperRound.__index = SpeedTyperRound
 
----@param bufnr? integer
+---@param bufnr integer
 function SpeedTyperRound.new(bufnr)
     local round = {
         active_game_mode = nil,
-        bufnr = bufnr or 0,
+        bufnr = bufnr,
     }
     return setmetatable(round, SpeedTyperRound)
 end

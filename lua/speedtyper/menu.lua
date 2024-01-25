@@ -10,10 +10,9 @@ local Round = require("speedtyper.round")
 local Menu = {}
 Menu.__index = Menu
 
----@param bufnr integer
-function Menu.new(bufnr)
+function Menu.new()
     local menu = {
-        bufnr = bufnr,
+        bufnr = nil,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         buttons = {
             text_variant = {
@@ -34,20 +33,35 @@ function Menu.new(bufnr)
             },
         },
         text = "punctuation  numbers | time  words  rain  custom | 15  30  60  120",
-        round = Round.new(bufnr),
+        round = nil,
     }
     return setmetatable(menu, Menu)
 end
 
-function Menu:display_menu()
+---@param bufnr integer
+function Menu:display_menu(bufnr)
+    self.bufnr = bufnr
+    self.round = Round.new(self.bufnr)
     vim.api.nvim_buf_set_lines(self.bufnr, 0, 1, false, {
         self.text,
     })
     Menu._set_keymaps(self)
     Menu._highlight_buttons(self)
     -- default gamemode
-    self.round:set_game_mode("time", self.buttons.length, self.buttons.game_mode)
+    self.round:set_game_mode("time", self.buttons.length, self.buttons.text_variant)
     self.round:start_round()
+end
+
+function Menu:exit_menu()
+    if self.round then
+        self.round:end_round()
+    end
+    self.round = nil
+    self.bufnr = nil
+end
+
+function Menu:get_width()
+    return #self.text
 end
 
 ---@param button string
@@ -79,7 +93,7 @@ function Menu:_activate_button(button)
     self.round:end_round()
     for b, active in pairs(self.buttons.game_mode) do
         if active then
-            self.round:set_game_mode(b, self.buttons.length, self.buttons.game_mode)
+            self.round:set_game_mode(b, self.buttons.length, self.buttons.text_variant)
         end
     end
     self.round:start_round()

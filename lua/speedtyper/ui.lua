@@ -19,7 +19,7 @@ function SpeedTyperUI.new(settings)
         winnr = nil,
         settings = settings,
         active = false,
-        menu = nil,
+        menu = Menu.new(),
     }
     return setmetatable(ui, SpeedTyperUI)
 end
@@ -79,7 +79,7 @@ function SpeedTyperUI:_open(settings)
     end
 
     local preffered_height = 10
-    local preffered_width = 69
+    local preffered_width = self.menu:get_width()
     local nvim_uis = vim.api.nvim_list_uis()
     if #nvim_uis > 0 then
         if nvim_uis[1].height <= preffered_height or nvim_uis[1].width <= preffered_width then
@@ -111,11 +111,10 @@ function SpeedTyperUI:_open(settings)
         SpeedTyperUI._close(self)
     end
 
-    SpeedTyperUI.disable(self)
+    SpeedTyperUI._disable(self)
     SpeedTyperUI._create_autocmds(self)
     Util.clear_buffer_text(10, self.bufnr)
-    self.menu = Menu.new(self.bufnr)
-    Menu.display_menu(self.menu)
+    self.menu:display_menu(self.bufnr)
 end
 
 function SpeedTyperUI:_close()
@@ -133,10 +132,7 @@ function SpeedTyperUI:_close()
     self.bufnr = nil
     self.winnr = nil
     self.active = false
-    if self.menu then
-        self.menu.round:end_round()
-        self.menu = nil
-    end
+    self.menu:exit_menu()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperUI")
 end
 
@@ -148,7 +144,7 @@ function SpeedTyperUI:toggle()
     end
 end
 
-function SpeedTyperUI:disable()
+function SpeedTyperUI:_disable()
     vim.wo[self.winnr].wrap = false
     if package.loaded["cmp"] then
         -- disable cmp while playing the game
@@ -159,7 +155,7 @@ end
 ---calculate the dimension of the floating window
 ---@param size number
 ---@param viewport integer
-function SpeedTyperUI.calc_size(size, viewport)
+function SpeedTyperUI._calc_size(size, viewport)
     if size <= 1 then
         return math.ceil(size * viewport)
     end
