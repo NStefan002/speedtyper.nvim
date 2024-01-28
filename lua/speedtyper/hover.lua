@@ -15,8 +15,18 @@ function SpeedTyperHover.new()
         winnr = nil,
         instruction = nil,
     }, SpeedTyperHover)
-    hover:_set_keymaps()
     return hover
+end
+
+function SpeedTyperHover:set_keymaps()
+    local function display_current_word_info()
+        local item = vim.fn.expand("<cWORD>")
+        SpeedTyperHover._set_instruction(self, item)
+        if #self.instruction > 0 then
+            SpeedTyperHover._open(self)
+        end
+    end
+    vim.keymap.set("n", "K", display_current_word_info, { buffer = true })
 end
 
 ---@param item string
@@ -88,17 +98,6 @@ function SpeedTyperHover:_create_autocmds()
         end,
         desc = "Close the hover window.",
     })
-end
-
-function SpeedTyperHover:_set_keymaps()
-    local function display_current_word_info()
-        local item = vim.fn.expand("<cWORD>")
-        SpeedTyperHover._set_instruction(self, item)
-        if #self.instruction > 0 then
-            SpeedTyperHover._open(self)
-        end
-    end
-    vim.keymap.set("n", "K", display_current_word_info, { buffer = true })
 end
 
 return SpeedTyperHover

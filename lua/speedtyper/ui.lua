@@ -1,5 +1,6 @@
 local Util = require("speedtyper.util")
 local Menu = require("speedtyper.menu")
+local Hover = require("speedtyper.hover")
 
 ---@class SpeedTyperUI
 ---@field bufnr integer
@@ -7,6 +8,7 @@ local Menu = require("speedtyper.menu")
 ---@field active boolean
 ---@field settings SpeedTyperWindowConfig
 ---@field menu SpeedTyperMenu
+---@field hover SpeedTyperHover
 
 local SpeedTyperUI = {}
 SpeedTyperUI.__index = SpeedTyperUI
@@ -20,6 +22,7 @@ function SpeedTyperUI.new(settings)
         settings = settings,
         active = false,
         menu = Menu.new(),
+        hover = Hover.new(),
     }
     return setmetatable(ui, SpeedTyperUI)
 end
@@ -115,6 +118,7 @@ function SpeedTyperUI:_open(settings)
     SpeedTyperUI._create_autocmds(self)
     Util.clear_buffer_text(10, self.bufnr)
     self.menu:display_menu(self.bufnr)
+    self.hover:set_keymaps()
 end
 
 function SpeedTyperUI:_close()
