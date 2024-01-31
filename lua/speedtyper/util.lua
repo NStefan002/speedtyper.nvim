@@ -108,13 +108,15 @@ function SpeedTyperUtil.split(str, sep)
 end
 
 ---given the index of one of the characters in the sentence,
----return the word that contains that character
+---return the word that contains that character, and the
+---index of that character in the word
 ---@param sentence string
 ---@param idx integer
----@return string
+---@return string word the word that contains the character at `idx`
+---@return integer idx index in the sentence -> index in the word
 function SpeedTyperUtil.get_word_from_sentence(sentence, idx)
     if sentence:sub(idx, idx) == " " then
-        return " "
+        return " ", 1
     end
 
     local word_begin = idx
@@ -129,7 +131,7 @@ function SpeedTyperUtil.get_word_from_sentence(sentence, idx)
     end
     word_end = word_end - 1
 
-    return sentence:sub(word_begin, word_end)
+    return sentence:sub(word_begin, word_end), idx - word_begin + 1
 end
 
 ---@param tbl table
