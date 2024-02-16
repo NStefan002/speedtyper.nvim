@@ -1,5 +1,7 @@
 ## ✅☑️ TODO
 
+### V1
+
 -   [ ] Add more options
     -   [x] Cursor type
 -   [ ] Add new game modes
@@ -13,6 +15,8 @@
 -   [x] Add custom highlight groups
 -   [ ] Add option for typing sentences (capitalization, punctuation, numbers, etc.)
 
+### V2
+
 -   [ ] Rewrite plugin
 -   [ ] Add tests
 -   [ ] Make independent ui
@@ -24,6 +28,13 @@
     -   [ ] accuracy
     -   [ ] total time
     -   [ ] consistency (maaaybe)
+    -   [ ] Additional stats and units (the user selects which ones to display)
+        -   [ ] wps, cps, cpm
+    -   [ ] save stats
 -   [ ] Instructions
     -   [ ] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
     -   [ ] show each game mode details in a pop-up window (like lsp.hover)
+-   [ ] Settings
+    -   [ ] fully (or almost fully) remove config and the 'standard' way of configuring plugin
+    -   [ ] customize settings in the ui and refresh them live
+    -   [ ] save settings in json somewhere
