@@ -10,12 +10,12 @@ local SpeedTyperHover = {}
 SpeedTyperHover.__index = SpeedTyperHover
 
 function SpeedTyperHover.new()
-    local hover = setmetatable({
+    local self = {
         bufnr = nil,
         winnr = nil,
         instruction = nil,
-    }, SpeedTyperHover)
-    return hover
+    }
+    return setmetatable(self, SpeedTyperHover)
 end
 
 function SpeedTyperHover:set_keymaps()

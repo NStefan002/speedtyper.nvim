@@ -13,11 +13,11 @@ SpeedTyper.__index = SpeedTyper
 ---@param partial_config? SpeedTyperPartialConfig
 function SpeedTyper.new(partial_config)
     local config = Config.merge_config(partial_config, Config.get_default_config())
-    local speedtyper = {
+    local self = {
         config = config,
         ui = Ui.new(config.window),
     }
-    return setmetatable(speedtyper, SpeedTyper)
+    return setmetatable(self, SpeedTyper)
 end
 
 ---@param partial_config? SpeedTyperPartialConfig

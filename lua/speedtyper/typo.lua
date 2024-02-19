@@ -11,38 +11,31 @@ SpeedTyperTyposTracker.__index = SpeedTyperTyposTracker
 
 ---@param bufnr integer
 function SpeedTyperTyposTracker.new(bufnr)
-    local typo = {
+    local self = {
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         typos = {},
-        num_typos = 0,
         bufnr = bufnr,
     }
-    return setmetatable(typo, SpeedTyperTyposTracker)
+    return setmetatable(self, SpeedTyperTyposTracker)
 end
 
 ---@param should_be string
+---@return boolean
 function SpeedTyperTyposTracker:check_curr_char(should_be)
-    if #should_be ~= 1 then
-        return
-    end
     local line, col = Util.get_cursor_pos()
     if col == 1 then
-        return
+        return true
     end
     col = col - 1
     local typed = vim.api.nvim_buf_get_text(self.bufnr, line - 1, col - 1, line - 1, col, {})[1]
     if typed ~= should_be then
         self.typos = self.typos or {}
         table.insert(self.typos, Position.new(line, col))
-        self.num_typos = self.num_typos + 1
         SpeedTyperTyposTracker._mark_typo(self, line, col)
-    else
-        local last_size = #self.typos
-        Util.remove_element(self.typos, Position.new(line, col))
-        if last_size ~= #self.typos then
-            self.num_typos = self.num_typos - 1
-        end
+        return false
     end
+    Util.remove_element(self.typos, Position.new(line, col))
+    return true
 end
 
 function SpeedTyperTyposTracker:_mark_typo(line, col)

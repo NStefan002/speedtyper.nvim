@@ -5,28 +5,19 @@ local Rain = require("speedtyper.game_modes.rain")
 local Util = require("speedtyper.util")
 
 ---@class SpeedTyperRound
----@field active_game_mode SpeedTyperGameMode
+---@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain
 ---@field bufnr integer
-
----@class SpeedTyperGameMode
----@field timer uv_timer_t
----@field bufnr integer
----@field ns_id integer
----@field extm_ids integer[]
----@field text string[]
----@field text_generator SpeedTyperText
----@field typos_tracker SpeedTyperTyposTracker
 
 local SpeedTyperRound = {}
 SpeedTyperRound.__index = SpeedTyperRound
 
 ---@param bufnr integer
 function SpeedTyperRound.new(bufnr)
-    local round = {
+    local self = {
         active_game_mode = nil,
         bufnr = bufnr,
     }
-    return setmetatable(round, SpeedTyperRound)
+    return setmetatable(self, SpeedTyperRound)
 end
 
 function SpeedTyperRound:set_game_mode(...)
