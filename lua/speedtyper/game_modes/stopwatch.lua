@@ -1,6 +1,7 @@
 local Util = require("speedtyper.util")
 local TyposTracker = require("speedtyper.typo")
 local Text = require("speedtyper.text")
+local Stats = require("speedtyper.stats")
 local Position = require("speedtyper.position")
 
 ---@class SpeedTyperStopwatch
@@ -14,8 +15,7 @@ local Position = require("speedtyper.position")
 ---@field time_sec number
 ---@field number_of_words integer
 ---@field text_type string
----@field keypresses integer
----@field _prev_cursor_pos Position
+---@field prev_cursor_pos Position
 
 local Stopwatch = {}
 Stopwatch.__index = Stopwatch
@@ -28,7 +28,6 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
-        keypresses = 0,
         time_sec = 0.0,
         number_of_words = number_of_words,
         text_type = text_type,
@@ -36,7 +35,8 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         text = {},
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
-        _prev_cursor_pos = Position.new(3, 1),
+        stats = Stats.new(bufnr),
+        prev_cursor_pos = Position.new(3, 1),
     }
     -- TODO: move the next line to menu
     self.text_generator:set_lang("en")
@@ -51,7 +51,6 @@ function Stopwatch:start()
         group = vim.api.nvim_create_augroup("SpeedTyperStopwatch", {}),
         buffer = self.bufnr,
         callback = function()
-            self.keypresses = self.keypresses + 1
             Stopwatch._update_extmarks(self)
         end,
         desc = "Stopwatch game mode runner.",
@@ -72,15 +71,16 @@ end
 
 function Stopwatch:_reset_values()
     pcall(vim.api.nvim_buf_clear_namespace, self.bufnr, self.ns_id, 2, -1)
-    self.keypresses = 0
     self.time_sec = 0.0
     self.extm_ids = {}
     self.text = {}
     self.timer = nil
     self.typos_tracker.typos = {}
-    self._prev_cursor_pos:update(3, 1)
+    self.prev_cursor_pos:update(3, 1)
+    self.stats:reset()
 end
 
+-- TODO: change hard-coded values
 function Stopwatch:_set_extmarks()
     local win_width = vim.api.nvim_win_get_width(0)
     self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
@@ -98,18 +98,35 @@ function Stopwatch:_update_extmarks()
     local line, col = Util.get_cursor_pos()
     -- NOTE: don't check the current character when going backwards (e.g. with backspace)
     if
-        line > self._prev_cursor_pos.line
-        or (line == self._prev_cursor_pos.line and col > self._prev_cursor_pos.col)
+        line > self.prev_cursor_pos.line
+        or (line == self.prev_cursor_pos.line and col > self.prev_cursor_pos.col)
     then
-        self.typos_tracker:check_curr_char(string.sub(self.text[line - 2], col - 1, col - 1))
+        local curr_char = string.sub(self.text[line - 2], col - 1, col - 1)
+        if self.typos_tracker:check_curr_char(curr_char) then
+            self.stats.typed_text:push({ curr_char, true })
+        else
+            self.stats.typed_text:push({ curr_char, false })
+            self.stats.typos = self.stats.typos + 1
+        end
+    else
+        -- NOTE: pop characters if the cursor is moved to the left (by <bspace>, <C-w>, <C-u>, etc.)
+        local diff = self.prev_cursor_pos.col - col
+        if self.prev_cursor_pos.line > line then
+            diff = 1
+        end
+        for _ = 1, diff do
+            self.stats.typed_text:pop()
+        end
     end
     if line - 2 == #self.text and col - 1 == #self.text[#self.text] then
         -- no more text to type
+        self.stats.time = self.time_sec
+        self.stats:display_stats()
         Stopwatch.stop(self)
         return
     end
     if col - 1 == #self.text[line - 2] or col - 2 == #self.text[line - 2] then
-        if line < self._prev_cursor_pos.line or col == self._prev_cursor_pos.col then
+        if line < self.prev_cursor_pos.line or col == self.prev_cursor_pos.col then
             vim.cmd.normal("o")
             vim.cmd.normal("k$")
             vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line, 0, {
@@ -132,7 +149,7 @@ function Stopwatch:_update_extmarks()
         virt_text_win_col = col - 1,
     })
 
-    self._prev_cursor_pos:update(line, col)
+    self.prev_cursor_pos:update(line, col)
 end
 
 function Stopwatch:_move_up()
