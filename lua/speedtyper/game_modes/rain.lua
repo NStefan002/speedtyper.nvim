@@ -1,11 +1,11 @@
----@class SpeedTyperRain: SpeedTyperGameMode
+---@class SpeedTyperRain
 
 local Rain = {}
 Rain.__index = Rain
 
 ---@param bufnr integer
 function Rain.new(bufnr)
-    local rain = {
+    local self = {
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
@@ -15,7 +15,7 @@ function Rain.new(bufnr)
         typos_tracker = nil,
         _prev_cursor_pos = nil,
     }
-    return setmetatable(rain, Rain)
+    return setmetatable(self, Rain)
 end
 
 function Rain:start()

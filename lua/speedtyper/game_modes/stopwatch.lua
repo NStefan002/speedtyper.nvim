@@ -3,7 +3,14 @@ local TyposTracker = require("speedtyper.typo")
 local Text = require("speedtyper.text")
 local Position = require("speedtyper.position")
 
----@class SpeedTyperStopwatch: SpeedTyperGameMode
+---@class SpeedTyperStopwatch
+---@field timer uv_timer_t
+---@field bufnr integer
+---@field ns_id integer
+---@field extm_ids integer[]
+---@field text string[]
+---@field text_generator SpeedTyperText
+---@field typos_tracker SpeedTyperTyposTracker
 ---@field time_sec number
 ---@field number_of_words integer
 ---@field text_type string
@@ -17,7 +24,7 @@ Stopwatch.__index = Stopwatch
 ---@param number_of_words integer
 ---@param text_type? string
 function Stopwatch.new(bufnr, number_of_words, text_type)
-    local stopwatch = {
+    local self = {
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
@@ -32,8 +39,8 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         _prev_cursor_pos = Position.new(3, 1),
     }
     -- TODO: move the next line to menu
-    stopwatch.text_generator:set_lang("en")
-    return setmetatable(stopwatch, Stopwatch)
+    self.text_generator:set_lang("en")
+    return setmetatable(self, Stopwatch)
 end
 
 function Stopwatch:start()
@@ -58,8 +65,6 @@ function Stopwatch:stop()
         self.timer:close()
         self.timer = nil
     end
-    -- TODO: disable from stats
-    -- Util.disable_buffer_modification()
     Stopwatch._reset_values(self)
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperStopwatch")
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperStopwatchTimer")

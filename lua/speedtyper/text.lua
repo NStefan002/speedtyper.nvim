@@ -8,11 +8,11 @@ local SpeedTyperText = {}
 SpeedTyperText.__index = SpeedTyperText
 
 function SpeedTyperText.new()
-    local text = {
+    local self = {
         selected_lang = "",
         words = {},
     }
-    return setmetatable(text, SpeedTyperText)
+    return setmetatable(self, SpeedTyperText)
 end
 
 ---@return string[]

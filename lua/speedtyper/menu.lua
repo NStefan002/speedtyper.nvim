@@ -11,7 +11,7 @@ local Menu = {}
 Menu.__index = Menu
 
 function Menu.new()
-    local menu = {
+    local self = {
         bufnr = nil,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         buttons = {
@@ -35,7 +35,7 @@ function Menu.new()
         text = "punctuation  numbers | time  words  rain  custom | 15  30  60  120",
         round = nil,
     }
-    return setmetatable(menu, Menu)
+    return setmetatable(self, Menu)
 end
 
 ---@param bufnr integer

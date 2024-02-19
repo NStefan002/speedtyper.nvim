@@ -9,8 +9,8 @@ Position.__index = Position
 ---@param line integer
 ---@param col integer
 function Position.new(line, col)
-    local pos = { line = line, col = col }
-    return setmetatable(pos, Position)
+    local self = { line = line, col = col }
+    return setmetatable(self, Position)
 end
 
 ---@param new_line integer

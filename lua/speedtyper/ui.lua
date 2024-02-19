@@ -16,7 +16,7 @@ SpeedTyperUI.__index = SpeedTyperUI
 ---@param settings SpeedTyperWindowConfig
 ---@return SpeedTyperUI
 function SpeedTyperUI.new(settings)
-    local ui = {
+    local self = {
         bufnr = nil,
         winnr = nil,
         settings = settings,
@@ -24,13 +24,15 @@ function SpeedTyperUI.new(settings)
         menu = Menu.new(),
         hover = Hover.new(),
     }
-    return setmetatable(ui, SpeedTyperUI)
+    return setmetatable(self, SpeedTyperUI)
 end
 
 function SpeedTyperUI:_create_autocmds()
     local autocmd = vim.api.nvim_create_autocmd
     local augroup = vim.api.nvim_create_augroup
     local grp = augroup("SpeedTyperUI", {})
+
+    -- TODO: add vim/window resize autocommands
 
     autocmd({ "BufLeave", "BufDelete", "BufWinLeave" }, {
         group = grp,
@@ -114,11 +116,11 @@ function SpeedTyperUI:_open(settings)
         SpeedTyperUI._close(self)
     end
 
-    SpeedTyperUI._disable(self)
     SpeedTyperUI._create_autocmds(self)
     Util.clear_buffer_text(10, self.bufnr)
     self.menu:display_menu(self.bufnr)
     self.hover:set_keymaps()
+    SpeedTyperUI._disable(self)
 end
 
 function SpeedTyperUI:_close()
