@@ -217,6 +217,8 @@ function Countdown:_start_timer()
         1000,
         vim.schedule_wrap(function()
             if remaining_time <= 0 then
+                self.stats.time = self.time_sec
+                self.stats:display_stats()
                 Countdown.stop(self)
                 extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, 7, 0, {
                     virt_text = {
@@ -225,8 +227,6 @@ function Countdown:_start_timer()
                     virt_text_pos = "right_align",
                     id = extm_id,
                 })
-                self.stats.time = self.time_sec
-                self.stats:display_stats()
             else
                 extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, 7, 0, {
                     virt_text = {
