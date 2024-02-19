@@ -1,13 +1,20 @@
 local Util = require("speedtyper.util")
 local TyposTracker = require("speedtyper.typo")
 local Text = require("speedtyper.text")
+local Stats = require("speedtyper.stats")
 local Position = require("speedtyper.position")
 
----@class SpeedTyperCountdown: SpeedTyperGameMode
+---@class SpeedTyperCountdown
+---@field timer uv_timer_t
+---@field bufnr integer
+---@field ns_id integer
+---@field extm_ids integer[]
+---@field text_generator SpeedTyperText
+---@field text string[]
+---@field typos_tracker SpeedTyperTyposTracker
 ---@field time_sec number
 ---@field text_type string
----@field keypresses integer
----@field _prev_cursor_pos Position
+---@field prev_cursor_pos Position
 
 local Countdown = {}
 Countdown.__index = Countdown
@@ -16,21 +23,21 @@ Countdown.__index = Countdown
 ---@param time number
 ---@param text_type? string
 function Countdown.new(bufnr, time, text_type)
-    local countdown = {
+    local self = {
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         time_sec = time,
         text_type = text_type,
-        keypresses = 0,
         extm_ids = {},
         text = {},
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
-        _prev_cursor_pos = Position.new(3, 1),
+        stats = Stats.new(bufnr),
+        prev_cursor_pos = Position.new(3, 1),
     }
-    countdown.text_generator:set_lang("en")
-    return setmetatable(countdown, Countdown)
+    self.text_generator:set_lang("en")
+    return setmetatable(self, Countdown)
 end
 
 function Countdown:start()
@@ -42,7 +49,6 @@ function Countdown:start()
         group = vim.api.nvim_create_augroup("SpeedTyperCountdown", {}),
         buffer = self.bufnr,
         callback = function()
-            self.keypresses = self.keypresses + 1
             Countdown._update_extmarks(self)
         end,
         desc = "Countdown game mode runner.",
@@ -55,8 +61,6 @@ function Countdown:stop()
         self.timer:close()
         self.timer = nil
     end
-    -- TODO: disable from stats
-    -- Util.disable_buffer_modification()
     Countdown._reset_values(self)
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
@@ -64,11 +68,11 @@ end
 
 function Countdown:_reset_values()
     pcall(vim.api.nvim_buf_clear_namespace, self.bufnr, self.ns_id, 2, -1)
-    self.keypresses = 0
     self.extm_ids = {}
     self.text = {}
     self.typos_tracker.typos = {}
-    self._prev_cursor_pos:update(3, 1)
+    self.prev_cursor_pos:update(3, 1)
+    self.stats:reset()
 end
 
 function Countdown:_set_extmarks()
@@ -89,16 +93,30 @@ function Countdown:_update_extmarks()
     -- NOTE: For now use the simmilar logic as in the version 1
     -- TODO: Possibly try to rewrite this mess
     local line, col = Util.get_cursor_pos()
-    -- NOTE: don't check current character when going backwards (e.g. with backspace)
     if
-        line > self._prev_cursor_pos.line
-        or (line == self._prev_cursor_pos.line and col > self._prev_cursor_pos.col)
+        line > self.prev_cursor_pos.line
+        or (line == self.prev_cursor_pos.line and col > self.prev_cursor_pos.col)
     then
-        self.typos_tracker:check_curr_char(string.sub(self.text[line - 2], col - 1, col - 1))
+        local curr_char = string.sub(self.text[line - 2], col - 1, col - 1)
+        if self.typos_tracker:check_curr_char(curr_char) then
+            self.stats.typed_text:push({ curr_char, true })
+        else
+            self.stats.typed_text:push({ curr_char, false })
+            self.stats.typos = self.stats.typos + 1
+        end
+    else
+        -- NOTE: pop characters if the cursor is moved to the left (by <bspace>, <C-w>, <C-u>, etc.)
+        local diff = self.prev_cursor_pos.col - col
+        if self.prev_cursor_pos.line > line then
+            diff = 1
+        end
+        for _ = 1, diff do
+            self.stats.typed_text:pop()
+        end
     end
 
     if col - 1 == #self.text[line - 2] or col - 2 == #self.text[line - 2] then
-        if line < self._prev_cursor_pos.line or col == self._prev_cursor_pos.col then
+        if line < self.prev_cursor_pos.line or col == self.prev_cursor_pos.col then
             vim.cmd.normal("o")
             vim.cmd.normal("k$")
             vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line, 0, {
@@ -121,7 +139,7 @@ function Countdown:_update_extmarks()
         virt_text_win_col = col - 1,
     })
 
-    self._prev_cursor_pos:update(line, col)
+    self.prev_cursor_pos:update(line, col)
 end
 
 function Countdown:_move_up()
@@ -207,6 +225,8 @@ function Countdown:_start_timer()
                     virt_text_pos = "right_align",
                     id = extm_id,
                 })
+                self.stats.time = self.time_sec
+                self.stats:display_stats()
             else
                 extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, 7, 0, {
                     virt_text = {
