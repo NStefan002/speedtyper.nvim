@@ -14,13 +14,12 @@ local Stack = require("speedtyper.stack")
 ---@field typed_chars integer number of characters typed
 ---@field typos integer number of characters typed incorrectly
 ---@field typed_text SpeedTyperStack
+local SpeedTyperStats = {}
+SpeedTyperStats.__index = SpeedTyperStats
 
 -- NOTE: typos != typed_chars - correct_chars
 -- typos is the total number of characters that were typed incorrectly
 -- regardless of whether they were corrected or not
-
-local SpeedTyperStats = {}
-SpeedTyperStats.__index = SpeedTyperStats
 
 ---@param bufnr integer
 function SpeedTyperStats.new(bufnr)

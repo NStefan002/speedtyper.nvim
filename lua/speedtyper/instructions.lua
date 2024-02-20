@@ -1,3 +1,14 @@
+---@class SpeedTyperInstructions
+---@field time string
+---@field words string
+---@field rain string
+---@field custom string
+---@field punctuation string
+---@field numbers string
+---@field total_time string
+---@field wpm string
+---@field raw_wpm string
+---@field acc string
 local SpeedTyperInstructions = {}
 SpeedTyperInstructions.__index = SpeedTyperInstructions
 

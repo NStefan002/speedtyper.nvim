@@ -10,13 +10,13 @@ local Position = require("speedtyper.position")
 ---@field ns_id integer
 ---@field extm_ids integer[]
 ---@field text string[]
----@field text_generator SpeedTyperText
----@field typos_tracker SpeedTyperTyposTracker
 ---@field time_sec number
 ---@field number_of_words integer
 ---@field text_type string
+---@field text_generator SpeedTyperText
+---@field typos_tracker SpeedTyperTyposTracker
+---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
-
 local Stopwatch = {}
 Stopwatch.__index = Stopwatch
 
@@ -28,11 +28,11 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
+        extm_ids = {},
+        text = {},
         time_sec = 0.0,
         number_of_words = number_of_words,
         text_type = text_type,
-        extm_ids = {},
-        text = {},
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
         stats = Stats.new(bufnr),

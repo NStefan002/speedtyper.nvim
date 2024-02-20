@@ -2,7 +2,6 @@
 ---@class Position
 ---@field line integer
 ---@field col integer
-
 local Position = {}
 Position.__index = Position
 

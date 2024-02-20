@@ -6,20 +6,16 @@ local Hover = require("speedtyper.hover")
 ---@field bufnr integer
 ---@field winnr integer
 ---@field active boolean
----@field settings SpeedTyperWindowConfig
 ---@field menu SpeedTyperMenu
 ---@field hover SpeedTyperHover
-
 local SpeedTyperUI = {}
 SpeedTyperUI.__index = SpeedTyperUI
 
----@param settings SpeedTyperWindowConfig
 ---@return SpeedTyperUI
-function SpeedTyperUI.new(settings)
+function SpeedTyperUI.new()
     local self = {
         bufnr = nil,
         winnr = nil,
-        settings = settings,
         active = false,
         menu = Menu.new(),
         hover = Hover.new(),
@@ -77,8 +73,7 @@ function SpeedTyperUI:_create_autocmds()
     })
 end
 
----@param settings SpeedTyperWindowConfig
-function SpeedTyperUI:_open(settings)
+function SpeedTyperUI:_open()
     if self.active then
         return
     end
@@ -103,7 +98,7 @@ function SpeedTyperUI:_open(settings)
         width = preffered_width,
         height = preffered_height,
         style = "minimal",
-        border = settings.border,
+        border = "double",
         noautocmd = true,
     })
 
@@ -146,7 +141,7 @@ function SpeedTyperUI:toggle()
     if self.active then
         SpeedTyperUI._close(self)
     else
-        SpeedTyperUI._open(self, self.settings)
+        SpeedTyperUI._open(self)
     end
 end
 

@@ -4,9 +4,8 @@ local Round = require("speedtyper.round")
 ---@class SpeedTyperMenu
 ---@field bufnr integer
 ---@field ns_id integer
----@field buttons table<string, boolean>
+---@field buttons table
 ---@field text string
-
 local Menu = {}
 Menu.__index = Menu
 

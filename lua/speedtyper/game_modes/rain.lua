@@ -1,5 +1,4 @@
 ---@class SpeedTyperRain
-
 local Rain = {}
 Rain.__index = Rain
 

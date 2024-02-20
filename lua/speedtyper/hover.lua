@@ -4,8 +4,7 @@ local Util = require("speedtyper.util")
 ---@class SpeedTyperHover
 ---@field bufnr integer
 ---@field winnr integer
----@field instruction string
-
+---@field instruction string[]
 local SpeedTyperHover = {}
 SpeedTyperHover.__index = SpeedTyperHover
 

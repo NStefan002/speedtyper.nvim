@@ -9,13 +9,13 @@ local Position = require("speedtyper.position")
 ---@field bufnr integer
 ---@field ns_id integer
 ---@field extm_ids integer[]
----@field text_generator SpeedTyperText
 ---@field text string[]
----@field typos_tracker SpeedTyperTyposTracker
 ---@field time_sec number
 ---@field text_type string
+---@field text_generator SpeedTyperText
+---@field typos_tracker SpeedTyperTyposTracker
+---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
-
 local Countdown = {}
 Countdown.__index = Countdown
 
@@ -27,10 +27,10 @@ function Countdown.new(bufnr, time, text_type)
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
-        time_sec = time,
-        text_type = text_type,
         extm_ids = {},
         text = {},
+        time_sec = time,
+        text_type = text_type,
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
         stats = Stats.new(bufnr),

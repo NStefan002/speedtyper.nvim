@@ -1,6 +1,6 @@
 ---@class SpeedTyperHighlights
-
 local Highlights = {}
+Highlights.__index = Highlights
 
 ---@param hlconfig SpeedTyperHighlightsConfig
 function Highlights.setup(hlconfig)

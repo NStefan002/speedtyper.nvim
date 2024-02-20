@@ -3,7 +3,6 @@ local Util = require("speedtyper.util")
 ---@class SpeedTyperText
 ---@field selected_lang string
 ---@field words string[]
-
 local SpeedTyperText = {}
 SpeedTyperText.__index = SpeedTyperText
 

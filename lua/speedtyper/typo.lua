@@ -5,7 +5,6 @@ local Position = require("speedtyper.position")
 ---@field ns_id integer
 ---@field bufnr integer
 ---@field typos Position[]
-
 local SpeedTyperTyposTracker = {}
 SpeedTyperTyposTracker.__index = SpeedTyperTyposTracker
 
