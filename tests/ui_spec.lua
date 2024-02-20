@@ -44,7 +44,7 @@ describe("UI tests", function()
     end)
 
     it("ui _open _close", function()
-        speedtyper.ui:_open(require("speedtyper.config").get_default_config().window)
+        speedtyper.ui:_open()
 
         local bufnr = speedtyper.ui.bufnr
         local winnr = speedtyper.ui.winnr
@@ -59,7 +59,7 @@ describe("UI tests", function()
         eq(nil, speedtyper.ui.bufnr)
         eq(nil, speedtyper.ui.winnr)
 
-        speedtyper.ui:_open(require("speedtyper.config").get_default_config().window)
+        speedtyper.ui:_open()
 
         bufnr = speedtyper.ui.bufnr
         winnr = speedtyper.ui.winnr

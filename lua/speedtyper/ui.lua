@@ -34,7 +34,7 @@ function SpeedTyperUI:_create_autocmds()
         group = grp,
         buffer = self.bufnr,
         callback = function()
-            SpeedTyperUI._close(self)
+            self:_close()
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
     })
@@ -65,7 +65,7 @@ function SpeedTyperUI:_create_autocmds()
                     return
                 end
                 if ev.buf ~= self.bufnr and self.active then
-                    SpeedTyperUI._close(self)
+                    self:_close()
                 end
             end)
         end,
@@ -108,14 +108,14 @@ function SpeedTyperUI:_open()
 
     if winnr == 0 then
         Util.error("Failed to open window")
-        SpeedTyperUI._close(self)
+        self:_close()
     end
 
-    SpeedTyperUI._create_autocmds(self)
+    self:_create_autocmds()
     Util.clear_buffer_text(10, self.bufnr)
     self.menu:display_menu(self.bufnr)
     self.hover:set_keymaps()
-    SpeedTyperUI._disable(self)
+    self:_disable()
 end
 
 function SpeedTyperUI:_close()
@@ -139,9 +139,9 @@ end
 
 function SpeedTyperUI:toggle()
     if self.active then
-        SpeedTyperUI._close(self)
+        self:_close()
     else
-        SpeedTyperUI._open(self)
+        self:_open()
     end
 end
 

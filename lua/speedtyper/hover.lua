@@ -20,9 +20,9 @@ end
 function SpeedTyperHover:set_keymaps()
     local function display_current_word_info()
         local item = vim.fn.expand("<cWORD>")
-        SpeedTyperHover._set_instruction(self, item)
+        self:_set_instruction(item)
         if #self.instruction > 0 then
-            SpeedTyperHover._open(self)
+            self:_open()
         end
     end
     vim.keymap.set("n", "K", display_current_word_info, { buffer = true })
@@ -58,7 +58,7 @@ function SpeedTyperHover:_open()
 
     if winnr == 0 then
         Util.error("Failed to open window")
-        SpeedTyperHover._close(self)
+        self:_close()
     end
 
     self.bufnr = bufnr
@@ -70,7 +70,7 @@ function SpeedTyperHover:_open()
             line,
         })
     end
-    SpeedTyperHover._create_autocmds(self)
+    self:_create_autocmds()
 end
 
 function SpeedTyperHover:_close()
@@ -93,7 +93,7 @@ function SpeedTyperHover:_create_autocmds()
     autocmd({ "CursorMoved", "CursorMovedI" }, {
         group = grp,
         callback = function()
-            SpeedTyperHover._close(self)
+            self:_close()
         end,
         desc = "Close the hover window.",
     })

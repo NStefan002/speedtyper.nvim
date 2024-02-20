@@ -41,10 +41,10 @@ function SpeedTyperStats.new(bufnr)
 end
 
 function SpeedTyperStats:display_stats()
-    SpeedTyperStats._set_data(self)
-    SpeedTyperStats._calculate_wpm(self)
-    SpeedTyperStats._calculate_raw_wpm(self)
-    SpeedTyperStats._calculate_acc(self)
+    self:_set_data()
+    self:_calculate_wpm()
+    self:_calculate_raw_wpm()
+    self:_calculate_acc()
 
     Util.disable_buffer_modification()
     -- TODO: set buffer text
