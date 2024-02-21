@@ -1,4 +1,12 @@
 ---@class SpeedTyperRain
+---@field timer uv_timer_t
+---@field bufnr integer
+---@field ns_id integer
+---@field extm_ids integer[]
+---@field text string[]
+---@field text_generator SpeedTyperText
+---@field typos_tracker SpeedTyperTyposTracker
+---@field prev_cursor_pos Position
 local Rain = {}
 Rain.__index = Rain
 
@@ -12,16 +20,23 @@ function Rain.new(bufnr)
         text = {},
         text_generator = nil,
         typos_tracker = nil,
-        _prev_cursor_pos = nil,
+        prev_cursor_pos = nil,
     }
     return setmetatable(self, Rain)
 end
 
 function Rain:start()
-    vim.api.nvim_buf_set_lines(self.bufnr, 2, 4, false, {
+    local lines = {
         "Rain mode coming soon!",
         "Please select another game mode.",
-    })
+    }
+
+    for i, line in ipairs(lines) do
+        vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, i + 1, 0, {
+            virt_text = { { line, "SpeedTyperTextUntyped" } },
+            virt_text_win_col = 0,
+        })
+    end
 end
 
 function Rain:stop()
