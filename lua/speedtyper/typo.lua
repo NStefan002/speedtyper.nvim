@@ -5,7 +5,6 @@ local Position = require("speedtyper.position")
 ---@field ns_id integer
 ---@field bufnr integer
 ---@field typos Position[]
-
 local SpeedTyperTyposTracker = {}
 SpeedTyperTyposTracker.__index = SpeedTyperTyposTracker
 
@@ -31,13 +30,15 @@ function SpeedTyperTyposTracker:check_curr_char(should_be)
     if typed ~= should_be then
         self.typos = self.typos or {}
         table.insert(self.typos, Position.new(line, col))
-        SpeedTyperTyposTracker._mark_typo(self, line, col)
+        self:_mark_typo(line, col)
         return false
     end
     Util.remove_element(self.typos, Position.new(line, col))
     return true
 end
 
+---@param line integer
+---@param col integer
 function SpeedTyperTyposTracker:_mark_typo(line, col)
     vim.api.nvim_buf_add_highlight(
         self.bufnr,
@@ -51,7 +52,7 @@ end
 
 function SpeedTyperTyposTracker:redraw()
     for _, pos in ipairs(self.typos) do
-        SpeedTyperTyposTracker._mark_typo(self, pos.line, pos.col)
+        self:_mark_typo(pos.line, pos.col)
     end
 end
 

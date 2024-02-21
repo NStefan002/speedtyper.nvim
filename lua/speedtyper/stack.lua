@@ -1,7 +1,6 @@
 ---@class SpeedTyperStack
 ---@field _stack table
 ---@field _top integer
-
 local Stack = {}
 Stack.__index = Stack
 

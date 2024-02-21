@@ -10,13 +10,13 @@ local Position = require("speedtyper.position")
 ---@field ns_id integer
 ---@field extm_ids integer[]
 ---@field text string[]
----@field text_generator SpeedTyperText
----@field typos_tracker SpeedTyperTyposTracker
 ---@field time_sec number
 ---@field number_of_words integer
 ---@field text_type string
+---@field text_generator SpeedTyperText
+---@field typos_tracker SpeedTyperTyposTracker
+---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
-
 local Stopwatch = {}
 Stopwatch.__index = Stopwatch
 
@@ -28,11 +28,11 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
+        extm_ids = {},
+        text = {},
         time_sec = 0.0,
         number_of_words = number_of_words,
         text_type = text_type,
-        extm_ids = {},
-        text = {},
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
         stats = Stats.new(bufnr),
@@ -44,14 +44,14 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
 end
 
 function Stopwatch:start()
-    Stopwatch._reset_values(self)
-    Stopwatch._set_extmarks(self)
-    Stopwatch._create_timer(self)
+    self:_reset_values()
+    self:_set_extmarks()
+    self:_create_timer()
     vim.api.nvim_create_autocmd("CursorMovedI", {
         group = vim.api.nvim_create_augroup("SpeedTyperStopwatch", {}),
         buffer = self.bufnr,
         callback = function()
-            Stopwatch._update_extmarks(self)
+            self:_update_extmarks()
         end,
         desc = "Stopwatch game mode runner.",
     })
@@ -64,7 +64,7 @@ function Stopwatch:stop()
         self.timer:close()
         self.timer = nil
     end
-    Stopwatch._reset_values(self)
+    self:_reset_values()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperStopwatch")
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperStopwatchTimer")
 end
@@ -122,7 +122,7 @@ function Stopwatch:_update_extmarks()
         -- no more text to type
         self.stats.time = self.time_sec
         self.stats:display_stats()
-        Stopwatch.stop(self)
+        self:stop()
         return
     end
     if col - 1 == #self.text[line - 2] or col - 2 == #self.text[line - 2] then
@@ -136,7 +136,7 @@ function Stopwatch:_update_extmarks()
             })
         else
             if line == 4 then
-                Stopwatch._move_up(self)
+                self:_move_up()
                 col = 1
             else
                 vim.cmd.normal("j0")
@@ -207,7 +207,7 @@ function Stopwatch:_create_timer()
                 true
             )
             vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
-            Stopwatch._start_timer(self)
+            self:_start_timer()
         end,
         desc = "Start the stopwatch game mode.",
     })

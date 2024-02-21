@@ -54,6 +54,7 @@
 ---@field guicursor? string
 
 local Config = {}
+Config.__index = Config
 
 -- NOTE: for now, this is the same default config as in v1.0.x, almost certainly will change in the future
 ---@return SpeedTyperConfig

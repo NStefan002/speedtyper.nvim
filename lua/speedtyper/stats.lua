@@ -14,13 +14,12 @@ local Stack = require("speedtyper.stack")
 ---@field typed_chars integer number of characters typed
 ---@field typos integer number of characters typed incorrectly
 ---@field typed_text SpeedTyperStack
+local SpeedTyperStats = {}
+SpeedTyperStats.__index = SpeedTyperStats
 
 -- NOTE: typos != typed_chars - correct_chars
 -- typos is the total number of characters that were typed incorrectly
 -- regardless of whether they were corrected or not
-
-local SpeedTyperStats = {}
-SpeedTyperStats.__index = SpeedTyperStats
 
 ---@param bufnr integer
 function SpeedTyperStats.new(bufnr)
@@ -42,10 +41,10 @@ function SpeedTyperStats.new(bufnr)
 end
 
 function SpeedTyperStats:display_stats()
-    SpeedTyperStats._set_data(self)
-    SpeedTyperStats._calculate_wpm(self)
-    SpeedTyperStats._calculate_raw_wpm(self)
-    SpeedTyperStats._calculate_acc(self)
+    self:_set_data()
+    self:_calculate_wpm()
+    self:_calculate_raw_wpm()
+    self:_calculate_acc()
 
     Util.disable_buffer_modification()
     -- TODO: set buffer text

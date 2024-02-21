@@ -6,7 +6,6 @@ local Util = require("speedtyper.util")
 ---@class SpeedTyper
 ---@field config SpeedTyperConfig
 ---@field ui SpeedTyperUI
-
 local SpeedTyper = {}
 SpeedTyper.__index = SpeedTyper
 
@@ -15,7 +14,7 @@ function SpeedTyper.new(partial_config)
     local config = Config.merge_config(partial_config, Config.get_default_config())
     local self = {
         config = config,
-        ui = Ui.new(config.window),
+        ui = Ui.new(),
     }
     return setmetatable(self, SpeedTyper)
 end
@@ -24,8 +23,8 @@ end
 function SpeedTyper.setup(partial_config)
     local speedtyper = SpeedTyper.new(partial_config)
     Highlights.setup(speedtyper.config.highlights)
-    SpeedTyper._create_autocmds(speedtyper)
-    SpeedTyper._create_user_commands(speedtyper)
+    speedtyper:_create_autocmds()
+    speedtyper:_create_user_commands()
     return speedtyper
 end
 

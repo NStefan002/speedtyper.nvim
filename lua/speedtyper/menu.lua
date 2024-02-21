@@ -4,9 +4,8 @@ local Round = require("speedtyper.round")
 ---@class SpeedTyperMenu
 ---@field bufnr integer
 ---@field ns_id integer
----@field buttons table<string, boolean>
+---@field buttons table
 ---@field text string
-
 local Menu = {}
 Menu.__index = Menu
 
@@ -45,8 +44,8 @@ function Menu:display_menu(bufnr)
     vim.api.nvim_buf_set_lines(self.bufnr, 0, 1, false, {
         self.text,
     })
-    Menu._set_keymaps(self)
-    Menu._highlight_buttons(self)
+    self:_set_keymaps()
+    self:_highlight_buttons()
     -- default gamemode
     self.round:set_game_mode("time", self.buttons.length, self.buttons.text_variant)
     self.round:start_round()
@@ -97,14 +96,13 @@ function Menu:_activate_button(button)
         end
     end
     self.round:start_round()
-    Menu._highlight_buttons(self)
+    self:_highlight_buttons()
 end
 
 function Menu:_set_keymaps()
     local function get_cword()
         local button = vim.fn.expand("<cword>")
-        ---@diagnostic disable-next-line: param-type-mismatch
-        Menu._activate_button(self, button)
+        self:_activate_button(button)
     end
     vim.keymap.set("n", "<2-LeftMouse>", get_cword, { buffer = true })
     vim.keymap.set("n", "<CR>", get_cword, { buffer = true })

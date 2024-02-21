@@ -6,20 +6,16 @@ local Hover = require("speedtyper.hover")
 ---@field bufnr integer
 ---@field winnr integer
 ---@field active boolean
----@field settings SpeedTyperWindowConfig
 ---@field menu SpeedTyperMenu
 ---@field hover SpeedTyperHover
-
 local SpeedTyperUI = {}
 SpeedTyperUI.__index = SpeedTyperUI
 
----@param settings SpeedTyperWindowConfig
 ---@return SpeedTyperUI
-function SpeedTyperUI.new(settings)
+function SpeedTyperUI.new()
     local self = {
         bufnr = nil,
         winnr = nil,
-        settings = settings,
         active = false,
         menu = Menu.new(),
         hover = Hover.new(),
@@ -38,7 +34,7 @@ function SpeedTyperUI:_create_autocmds()
         group = grp,
         buffer = self.bufnr,
         callback = function()
-            SpeedTyperUI._close(self)
+            self:_close()
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
     })
@@ -69,7 +65,7 @@ function SpeedTyperUI:_create_autocmds()
                     return
                 end
                 if ev.buf ~= self.bufnr and self.active then
-                    SpeedTyperUI._close(self)
+                    self:_close()
                 end
             end)
         end,
@@ -77,8 +73,7 @@ function SpeedTyperUI:_create_autocmds()
     })
 end
 
----@param settings SpeedTyperWindowConfig
-function SpeedTyperUI:_open(settings)
+function SpeedTyperUI:_open()
     if self.active then
         return
     end
@@ -103,7 +98,7 @@ function SpeedTyperUI:_open(settings)
         width = preffered_width,
         height = preffered_height,
         style = "minimal",
-        border = settings.border,
+        border = "double",
         noautocmd = true,
     })
 
@@ -113,14 +108,14 @@ function SpeedTyperUI:_open(settings)
 
     if winnr == 0 then
         Util.error("Failed to open window")
-        SpeedTyperUI._close(self)
+        self:_close()
     end
 
-    SpeedTyperUI._create_autocmds(self)
+    self:_create_autocmds()
     Util.clear_buffer_text(10, self.bufnr)
     self.menu:display_menu(self.bufnr)
     self.hover:set_keymaps()
-    SpeedTyperUI._disable(self)
+    self:_disable()
 end
 
 function SpeedTyperUI:_close()
@@ -144,9 +139,9 @@ end
 
 function SpeedTyperUI:toggle()
     if self.active then
-        SpeedTyperUI._close(self)
+        self:_close()
     else
-        SpeedTyperUI._open(self, self.settings)
+        self:_open()
     end
 end
 

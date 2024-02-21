@@ -2,7 +2,6 @@
 ---@class Position
 ---@field line integer
 ---@field col integer
-
 local Position = {}
 Position.__index = Position
 
@@ -28,7 +27,7 @@ function Position.equal(o, p)
 end
 
 function Position:__eq(other)
-    return Position.equal(self, other)
+    return self:equal(other)
 end
 
 return Position

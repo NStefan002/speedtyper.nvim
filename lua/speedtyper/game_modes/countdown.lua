@@ -9,13 +9,13 @@ local Position = require("speedtyper.position")
 ---@field bufnr integer
 ---@field ns_id integer
 ---@field extm_ids integer[]
----@field text_generator SpeedTyperText
 ---@field text string[]
----@field typos_tracker SpeedTyperTyposTracker
 ---@field time_sec number
 ---@field text_type string
+---@field text_generator SpeedTyperText
+---@field typos_tracker SpeedTyperTyposTracker
+---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
-
 local Countdown = {}
 Countdown.__index = Countdown
 
@@ -27,10 +27,10 @@ function Countdown.new(bufnr, time, text_type)
         timer = nil,
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
-        time_sec = time,
-        text_type = text_type,
         extm_ids = {},
         text = {},
+        time_sec = time,
+        text_type = text_type,
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
         stats = Stats.new(bufnr),
@@ -41,15 +41,15 @@ function Countdown.new(bufnr, time, text_type)
 end
 
 function Countdown:start()
-    Countdown._reset_values(self)
-    Countdown._set_extmarks(self)
-    Countdown._create_timer(self)
+    self:_reset_values()
+    self:_set_extmarks()
+    self:_create_timer()
 
     vim.api.nvim_create_autocmd("CursorMovedI", {
         group = vim.api.nvim_create_augroup("SpeedTyperCountdown", {}),
         buffer = self.bufnr,
         callback = function()
-            Countdown._update_extmarks(self)
+            self:_update_extmarks()
         end,
         desc = "Countdown game mode runner.",
     })
@@ -61,7 +61,7 @@ function Countdown:stop()
         self.timer:close()
         self.timer = nil
     end
-    Countdown._reset_values(self)
+    self:_reset_values()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
 end
@@ -126,7 +126,7 @@ function Countdown:_update_extmarks()
             })
         else
             if line == 4 then
-                Countdown._move_up(self)
+                self:_move_up()
                 col = 1
             else
                 vim.cmd.normal("j0")
@@ -197,7 +197,7 @@ function Countdown:_create_timer()
                 true
             )
             vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
-            Countdown._start_timer(self)
+            self:_start_timer()
         end,
         desc = "Start the countdown game mode.",
     })
@@ -219,7 +219,7 @@ function Countdown:_start_timer()
             if remaining_time <= 0 then
                 self.stats.time = self.time_sec
                 self.stats:display_stats()
-                Countdown.stop(self)
+                self:stop()
                 extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, 7, 0, {
                     virt_text = {
                         { "Time's up!", "SpeedTyperClockWarning" },

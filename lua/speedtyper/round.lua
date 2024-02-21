@@ -7,7 +7,6 @@ local Util = require("speedtyper.util")
 ---@class SpeedTyperRound
 ---@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain
 ---@field bufnr integer
-
 local SpeedTyperRound = {}
 SpeedTyperRound.__index = SpeedTyperRound
 
