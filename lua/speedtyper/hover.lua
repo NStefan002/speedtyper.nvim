@@ -5,19 +5,19 @@ local Util = require("speedtyper.util")
 ---@field bufnr integer
 ---@field winnr integer
 ---@field instruction string[]
-local SpeedTyperHover = {}
-SpeedTyperHover.__index = SpeedTyperHover
+local Hover = {}
+Hover.__index = Hover
 
-function SpeedTyperHover.new()
+function Hover.new()
     local self = {
         bufnr = nil,
         winnr = nil,
         instruction = nil,
     }
-    return setmetatable(self, SpeedTyperHover)
+    return setmetatable(self, Hover)
 end
 
-function SpeedTyperHover:set_keymaps()
+function Hover:set_keymaps()
     local function display_current_word_info()
         local item = vim.fn.expand("<cWORD>")
         self:_set_instruction(item)
@@ -29,11 +29,11 @@ function SpeedTyperHover:set_keymaps()
 end
 
 ---@param item string
-function SpeedTyperHover:_set_instruction(item)
+function Hover:_set_instruction(item)
     self.instruction = Util.split(Instructions.get(item), "\n")
 end
 
-function SpeedTyperHover:_open()
+function Hover:_open()
     if self.bufnr ~= nil and self.winnr ~= nil then
         return
     end
@@ -73,7 +73,7 @@ function SpeedTyperHover:_open()
     self:_create_autocmds()
 end
 
-function SpeedTyperHover:_close()
+function Hover:_close()
     if self.bufnr ~= nil and vim.api.nvim_buf_is_valid(self.bufnr) then
         vim.api.nvim_buf_delete(self.bufnr, { force = true })
     end
@@ -85,7 +85,7 @@ function SpeedTyperHover:_close()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperHover")
 end
 
-function SpeedTyperHover:_create_autocmds()
+function Hover:_create_autocmds()
     local autocmd = vim.api.nvim_create_autocmd
     local augroup = vim.api.nvim_create_augroup
     local grp = augroup("SpeedTyperHover", {})
@@ -99,4 +99,4 @@ function SpeedTyperHover:_create_autocmds()
     })
 end
 
-return SpeedTyperHover
+return Hover

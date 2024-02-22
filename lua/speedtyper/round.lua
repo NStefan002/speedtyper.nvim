@@ -7,19 +7,19 @@ local Util = require("speedtyper.util")
 ---@class SpeedTyperRound
 ---@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain
 ---@field bufnr integer
-local SpeedTyperRound = {}
-SpeedTyperRound.__index = SpeedTyperRound
+local Round = {}
+Round.__index = Round
 
 ---@param bufnr integer
-function SpeedTyperRound.new(bufnr)
+function Round.new(bufnr)
     local self = {
         active_game_mode = nil,
         bufnr = bufnr,
     }
-    return setmetatable(self, SpeedTyperRound)
+    return setmetatable(self, Round)
 end
 
-function SpeedTyperRound:set_game_mode(...)
+function Round:set_game_mode(...)
     -- TODO: parse args according to game mode (implement after implementing Stopwatch and Rain)
     local args = { ... }
     local game_mode = args[1]
@@ -35,16 +35,16 @@ function SpeedTyperRound:set_game_mode(...)
     end
 end
 
-function SpeedTyperRound:start_round()
+function Round:start_round()
     if self.active_game_mode then
         self.active_game_mode:start()
     end
 end
 
-function SpeedTyperRound:end_round()
+function Round:end_round()
     if self.active_game_mode then
         self.active_game_mode:stop()
     end
 end
 
-return SpeedTyperRound
+return Round

@@ -9,65 +9,65 @@
 ---@field wpm string
 ---@field raw_wpm string
 ---@field acc string
-local SpeedTyperInstructions = {}
-SpeedTyperInstructions.__index = SpeedTyperInstructions
+local Instructions = {}
+Instructions.__index = Instructions
 
 ---@param item string
-function SpeedTyperInstructions.get(item)
-    return SpeedTyperInstructions[item] or ""
+function Instructions.get(item)
+    return Instructions[item] or ""
 end
 
-SpeedTyperInstructions.time = [[
+Instructions.time = [[
 Type as many words as you
 can in the given time.
 ]]
 
-SpeedTyperInstructions.words = [[
+Instructions.words = [[
 Type the given number of
 words as fast as you can.
 ]]
 
-SpeedTyperInstructions.rain = [[
+Instructions.rain = [[
     [ Coming soon! ]
 Type the falling words
 before they reach the bottom.
 ]]
 
-SpeedTyperInstructions.custom = [[
+Instructions.custom = [[
     [ Coming soon! ]
 Provide your own text to type.
 ]]
 
-SpeedTyperInstructions.punctuation = [[
+Instructions.punctuation = [[
 Add punctuation to the text.
 ]]
 
-SpeedTyperInstructions.numbers = [[
+Instructions.numbers = [[
 Add numbers to the text.
 ]]
 
-SpeedTyperInstructions.total_time = [[
+Instructions.total_time = [[
 Total time spent typing.
 ]]
 
-SpeedTyperInstructions.wpm = [[
+Instructions.wpm = [[
 Total number of characters in
 the correctly typed words
 (including spaces), divided
 by 5 and normalised to 60 seconds.
 ]]
 
-SpeedTyperInstructions.raw_wpm = [[
+Instructions.raw_wpm = [[
 Total number of typed characters
 (correctly or incorrectly typed),
 divided by 5 and normalised to
 60 seconds.
 ]]
 
-SpeedTyperInstructions.acc = [[
+Instructions.acc = [[
 Total number of correctly typed
 characters divided by the total
 number of characters typed.
 ]]
 
-return SpeedTyperInstructions
+return Instructions

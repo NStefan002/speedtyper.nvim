@@ -1,21 +1,21 @@
-local SpeedTyperUtil = {}
+local Util = {}
 ---notify user of an error
 ---@param msg string
-function SpeedTyperUtil.error(msg)
+function Util.error(msg)
     -- "\n" for nvim configs that don't use nvim-notify
     vim.notify("\n" .. msg, vim.log.levels.ERROR, { title = "Speedtyper" })
     error(msg)
 end
 
 ---@param msg string
-function SpeedTyperUtil.info(msg)
+function Util.info(msg)
     -- "\n" for nvim configs that don't use nvim-notify
     vim.notify("\n" .. msg, vim.log.levels.INFO, { title = "Speedtyper" })
 end
 
 ---@return integer
 ---@return integer
-function SpeedTyperUtil.get_cursor_pos()
+function Util.get_cursor_pos()
     local line = vim.fn.line(".")
     local col = vim.fn.col(".")
     return line, col
@@ -25,13 +25,13 @@ end
 ---@param a number
 ---@param b number
 ---@return boolean
-function SpeedTyperUtil.equals(a, b)
+function Util.equals(a, b)
     return tostring(a) == tostring(b)
 end
 
 ---@param n integer number of empty lines
 ---@param bufnr? integer
-function SpeedTyperUtil.clear_buffer_text(n, bufnr)
+function Util.clear_buffer_text(n, bufnr)
     local repl = {}
     for _ = 1, n do
         table.insert(repl, "")
@@ -40,10 +40,10 @@ function SpeedTyperUtil.clear_buffer_text(n, bufnr)
 end
 
 ---@param file_path string
-function SpeedTyperUtil.read_file(file_path)
+function Util.read_file(file_path)
     local reader = io.open(file_path, "r")
     if reader == nil then
-        SpeedTyperUtil.error("Failed to read from the file: " .. file_path)
+        Util.error("Failed to read from the file: " .. file_path)
         return
     end
 
@@ -59,7 +59,7 @@ function SpeedTyperUtil.read_file(file_path)
 end
 
 -- HACK: disable buffer modification by disabling all modifying keys
-function SpeedTyperUtil.disable_buffer_modification()
+function Util.disable_buffer_modification()
     -- exit insert mode
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
     local keys_to_disable = {
@@ -92,13 +92,13 @@ function SpeedTyperUtil.disable_buffer_modification()
 end
 
 ---@param str string
-function SpeedTyperUtil.trim(str)
+function Util.trim(str)
     return str:gsub("^%s+", ""):gsub("%s+$", "")
 end
 
 ---@param str string
 ---@param sep? string
-function SpeedTyperUtil.split(str, sep)
+function Util.split(str, sep)
     sep = sep or "%s" -- whitespace by default
     local t = {}
     for s in string.gmatch(str, "([^" .. sep .. "]+)") do
@@ -114,7 +114,7 @@ end
 ---@param idx integer
 ---@return string word the word that contains the character at `idx`
 ---@return integer idx index in the sentence -> index in the word
-function SpeedTyperUtil.get_word_from_sentence(sentence, idx)
+function Util.get_word_from_sentence(sentence, idx)
     if sentence:sub(idx, idx) == " " then
         return " ", 1
     end
@@ -138,7 +138,7 @@ end
 ---@param el any
 ---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return integer idx index of the element `el` or 0 if `tbl` does not contain `el`
-function SpeedTyperUtil.find_element(tbl, el, eq)
+function Util.find_element(tbl, el, eq)
     eq = eq or function(a, b)
         return a == b
     end
@@ -154,34 +154,34 @@ end
 ---@param el any
 ---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return boolean
-function SpeedTyperUtil.tbl_contains(tbl, el, eq)
+function Util.tbl_contains(tbl, el, eq)
     eq = eq or function(a, b)
         return a == b
     end
-    return SpeedTyperUtil.find_element(tbl, el, eq) > 0
+    return Util.find_element(tbl, el, eq) > 0
 end
 
 ---@param tbl table
 ---@param el any
 ---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
-function SpeedTyperUtil.remove_element(tbl, el, eq)
+function Util.remove_element(tbl, el, eq)
     eq = eq or function(a, b)
         return a == b
     end
-    local idx = SpeedTyperUtil.find_element(tbl, el, eq)
+    local idx = Util.find_element(tbl, el, eq)
     if idx > 0 then
         table.remove(tbl, idx)
     end
 end
 
 ---@param key string
-function SpeedTyperUtil.simulate_keypress(key)
+function Util.simulate_keypress(key)
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "x", true)
 end
 
 ---@param text string
-function SpeedTyperUtil.simulate_input(text)
-    SpeedTyperUtil.simulate_keypress("a" .. text)
+function Util.simulate_input(text)
+    Util.simulate_keypress("a" .. text)
 end
 
-return SpeedTyperUtil
+return Util
