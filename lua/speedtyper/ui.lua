@@ -148,8 +148,9 @@ end
 
 function UI:_disable()
     vim.wo[self.winnr].wrap = false
+    -- NOTE: this will probably be removed and be asked of the user to do,
+    -- but it'll stay for now for testing purposes
     if package.loaded["cmp"] then
-        print("cmp")
         -- disable cmp while playing the game
         require("cmp").setup({
             enabled = function()
