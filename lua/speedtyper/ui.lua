@@ -34,6 +34,7 @@ function UI:_create_autocmds()
         group = grp,
         buffer = self.bufnr,
         callback = function()
+            require("speedtyper.settings").save()
             self:_close()
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
@@ -65,6 +66,7 @@ function UI:_create_autocmds()
                     return
                 end
                 if ev.buf ~= self.bufnr and self.active then
+                    require("speedtyper.settings").save()
                     self:_close()
                 end
             end)
