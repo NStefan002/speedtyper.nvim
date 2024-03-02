@@ -2,10 +2,12 @@ local settings_path = string.format("%s/speedtyper-settings.json", vim.fn.stdpat
 
 ---@alias Switch table<"on" | "off", boolean>
 
----@class SpeedTyperSettings
+---@class SpeedTyperRoundSettings
 ---@field text_variant table<"punctuation" | "numbers", boolean>
 ---@field game_mode table<"time" | "word" | "rain", boolean>
 ---@field length table<"15" | "30" | "60" | "120", boolean>
+
+---@class SpeedTyperSettings
 ---@field language table<string, boolean> choose one of available languages
 ---@field theme table<string, boolean> choose one of predefined themes (or provide custom)
 ---@field randomize_theme Switch randomly select theme before every game
@@ -28,22 +30,6 @@ local settings_path = string.format("%s/speedtyper-settings.json", vim.fn.stdpat
 
 ---@type SpeedTyperSettings
 local default_settings = {
-    text_variant = {
-        ["punctuation"] = false,
-        ["numbers"] = false,
-    },
-    game_mode = {
-        ["time"] = true,
-        ["words"] = false,
-        ["rain"] = false,
-        ["custom"] = false,
-    },
-    length = {
-        ["15"] = false,
-        ["30"] = true,
-        ["60"] = false,
-        ["120"] = false,
-    },
     language = {
         ["english"] = true,
         ["serbian"] = false,
@@ -124,7 +110,25 @@ local default_settings = {
     },
 }
 
-vim.g.speedtyper_settings = default_settings
+---@type SpeedTyperRoundSettings
+local default_round_settings = {
+    text_variant = {
+        ["punctuation"] = false,
+        ["numbers"] = false,
+    },
+    game_mode = {
+        ["time"] = true,
+        ["words"] = false,
+        ["rain"] = false,
+        ["custom"] = false,
+    },
+    length = {
+        ["15"] = false,
+        ["30"] = true,
+        ["60"] = false,
+        ["120"] = false,
+    },
+}
 
 local Settings = {}
 
@@ -136,11 +140,23 @@ function Settings.load()
         file:close()
         settings = vim.fn.json_decode(json)
     end
-    vim.tbl_deep_extend("force", vim.g.speedtyper_settings, settings)
+    settings.speedtyper_settings =
+        vim.tbl_deep_extend("force", default_settings, settings.speedtyper_settings or {})
+    settings.speedtyper_round_settings = vim.tbl_deep_extend(
+        "force",
+        default_round_settings,
+        settings.speedtyper_round_settings or {}
+    )
+    vim.g.speedtyper_round_settings = settings.speedtyper_round_settings
+    vim.g.speedtyper_settings = settings.speedtyper_settings
 end
 
 function Settings.save()
-    local json = vim.fn.json_encode(vim.g.speedtyper_settings)
+    local settings = {
+        speedtyper_round_settings = vim.g.speedtyper_round_settings,
+        speedtyper_settings = vim.g.speedtyper_settings,
+    }
+    local json = vim.fn.json_encode(settings)
     local file = io.open(settings_path, "w")
     if file then
         file:write(json)
