@@ -3,6 +3,9 @@ local Config = require("speedtyper.config")
 local Highlights = require("speedtyper.highlights")
 local Util = require("speedtyper.util")
 
+-- load settings (will be visible to all of the modules)
+require("speedtyper.settings")
+
 ---@class SpeedTyper
 ---@field config SpeedTyperConfig
 ---@field ui SpeedTyperUI

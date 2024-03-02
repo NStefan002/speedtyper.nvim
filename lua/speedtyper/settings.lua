@@ -1,4 +1,4 @@
-local data_path = string.format("%s/speedtyper.json", vim.fn.stdpath("data"))
+local settings_path = string.format("%s/speedtyper-settings.json", vim.fn.stdpath("data"))
 
 ---@class SpeedTyperSettings
 ---@field text_variant table<"punctuation" | "numbers", boolean>
@@ -27,7 +27,7 @@ local Settings = {}
 Settings.__index = Settings
 
 function Settings.new()
-    local self = {
+    local self = setmetatable({
         text_variant = {
             ["punctuation"] = false,
             ["numbers"] = false,
@@ -122,8 +122,34 @@ function Settings.new()
             ["on"] = false,
             ["off"] = true,
         },
-    }
-    return setmetatable(self, Settings)
+    }, Settings)
+    return self
 end
 
-return Settings
+function Settings:load()
+    local settings = {}
+    local file = io.open(settings_path, "r")
+    if file then
+        local json = file:read("*a")
+        file:close()
+        settings = vim.fn.json_decode(json)
+    end
+    vim.tbl_deep_extend("force", self, settings)
+end
+
+function Settings:save()
+    local json = vim.fn.json_encode(self)
+    local file = io.open(settings_path, "w")
+    if file then
+        file:write(json)
+        file:close()
+    else
+        error("SpeedTyper: failed to save settings")
+    end
+end
+
+local settings = Settings.new()
+settings:load()
+
+-- make settings accessible to other modules
+vim.g.speedtyper_settings = settings
