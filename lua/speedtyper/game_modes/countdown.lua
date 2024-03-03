@@ -38,7 +38,6 @@ function Countdown.new(bufnr, time, text_type)
         stats = Stats.new(bufnr),
         prev_cursor_pos = Position.new(3, 1),
     }
-    self.text_generator:set_lang("en")
     return setmetatable(self, Countdown)
 end
 

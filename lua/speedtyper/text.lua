@@ -1,5 +1,3 @@
-local Util = require("speedtyper.util")
-
 ---@class SpeedTyperText
 ---@field selected_lang string
 ---@field words string[]
@@ -7,31 +5,15 @@ local SpeedTyperText = {}
 SpeedTyperText.__index = SpeedTyperText
 
 function SpeedTyperText.new()
-    local self = {
-        selected_lang = "",
-        words = {},
-    }
-    return setmetatable(self, SpeedTyperText)
-end
-
----@return string[]
-function SpeedTyperText.get_available_langs()
-    return { "en", "sr" }
-end
-
----@param lang string
-function SpeedTyperText:set_lang(lang)
-    if
-        Util.tbl_contains(self.get_available_langs(), lang, function(a, b)
-            return a == b
-        end)
-    then
-        self.selected_lang = lang
-        self.words = require("speedtyper.langs." .. lang)
-        math.randomseed(os.time())
-    else
-        Util.error("Invalid language: " .. lang)
+    local self = {}
+    for lang, selected in pairs(vim.g.speedtyper_settings.language) do
+        if selected then
+            self.selected_lang = lang
+            self.words = require("speedtyper.langs." .. lang)
+            break
+        end
     end
+    return setmetatable(self, SpeedTyperText)
 end
 
 ---@return string

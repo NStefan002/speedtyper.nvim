@@ -5,6 +5,9 @@ local Util = require("speedtyper.util")
 -- load settings (will be visible to all of the modules)
 require("speedtyper.settings").load()
 
+-- set random seed for the random number generator (used in some of the modules)
+math.randomseed(os.time())
+
 ---@class SpeedTyper
 ---@field ui SpeedTyperUI
 local SpeedTyper = {}
