@@ -104,7 +104,6 @@ function UI:_open()
         noautocmd = true,
     })
 
-    vim.api.nvim_set_option_value("filetype", "speedtyper", { buf = bufnr })
     self.bufnr = bufnr
     self.winnr = winnr
     self.active = true
@@ -114,11 +113,12 @@ function UI:_open()
         self:_close()
     end
 
+    self:_set_options()
+    self._disable_cmp()
     self:_create_autocmds()
     Util.clear_buffer_text(10, self.bufnr)
     self.menu:display_menu(self.bufnr)
     self.hover:set_keymaps()
-    self:_disable()
 end
 
 function UI:_close()
@@ -138,6 +138,7 @@ function UI:_close()
     self.active = false
     self.menu:exit_menu()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperUI")
+    self._enable_cmp()
 end
 
 function UI:toggle()
@@ -148,17 +149,24 @@ function UI:toggle()
     end
 end
 
-function UI:_disable()
+function UI:_set_options()
+    vim.api.nvim_set_option_value("filetype", "speedtyper", { buf = self.bufnr })
     vim.wo[self.winnr].wrap = false
-    -- NOTE: this will probably be removed and be asked of the user to do,
-    -- but it'll stay for now for testing purposes
+end
+
+-- NOTE: this will probably be removed and be asked of the user to do,
+-- but it'll stay for now for testing purposes
+function UI._disable_cmp()
     if package.loaded["cmp"] then
         -- disable cmp while playing the game
-        require("cmp").setup({
-            enabled = function()
-                return false
-            end,
-        })
+        require("cmp").setup.buffer({ enabled = false })
+    end
+end
+
+function UI._enable_cmp()
+    if package.loaded["cmp"] then
+        -- disable cmp while playing the game
+        require("cmp").setup.buffer({ enabled = true })
     end
 end
 
