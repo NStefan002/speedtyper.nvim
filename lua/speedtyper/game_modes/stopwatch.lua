@@ -20,8 +20,10 @@ local Position = require("speedtyper.position")
 local Stopwatch = {}
 Stopwatch.__index = Stopwatch
 
+-- TODO: remove '?'s and 'or's when the text_type option is implemented
+
 ---@param bufnr integer
----@param number_of_words integer
+---@param number_of_words? integer
 ---@param text_type? string
 function Stopwatch.new(bufnr, number_of_words, text_type)
     local self = {
@@ -31,7 +33,7 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         extm_ids = {},
         text = {},
         time_sec = 0.0,
-        number_of_words = number_of_words,
+        number_of_words = number_of_words or 30,
         text_type = text_type,
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),

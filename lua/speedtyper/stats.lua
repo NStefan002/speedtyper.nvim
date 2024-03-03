@@ -14,15 +14,15 @@ local Stack = require("speedtyper.stack")
 ---@field typed_chars integer number of characters typed
 ---@field typos integer number of characters typed incorrectly
 ---@field typed_text SpeedTyperStack
-local SpeedTyperStats = {}
-SpeedTyperStats.__index = SpeedTyperStats
+local Stats = {}
+Stats.__index = Stats
 
 -- NOTE: typos != typed_chars - correct_chars
 -- typos is the total number of characters that were typed incorrectly
 -- regardless of whether they were corrected or not
 
 ---@param bufnr integer
-function SpeedTyperStats.new(bufnr)
+function Stats.new(bufnr)
     local self = {
         bufnr = bufnr,
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
@@ -37,10 +37,10 @@ function SpeedTyperStats.new(bufnr)
         typos = 0,
         typed_text = Stack.new(),
     }
-    return setmetatable(self, SpeedTyperStats)
+    return setmetatable(self, Stats)
 end
 
-function SpeedTyperStats:display_stats()
+function Stats:display_stats()
     self:_set_data()
     self:_calculate_wpm()
     self:_calculate_raw_wpm()
@@ -55,7 +55,7 @@ function SpeedTyperStats:display_stats()
     )
 end
 
-function SpeedTyperStats:reset()
+function Stats:reset()
     self.wpm = nil
     self.raw_wpm = nil
     self.time = nil
@@ -68,7 +68,7 @@ function SpeedTyperStats:reset()
     self.typed_text:clear()
 end
 
-function SpeedTyperStats:_set_data()
+function Stats:_set_data()
     local typed_text = self.typed_text:get_table()
     self.typed_chars = #typed_text
     local word_len = 0
@@ -98,18 +98,18 @@ function SpeedTyperStats:_set_data()
     self.correct_chars = self.length_of_correct_words + self.correct_spaces
 end
 
-function SpeedTyperStats:_calculate_wpm()
+function Stats:_calculate_wpm()
     local words = self.correct_chars / 5
     self.wpm = words / (self.time / 60)
 end
 
-function SpeedTyperStats:_calculate_raw_wpm()
+function Stats:_calculate_raw_wpm()
     local words = self.typed_chars / 5
     self.raw_wpm = words / (self.time / 60)
 end
 
-function SpeedTyperStats:_calculate_acc()
+function Stats:_calculate_acc()
     self.acc = (self.correct_chars / (self.correct_chars + self.typos)) * 100
 end
 
-return SpeedTyperStats
+return Stats

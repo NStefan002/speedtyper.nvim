@@ -8,11 +8,11 @@ local Hover = require("speedtyper.hover")
 ---@field active boolean
 ---@field menu SpeedTyperMenu
 ---@field hover SpeedTyperHover
-local SpeedTyperUI = {}
-SpeedTyperUI.__index = SpeedTyperUI
+local UI = {}
+UI.__index = UI
 
 ---@return SpeedTyperUI
-function SpeedTyperUI.new()
+function UI.new()
     local self = {
         bufnr = nil,
         winnr = nil,
@@ -20,10 +20,10 @@ function SpeedTyperUI.new()
         menu = Menu.new(),
         hover = Hover.new(),
     }
-    return setmetatable(self, SpeedTyperUI)
+    return setmetatable(self, UI)
 end
 
-function SpeedTyperUI:_create_autocmds()
+function UI:_create_autocmds()
     local autocmd = vim.api.nvim_create_autocmd
     local augroup = vim.api.nvim_create_augroup
     local grp = augroup("SpeedTyperUI", {})
@@ -34,6 +34,7 @@ function SpeedTyperUI:_create_autocmds()
         group = grp,
         buffer = self.bufnr,
         callback = function()
+            require("speedtyper.settings").save()
             self:_close()
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
@@ -65,6 +66,7 @@ function SpeedTyperUI:_create_autocmds()
                     return
                 end
                 if ev.buf ~= self.bufnr and self.active then
+                    require("speedtyper.settings").save()
                     self:_close()
                 end
             end)
@@ -73,7 +75,7 @@ function SpeedTyperUI:_create_autocmds()
     })
 end
 
-function SpeedTyperUI:_open()
+function UI:_open()
     if self.active then
         return
     end
@@ -111,14 +113,15 @@ function SpeedTyperUI:_open()
         self:_close()
     end
 
+    self:_set_options()
+    self._disable_cmp()
     self:_create_autocmds()
     Util.clear_buffer_text(10, self.bufnr)
     self.menu:display_menu(self.bufnr)
     self.hover:set_keymaps()
-    self:_disable()
 end
 
-function SpeedTyperUI:_close()
+function UI:_close()
     if not self.active then
         return
     end
@@ -135,9 +138,10 @@ function SpeedTyperUI:_close()
     self.active = false
     self.menu:exit_menu()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperUI")
+    self._enable_cmp()
 end
 
-function SpeedTyperUI:toggle()
+function UI:toggle()
     if self.active then
         self:_close()
     else
@@ -145,22 +149,35 @@ function SpeedTyperUI:toggle()
     end
 end
 
-function SpeedTyperUI:_disable()
+function UI:_set_options()
+    vim.api.nvim_set_option_value("filetype", "speedtyper", { buf = self.bufnr })
     vim.wo[self.winnr].wrap = false
+end
+
+-- NOTE: this will probably be removed and be asked of the user to do,
+-- but it'll stay for now for testing purposes
+function UI._disable_cmp()
     if package.loaded["cmp"] then
         -- disable cmp while playing the game
         require("cmp").setup.buffer({ enabled = false })
     end
 end
 
+function UI._enable_cmp()
+    if package.loaded["cmp"] then
+        -- disable cmp while playing the game
+        require("cmp").setup.buffer({ enabled = true })
+    end
+end
+
 ---calculate the dimension of the floating window
 ---@param size number
 ---@param viewport integer
-function SpeedTyperUI._calc_size(size, viewport)
+function UI._calc_size(size, viewport)
     if size <= 1 then
         return math.ceil(size * viewport)
     end
     return math.min(size, viewport)
 end
 
-return SpeedTyperUI
+return UI

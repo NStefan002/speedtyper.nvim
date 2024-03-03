@@ -1,34 +1,31 @@
 local Ui = require("speedtyper.ui")
-local Config = require("speedtyper.config")
 local Highlights = require("speedtyper.highlights")
 local Util = require("speedtyper.util")
 
+-- load settings (will be visible to all of the modules)
+require("speedtyper.settings").load()
+
 ---@class SpeedTyper
----@field config SpeedTyperConfig
 ---@field ui SpeedTyperUI
 local SpeedTyper = {}
 SpeedTyper.__index = SpeedTyper
 
----@param partial_config? SpeedTyperPartialConfig
-function SpeedTyper.new(partial_config)
-    local config = Config.merge_config(partial_config, Config.get_default_config())
+function SpeedTyper.new()
     local self = {
-        config = config,
         ui = Ui.new(),
     }
     return setmetatable(self, SpeedTyper)
 end
 
----@param partial_config? SpeedTyperPartialConfig
-function SpeedTyper.setup(partial_config)
-    local speedtyper = SpeedTyper.new(partial_config)
-    Highlights.setup(speedtyper.config.highlights)
-    speedtyper:_create_autocmds()
+function SpeedTyper.setup()
+    local speedtyper = SpeedTyper.new()
+    Highlights.setup()
+    speedtyper._create_autocmds()
     speedtyper:_create_user_commands()
     return speedtyper
 end
 
-function SpeedTyper:_create_autocmds()
+function SpeedTyper._create_autocmds()
     local autocmd = vim.api.nvim_create_autocmd
     local augroup = vim.api.nvim_create_augroup
     local grp = augroup("SpeedTyper", {})
@@ -37,7 +34,7 @@ function SpeedTyper:_create_autocmds()
         group = grp,
         pattern = "*",
         callback = function()
-            Highlights.setup(self.config.highlights)
+            Highlights.setup()
         end,
     })
 end
