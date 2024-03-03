@@ -1,6 +1,8 @@
 local Util = require("speedtyper.util")
 local Round = require("speedtyper.round")
 
+-- TODO: implement settings menu (settings round menu is more or less finished)
+
 ---@class SpeedTyperMenu
 ---@field bufnr integer
 ---@field ns_id integer
@@ -40,8 +42,7 @@ function Menu:display_menu(bufnr)
     })
     self:_set_keymaps()
     self:_highlight_buttons()
-    -- default gamemode
-    self.round:set_game_mode("time", self.round_settings.length, self.round_settings.text_variant)
+    self.round:set_game_mode()
     self.round:start_round()
 end
 
@@ -78,19 +79,12 @@ function Menu:_activate_button(button)
         end
         self.round_settings.length[button] = true
     end
-    self.round:end_round()
-    for b, active in pairs(self.round_settings.game_mode) do
-        if active then
-            self.round:set_game_mode(
-                b,
-                self.round_settings.length,
-                self.round_settings.text_variant
-            )
-        end
-    end
-    self.round:start_round()
-    self:_highlight_buttons()
     vim.g.speedtyper_round_settings = self.round_settings
+    self:_highlight_buttons()
+
+    self.round:end_round()
+    self.round:set_game_mode()
+    self.round:start_round()
 end
 
 function Menu:_set_keymaps()

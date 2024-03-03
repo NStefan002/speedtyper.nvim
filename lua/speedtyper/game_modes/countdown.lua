@@ -19,8 +19,10 @@ local Position = require("speedtyper.position")
 local Countdown = {}
 Countdown.__index = Countdown
 
+-- TODO: remove '?'s and 'or's when the text_type option is implemented
+
 ---@param bufnr integer
----@param time number
+---@param time? number
 ---@param text_type? string
 function Countdown.new(bufnr, time, text_type)
     local self = {
@@ -29,7 +31,7 @@ function Countdown.new(bufnr, time, text_type)
         ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
         extm_ids = {},
         text = {},
-        time_sec = time,
+        time_sec = time or 30,
         text_type = text_type,
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
