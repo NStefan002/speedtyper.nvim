@@ -1,5 +1,6 @@
 local Util = require("speedtyper.util")
 local Round = require("speedtyper.round")
+local constants = require("speedtyper.constants")
 
 -- TODO: implement settings menu (settings round menu is more or less finished)
 
@@ -34,9 +35,15 @@ end
 function Menu:display_menu(bufnr)
     self.bufnr = bufnr
     self.round = Round.new(self.bufnr)
-    vim.api.nvim_buf_set_lines(self.bufnr, 0, 1, false, {
-        self.text[1],
-    })
+    vim.api.nvim_buf_set_lines(
+        self.bufnr,
+        constants._menu_first_line,
+        constants._menu_first_line + 1,
+        false,
+        {
+            self.text[1],
+        }
+    )
     vim.api.nvim_buf_set_lines(self.bufnr, -2, -1, false, {
         self.text[2],
     })
@@ -97,22 +104,24 @@ function Menu:_set_keymaps()
 end
 
 function Menu:_highlight_buttons()
-    vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, 0, 1)
+    vim.api.nvim_buf_clear_namespace(
+        self.bufnr,
+        self.ns_id,
+        constants._menu_first_line,
+        constants._menu_first_line + 1
+    )
 
     for _, values in pairs(self.round_settings) do
         for button, active in pairs(values) do
             local button_begin, button_end = string.find(self.text[1], button)
-            button_begin = (button_begin or 2) - 2
+            button_begin = math.max((button_begin or 2) - 2, 0)
             button_end = button_end or 0
-            if button_begin < 0 then
-                button_begin = 0
-            end
             if active then
                 vim.api.nvim_buf_add_highlight(
                     self.bufnr,
                     self.ns_id,
                     "SpeedTyperButtonActive",
-                    0,
+                    constants._menu_first_line,
                     button_begin,
                     button_end
                 )
@@ -121,7 +130,7 @@ function Menu:_highlight_buttons()
                     self.bufnr,
                     self.ns_id,
                     "SpeedTyperButtonInactive",
-                    0,
+                    constants._menu_first_line,
                     button_begin,
                     button_end
                 )
