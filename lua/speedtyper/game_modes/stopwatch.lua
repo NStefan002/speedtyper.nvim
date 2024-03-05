@@ -64,7 +64,6 @@ function Stopwatch:stop()
         self.timer:close()
         self.timer = nil
     end
-    self:_reset_values()
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperStopwatch")
     pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperStopwatchTimer")
 end
@@ -73,7 +72,8 @@ function Stopwatch:_reset_values()
     pcall(vim.api.nvim_buf_clear_namespace, self.bufnr, self.ns_id, 2, -1)
     self.time_sec = 0.0
     self.extm_ids = {}
-    self.text = {}
+    local win_width = vim.api.nvim_win_get_width(0)
+    self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     self.timer = nil
     self.typos_tracker.typos = {}
     self.prev_cursor_pos:update(3, 1)
@@ -82,8 +82,6 @@ end
 
 -- TODO: change hard-coded values
 function Stopwatch:_set_extmarks()
-    local win_width = vim.api.nvim_win_get_width(0)
-    self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     local n = math.min(3, #self.text)
     for i = 1, n do
         local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, i + 1, 0, {
@@ -120,9 +118,9 @@ function Stopwatch:_update_extmarks()
     end
     if line - 2 == #self.text and col - 1 == #self.text[#self.text] then
         -- no more text to type
+        self:stop()
         self.stats.time = self.time_sec
         self.stats:display_stats()
-        self:stop()
         return
     end
     if col - 1 == #self.text[line - 2] or col - 2 == #self.text[line - 2] then
@@ -148,22 +146,16 @@ function Stopwatch:_update_extmarks()
         virt_text = { { string.sub(self.text[line - 2], col), "SpeedTyperTextUntyped" } },
         virt_text_win_col = col - 1,
     })
+    vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, #self.text + 2, 6)
 
     self.prev_cursor_pos:update(line, col)
 end
 
 function Stopwatch:_move_up()
     Util.remove_element(self.text, self.text[1])
-
-    local n = math.min(3, #self.text)
-    for i = 1, n do
-        vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, i + 1, 0, {
-            id = self.extm_ids[i],
-            virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
-            virt_text_win_col = 0,
-        })
-    end
-    pcall(vim.api.nvim_buf_clear_namespace, self.bufnr, self.ns_id, n, 5)
+    vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, 2, 6)
+    self.extm_ids = {}
+    self:_set_extmarks()
 
     local written_lines = vim.api.nvim_buf_get_lines(self.bufnr, 2, 4, false)
     Util.remove_element(written_lines, written_lines[1])
@@ -202,10 +194,12 @@ function Stopwatch:_create_timer()
         once = true,
         callback = function()
             vim.api.nvim_feedkeys(
-                vim.api.nvim_replace_termcodes("<Esc>:3<CR>0i", true, false, true),
+                vim.api.nvim_replace_termcodes("<Esc>:3<CR>I", true, false, true),
                 "!",
-                true
+                false
             )
+            -- TODO: FIND OUT WHY THIS DOES NOT WORK
+            -- vim.api.nvim_win_set_cursor(0, { 3, 0 })
             vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
             self:_start_timer()
         end,
