@@ -35,10 +35,10 @@
     -   [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
     -   [x] show each game mode details in a pop-up window (like lsp.hover)
 -   [ ] Settings
-    -   [ ] fully (or almost fully) remove config and the 'standard' way of configuring plugin
+    -   [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
     -   [ ] customize settings in the ui and refresh them live
-    -   [ ] save settings in json somewhere
+    -   [x] save settings in json somewhere
 
     -   [ ] select the game theme (from predefined themes)
-    -   [ ] select sound the game makes when typing
+    -   [ ] select sound the game makes when typing (create `health.lua` for this one)
     -   [ ] select cursor type
