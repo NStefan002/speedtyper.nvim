@@ -3,6 +3,7 @@ local TyposTracker = require("speedtyper.typo")
 local Text = require("speedtyper.text")
 local Stats = require("speedtyper.stats")
 local Position = require("speedtyper.position")
+local constants = require("speedtyper.constants")
 
 ---@class SpeedTyperStopwatch
 ---@field timer uv_timer_t
@@ -38,7 +39,7 @@ function Stopwatch.new(bufnr, number_of_words, text_type)
         text_generator = Text.new(),
         typos_tracker = TyposTracker.new(bufnr),
         stats = Stats.new(bufnr),
-        prev_cursor_pos = Position.new(3, 1),
+        prev_cursor_pos = Position.new(0, 0),
     }
     return setmetatable(self, Stopwatch)
 end
@@ -69,22 +70,28 @@ function Stopwatch:stop()
 end
 
 function Stopwatch:_reset_values()
-    pcall(vim.api.nvim_buf_clear_namespace, self.bufnr, self.ns_id, 2, -1)
+    pcall(
+        vim.api.nvim_buf_clear_namespace,
+        self.bufnr,
+        self.ns_id,
+        constants._text_first_line,
+        constants._info_line + 1
+    )
     self.time_sec = 0.0
     self.extm_ids = {}
     local win_width = vim.api.nvim_win_get_width(0)
     self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     self.timer = nil
     self.typos_tracker.typos = {}
-    self.prev_cursor_pos:update(3, 1)
+    self.prev_cursor_pos:update(0, 0)
     self.stats:reset()
 end
 
--- TODO: change hard-coded values
 function Stopwatch:_set_extmarks()
-    local n = math.min(3, #self.text)
+    local n = math.min(constants._text_num_lines, #self.text)
     for i = 1, n do
-        local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, i + 1, 0, {
+        local line = constants._text_first_line + i - 1
+        local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
         })
@@ -94,12 +101,13 @@ end
 
 function Stopwatch:_update_extmarks()
     local line, col = Util.get_cursor_pos()
+    line = line - constants._text_first_line
     -- NOTE: don't check the current character when going backwards (e.g. with backspace)
     if
         line > self.prev_cursor_pos.line
         or (line == self.prev_cursor_pos.line and col > self.prev_cursor_pos.col)
     then
-        local curr_char = string.sub(self.text[line - 2], col - 1, col - 1)
+        local curr_char = string.sub(self.text[line + 1], col, col)
         if self.typos_tracker:check_curr_char(curr_char) then
             self.stats.typed_text:push({ curr_char, true })
         else
@@ -116,60 +124,92 @@ function Stopwatch:_update_extmarks()
             self.stats.typed_text:pop()
         end
     end
-    if line - 2 == #self.text and col - 1 == #self.text[#self.text] then
+    if line + 1 == #self.text and col == #self.text[#self.text] then
         -- no more text to type
         self:stop()
         self.stats.time = self.time_sec
         self.stats:display_stats()
         return
     end
-    if col - 1 == #self.text[line - 2] or col - 2 == #self.text[line - 2] then
+    if col == #self.text[line + 1] or col - 1 == #self.text[line + 1] then
         if line < self.prev_cursor_pos.line or col == self.prev_cursor_pos.col then
             vim.cmd.normal("o")
             vim.cmd.normal("k$")
-            vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line, 0, {
-                id = self.extm_ids[line - 1],
-                virt_text = { { self.text[line - 1], "SpeedTyperTextUntyped" } },
-                virt_text_win_col = 0,
-            })
+            vim.api.nvim_buf_set_extmark(
+                self.bufnr,
+                self.ns_id,
+                line + constants._text_first_line + 1,
+                0,
+                {
+                    id = self.extm_ids[line + constants._text_first_line],
+                    virt_text = {
+                        {
+                            self.text[line + constants._text_first_line],
+                            "SpeedTyperTextUntyped",
+                        },
+                    },
+                    virt_text_win_col = 0,
+                }
+            )
         else
-            if line == 4 then
+            if line + constants._text_first_line == constants._text_middle_line then
                 self:_move_up()
-                col = 1
+                col = 0
             else
                 vim.cmd.normal("j0")
             end
         end
     end
-    vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line - 1, 0, {
-        id = self.extm_ids[line - 2],
-        virt_text = { { string.sub(self.text[line - 2], col), "SpeedTyperTextUntyped" } },
-        virt_text_win_col = col - 1,
+    vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line + constants._text_first_line, 0, {
+        id = self.extm_ids[line + 1],
+        virt_text = { { string.sub(self.text[line + 1], col + 1), "SpeedTyperTextUntyped" } },
+        virt_text_win_col = col,
     })
-    vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, #self.text + 2, 6)
+    vim.api.nvim_buf_clear_namespace(
+        self.bufnr,
+        self.ns_id,
+        #self.text + constants._text_first_line,
+        constants._text_first_line + constants._text_num_lines + 1
+    )
 
     self.prev_cursor_pos:update(line, col)
 end
 
 function Stopwatch:_move_up()
     Util.remove_element(self.text, self.text[1])
-    vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, 2, 6)
+    vim.api.nvim_buf_clear_namespace(
+        self.bufnr,
+        self.ns_id,
+        constants._text_first_line,
+        constants._text_first_line + constants._text_num_lines + 1
+    )
     self.extm_ids = {}
     self:_set_extmarks()
 
-    local written_lines = vim.api.nvim_buf_get_lines(self.bufnr, 2, 4, false)
+    local written_lines = vim.api.nvim_buf_get_lines(
+        self.bufnr,
+        constants._text_first_line,
+        constants._text_middle_line + 1,
+        false
+    )
     Util.remove_element(written_lines, written_lines[1])
     table.insert(written_lines, "")
-    vim.api.nvim_buf_set_lines(self.bufnr, 2, 4, false, written_lines)
+    vim.api.nvim_buf_set_lines(
+        self.bufnr,
+        constants._text_first_line,
+        constants._text_middle_line + 1,
+        false,
+        written_lines
+    )
 
     -- remove typos from the first line (because the line is removed)
     -- and move typos from the second line to the first line
     local to_remove = {}
     for i, typo in ipairs(self.typos_tracker.typos) do
-        if typo.line == 3 then
+        if typo.line == constants._text_first_line then
             table.insert(to_remove, typo)
-        elseif self.typos_tracker.typos[i].line == 4 then
-            self.typos_tracker.typos[i].line = 3
+        else
+            self.typos_tracker.typos[i].line = self.typos_tracker.typos[i].line - 1
         end
     end
     for _, typo in ipairs(to_remove) do
@@ -182,7 +222,7 @@ end
 
 function Stopwatch:_create_timer()
     self.timer = (vim.uv or vim.loop).new_timer()
-    local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, 7, 0, {
+    local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, constants._info_line, 0, {
         virt_text = {
             { "Press 'i' to start the game.", "SpeedTyperTextOk" },
         },
@@ -193,13 +233,14 @@ function Stopwatch:_create_timer()
         buffer = self.bufnr,
         once = true,
         callback = function()
+            local command = string.format("<Esc>:%d<CR>I", constants._text_first_line + 1)
             vim.api.nvim_feedkeys(
-                vim.api.nvim_replace_termcodes("<Esc>:3<CR>I", true, false, true),
+                vim.api.nvim_replace_termcodes(command, true, false, true),
                 "!",
                 false
             )
             -- TODO: FIND OUT WHY THIS DOES NOT WORK
-            -- vim.api.nvim_win_set_cursor(0, { 3, 0 })
+            -- vim.api.nvim_win_set_cursor(0, { constants._text_first_line + 1, 0 })
             vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
             self:_start_timer()
         end,

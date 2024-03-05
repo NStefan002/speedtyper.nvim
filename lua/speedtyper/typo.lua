@@ -22,11 +22,10 @@ end
 ---@return boolean
 function TyposTracker:check_curr_char(should_be)
     local line, col = Util.get_cursor_pos()
-    if col == 1 then
+    if col == 0 then
         return true
     end
-    col = col - 1
-    local typed = vim.api.nvim_buf_get_text(self.bufnr, line - 1, col - 1, line - 1, col, {})[1]
+    local typed = vim.api.nvim_buf_get_text(self.bufnr, line, col - 1, line, col, {})[1]
     if typed ~= should_be then
         self.typos = self.typos or {}
         table.insert(self.typos, Position.new(line, col))
@@ -44,7 +43,7 @@ function TyposTracker:_mark_typo(line, col)
         self.bufnr,
         self.ns_id,
         "SpeedTyperTextError",
-        line - 1,
+        line,
         col - 1,
         col
     )

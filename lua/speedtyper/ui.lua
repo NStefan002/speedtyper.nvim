@@ -1,6 +1,7 @@
 local Util = require("speedtyper.util")
 local Menu = require("speedtyper.menu")
 local Hover = require("speedtyper.hover")
+local constants = require("speedtyper.constants")
 
 ---@class SpeedTyperUI
 ---@field bufnr integer
@@ -80,11 +81,10 @@ function UI:_open()
         return
     end
 
-    local preffered_height = 10
-    local preffered_width = self.menu:get_width()
+    local width = self.menu:get_width()
     local nvim_uis = vim.api.nvim_list_uis()
     if #nvim_uis > 0 then
-        if nvim_uis[1].height <= preffered_height or nvim_uis[1].width <= preffered_width then
+        if nvim_uis[1].height <= constants._win_height or nvim_uis[1].width <= width then
             Util.error("Increase the size of your Neovim instance.")
         end
     end
@@ -95,10 +95,10 @@ function UI:_open()
         relative = "editor",
         anchor = "NW",
         title = "SpeedTyper",
-        row = math.floor((lines - preffered_height) / 2),
-        col = math.floor((cols - preffered_width) / 2),
-        width = preffered_width,
-        height = preffered_height,
+        row = math.floor((lines - constants._win_height) / 2),
+        col = math.floor((cols - width) / 2),
+        width = width,
+        height = constants._win_height,
         style = "minimal",
         border = "double",
         noautocmd = true,

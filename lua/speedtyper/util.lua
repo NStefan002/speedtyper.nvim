@@ -13,11 +13,12 @@ function Util.info(msg)
     vim.notify("\n" .. msg, vim.log.levels.INFO, { title = "Speedtyper" })
 end
 
+---returns the current position of the cursor, 0-indexed
 ---@return integer
 ---@return integer
 function Util.get_cursor_pos()
-    local line = vim.fn.line(".")
-    local col = vim.fn.col(".")
+    local line = vim.fn.line(".") - 1
+    local col = vim.fn.col(".") - 1
     return line, col
 end
 
