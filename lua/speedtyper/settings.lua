@@ -29,6 +29,7 @@ local settings_path = string.format("%s/speedtyper-settings.json", vim.fn.stdpat
 ---@field live_progress Switch
 ---@field average_speed Switch
 ---@field average_accuracy Switch
+---@field debug_mode Switch
 
 ---@type SpeedTyperSettings
 local default_settings = {
@@ -107,6 +108,10 @@ local default_settings = {
         ["off"] = true,
     },
     average_accuracy = {
+        ["on"] = false,
+        ["off"] = true,
+    },
+    debug_mode = {
         ["on"] = false,
         ["off"] = true,
     },

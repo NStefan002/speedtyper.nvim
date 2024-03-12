@@ -1,6 +1,7 @@
 local Ui = require("speedtyper.ui")
 local Highlights = require("speedtyper.highlights")
 local Util = require("speedtyper.util")
+local Logger = require("speedtyper.logger")
 
 -- load settings (will be visible to all of the modules)
 require("speedtyper.settings").load()
@@ -51,6 +52,15 @@ function SpeedTyper:_create_user_commands()
     end, {
         nargs = 0,
         desc = "Start SpeedTyper",
+    })
+    vim.api.nvim_create_user_command("SpeedTyperLog", function(event)
+        if #event.fargs > 0 then
+            Util.error("SpeedTyperLog: command does not take arguments.")
+        end
+        Logger:display()
+    end, {
+        nargs = 0,
+        desc = "Display SpeedTyper Log",
     })
 end
 
