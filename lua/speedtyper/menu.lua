@@ -203,6 +203,7 @@ function Menu:_activate_settings_button(button)
         setting[b] = false
     end
     setting[button] = true
+    vim.g.speedtyper_settings = self.settings
     self:_highlight_settings_buttons(setting_text, line)
 end
 
