@@ -182,4 +182,10 @@ Show the average accuracy of the last
 10 attempts.
 ]]
 
+Instructions.debug_mode = [[
+Enable this if you want to debug
+some issue. Display the log with
+`:SpeedTyperLog`.
+]]
+
 return Instructions
