@@ -94,4 +94,51 @@ function M.disable_modifying_buffer()
     end
 end
 
+---check if mode is allowed for floating window
+---@param mode string
+---@return boolean
+function M.window_allowed_vim_mode(mode)
+    if mode == nil or type(mode) ~= "string" then
+        return false
+    end
+   local allowed_vim_modes = {
+    "i",
+    "n",
+    "x",
+    }
+    for _, val in ipairs(allowed_vim_modes) do
+        if val == mode then
+            return true
+        end
+    end
+    return false
+end
+
+--- @param winnr integer
+--- @param bufnr integer
+--- @param mapping string | table<string, string>
+function M.set_window_close_mapping(winnr, bufnr, mapping)
+    if mapping == nil then
+        return
+    end
+    if type(mapping) == "string" then
+        vim.keymap.set("n", mapping, function()
+            api.nvim_win_close(winnr, false)
+        end, { buffer = bufnr })
+    elseif type(mapping) == "table" then
+        for mode, lhs in pairs(mapping) do
+            if not M.window_allowed_vim_mode(mode) then
+                M.error("Invalid mode " .. mode .. " skipping...")
+                goto continue
+            end
+            vim.keymap.set(mode, lhs, function()
+                api.nvim_win_close(winnr, false)
+            end, { buffer = bufnr })
+            ::continue::
+        end
+    else
+        M.error("Invalid type for window close mapping. Defaulting to noop")
+    end
+end
+
 return M

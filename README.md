@@ -80,7 +80,13 @@ use({
         height = 5, -- integer >= 5 | float in range (0, 1)
         width = 0.55, -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
-        close_with = nil, -- lhs used to close game window. nil means no map
+        -- lhs used to close game window.
+        -- can be a string (applies to normal mode),
+        -- or a table where the key represents the mode and the value is the mapping.
+        -- e.g. close_with = "q" or close_with = { n = "q", i = "<M-q>" }.
+        -- mode can be any of "n" | "i" | "x"
+        -- nil means no map
+        close_with = nil,
     },
     language = "en", -- "en" | "sr" currently only only supports English and Serbian
     sentence_mode = false, -- if true, whole sentences will be used

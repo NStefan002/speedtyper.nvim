@@ -32,11 +32,7 @@ function M.open_float(opts)
         title_pos = "center",
         noautocmd = true,
     })
-    if opts.close_with ~= nil then
-        vim.keymap.set("n", opts.close_with, function()
-            api.nvim_win_close(winnr, false)
-        end, { buffer = bufnr })
-    end
+    require("speedtyper.util").set_window_close_mapping(winnr, bufnr, opts.close_with)
     return winnr, bufnr
 end
 
