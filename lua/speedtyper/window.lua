@@ -32,6 +32,11 @@ function M.open_float(opts)
         title_pos = "center",
         noautocmd = true,
     })
+    if opts.close_with ~= nil then
+        vim.keymap.set("n", opts.close_with, function()
+            api.nvim_win_close(winnr, false)
+        end)
+    end
     return winnr, bufnr
 end
 

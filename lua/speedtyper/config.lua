@@ -6,6 +6,7 @@ M.default_opts = {
         height = 5, -- integer >= 5 | float in range (0, 1)
         width = 0.55, -- integer | float in range (0, 1)
         border = "rounded", -- "none" | "single" | "double" | "rounded" | "shadow" | "solid"
+        close_with = nil, -- lhs used to close game window. nil means no map
     },
     language = "en", -- "en" | "sr" currently only only supports English and Serbian
     sentence_mode = false, -- if true, whole sentences will be used
