@@ -32,6 +32,7 @@ function M.open_float(opts)
         title_pos = "center",
         noautocmd = true,
     })
+    require("speedtyper.util").set_window_close_mapping(winnr, bufnr, opts.close_with)
     return winnr, bufnr
 end
 
