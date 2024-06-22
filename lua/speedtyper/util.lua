@@ -101,10 +101,10 @@ function M.window_allowed_vim_mode(mode)
     if mode == nil or type(mode) ~= "string" then
         return false
     end
-   local allowed_vim_modes = {
-    "i",
-    "n",
-    "x",
+    local allowed_vim_modes = {
+        "i",
+        "n",
+        "x",
     }
     for _, val in ipairs(allowed_vim_modes) do
         if val == mode then
