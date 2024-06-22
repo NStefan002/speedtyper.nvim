@@ -129,12 +129,11 @@ function M.set_window_close_mapping(winnr, bufnr, mapping)
         for mode, lhs in pairs(mapping) do
             if not M.window_allowed_vim_mode(mode) then
                 M.error("Invalid mode " .. mode .. " skipping...")
-                goto continue
+            else
+                vim.keymap.set(mode, lhs, function()
+                    api.nvim_win_close(winnr, false)
+                end, { buffer = bufnr })
             end
-            vim.keymap.set(mode, lhs, function()
-                api.nvim_win_close(winnr, false)
-            end, { buffer = bufnr })
-            ::continue::
         end
     else
         M.error("Invalid type for window close mapping. Defaulting to noop")
