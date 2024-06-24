@@ -37,15 +37,17 @@ function UI:_create_autocmds()
         end,
         desc = "Internally close the SpeedTyper when its gets closed.",
     })
-    -- autocmd({ "BufLeave", "BufDelete", "BufWinLeave" }, {
-    --     group = grp,
-    --     buffer = globals.bufnr,
-    --     callback = function()
-    --         require("speedtyper.settings"):save()
-    --         self:_close()
-    --     end,
-    --     desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
-    -- })
+    autocmd({ "BufDelete", "BufWinLeave" }, {
+        group = grp,
+        buffer = globals.bufnr,
+        callback = function()
+            require("speedtyper.settings"):save()
+            vim.schedule(function()
+                self:_close()
+            end)
+        end,
+        desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
+    })
     -- TODO: FIND OUT WHY THIS DOESN'T WORK FOR UNLISTED/SCRATCH BUFFERS EVEN THOUGH THEY GET HIDDEN
     -- autocmd("BufHidden", {
     --     group = grp,
