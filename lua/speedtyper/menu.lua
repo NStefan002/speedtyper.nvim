@@ -140,7 +140,7 @@ function Menu:_set_keymaps()
         "n",
         settings.keymaps.press_button,
         get_cword,
-        { buffer = true, desc = "SpeedTyper: press button" }
+        { buffer = globals.bufnr, desc = "SpeedTyper: press button" }
     )
 end
 
