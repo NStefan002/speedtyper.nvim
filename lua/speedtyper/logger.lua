@@ -1,4 +1,5 @@
-local Util = require("speedtyper.util")
+local api = vim.api
+local util = require("speedtyper.util")
 
 ---@class SpeedTyperLogger
 ---@field lines string[]
@@ -31,9 +32,9 @@ function Logger:log(...)
 
     local lines = {}
     for _, line in ipairs(processed) do
-        local split = Util.split(line, "\n")
+        local split = util.split(line, "\n")
         for _, l in ipairs(split) do
-            l = Util.trim(l)
+            l = util.trim(l)
             table.insert(lines, l)
         end
     end
@@ -54,9 +55,9 @@ function Logger:display()
     if not enabled then
         return
     end
-    local bufnr = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, self.lines)
-    vim.api.nvim_win_set_buf(0, bufnr)
+    local bufnr = api.nvim_create_buf(false, true)
+    api.nvim_buf_set_lines(bufnr, 0, -1, false, self.lines)
+    api.nvim_win_set_buf(0, bufnr)
 end
 
 return Logger.new()

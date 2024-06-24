@@ -1,14 +1,16 @@
-local Util = {}
+local api = vim.api
+local M = {}
+
 ---notify user of an error
 ---@param msg string
-function Util.error(msg)
+function M.error(msg)
     -- "\n" for nvim configs that don't use nvim-notify
     vim.notify("\n" .. msg, vim.log.levels.ERROR, { title = "Speedtyper" })
     error(msg)
 end
 
 ---@param msg string
-function Util.info(msg)
+function M.info(msg)
     -- "\n" for nvim configs that don't use nvim-notify
     vim.notify("\n" .. msg, vim.log.levels.INFO, { title = "Speedtyper" })
 end
@@ -16,7 +18,7 @@ end
 ---returns the current position of the cursor, 0-indexed
 ---@return integer
 ---@return integer
-function Util.get_cursor_pos()
+function M.get_cursor_pos()
     local line = vim.fn.line(".") - 1
     local col = vim.fn.col(".") - 1
     return line, col
@@ -26,25 +28,25 @@ end
 ---@param a number
 ---@param b number
 ---@return boolean
-function Util.equals(a, b)
+function M.equals(a, b)
     return tostring(a) == tostring(b)
 end
 
 ---@param n integer number of empty lines
 ---@param bufnr? integer
-function Util.clear_buffer_text(n, bufnr)
+function M.clear_buffer_text(n, bufnr)
     local repl = {}
     for _ = 1, n do
         table.insert(repl, "")
     end
-    vim.api.nvim_buf_set_lines(bufnr or 0, 0, n, false, repl)
+    api.nvim_buf_set_lines(bufnr or 0, 0, n, false, repl)
 end
 
 ---@param file_path string
-function Util.read_file(file_path)
+function M.read_file(file_path)
     local reader = io.open(file_path, "r")
     if reader == nil then
-        Util.error("Failed to read from the file: " .. file_path)
+        M.error("Failed to read from the file: " .. file_path)
         return
     end
 
@@ -59,47 +61,49 @@ function Util.read_file(file_path)
     return words
 end
 
--- HACK: disable buffer modification by disabling all modifying keys
-function Util.disable_buffer_modification()
+---@param bufnr integer
+function M.disable_buffer_modification(bufnr)
     -- exit insert mode
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
-    local keys_to_disable = {
-        "i",
-        "a",
-        "o",
-        "r",
-        "x",
-        "s",
-        "d",
-        "c",
-        "u",
-        "p",
-        "I",
-        "A",
-        "O",
-        "R",
-        "S",
-        "D",
-        "C",
-        "U",
-        "P",
-        "n",
-        "N",
-        ".",
-    }
-    for _, key in pairs(keys_to_disable) do
-        vim.keymap.set({ "n", "v" }, key, "<Nop>", { buffer = 0 })
-    end
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    -- HACK: disable buffer modification by disabling all modifying keys
+    -- local keys_to_disable = {
+    --     "i",
+    --     "a",
+    --     "o",
+    --     "r",
+    --     "x",
+    --     "s",
+    --     "d",
+    --     "c",
+    --     "u",
+    --     "p",
+    --     "I",
+    --     "A",
+    --     "O",
+    --     "R",
+    --     "S",
+    --     "D",
+    --     "C",
+    --     "U",
+    --     "P",
+    --     "n",
+    --     "N",
+    --     ".",
+    -- }
+    -- for _, key in pairs(keys_to_disable) do
+    --     vim.keymap.set({ "n", "v" }, key, "<Nop>", { buffer = 0 })
+    -- end
+    api.nvim_set_option_value("modifiable", false, { buf = bufnr })
 end
 
 ---@param str string
-function Util.trim(str)
+function M.trim(str)
     return str:gsub("^%s+", ""):gsub("%s+$", "")
 end
 
 ---@param str string
 ---@param sep? string
-function Util.split(str, sep)
+function M.split(str, sep)
     sep = sep or "%s" -- whitespace by default
     local t = {}
     for s in string.gmatch(str, "([^" .. sep .. "]+)") do
@@ -115,7 +119,7 @@ end
 ---@param idx integer
 ---@return string word the word that contains the character at `idx`
 ---@return integer idx index in the sentence -> index in the word
-function Util.get_word_from_sentence(sentence, idx)
+function M.get_word_from_sentence(sentence, idx)
     if sentence:sub(idx, idx) == " " then
         return " ", 1
     end
@@ -139,7 +143,7 @@ end
 ---@param el any
 ---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return integer idx index of the element `el` or 0 if `tbl` does not contain `el`
-function Util.find_element(tbl, el, eq)
+function M.find_element(tbl, el, eq)
     eq = eq or function(a, b)
         return a == b
     end
@@ -155,34 +159,45 @@ end
 ---@param el any
 ---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return boolean
-function Util.tbl_contains(tbl, el, eq)
+function M.tbl_contains(tbl, el, eq)
     eq = eq or function(a, b)
         return a == b
     end
-    return Util.find_element(tbl, el, eq) > 0
+    return M.find_element(tbl, el, eq) > 0
 end
 
 ---@param tbl table
 ---@param el any
 ---@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
-function Util.remove_element(tbl, el, eq)
+function M.remove_element(tbl, el, eq)
     eq = eq or function(a, b)
         return a == b
     end
-    local idx = Util.find_element(tbl, el, eq)
+    local idx = M.find_element(tbl, el, eq)
     if idx > 0 then
         table.remove(tbl, idx)
     end
 end
 
 ---@param key string
-function Util.simulate_keypress(key)
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, false, true), "x", true)
+function M.simulate_keypress(key)
+    api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), "x", true)
 end
 
 ---@param text string
-function Util.simulate_input(text)
-    Util.simulate_keypress("a" .. text)
+function M.simulate_input(text)
+    M.simulate_keypress("a" .. text)
 end
 
-return Util
+---calculate the dimension of the floating window
+---usage: calc_size(0.5, total_lines) for calculating height (50% of total editor height)
+---@param size number
+---@param viewport integer
+function M.calc_size(size, viewport)
+    if size <= 1 then
+        return math.ceil(size * viewport)
+    end
+    return math.min(size, viewport)
+end
+
+return M

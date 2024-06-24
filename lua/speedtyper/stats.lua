@@ -1,9 +1,8 @@
-local Util = require("speedtyper.util")
-local Stack = require("speedtyper.stack")
+local util = require("speedtyper.util")
+local stack = require("speedtyper.stack")
+local globals = require("speedtyper.globals")
 
 ---@class SpeedTyperStats
----@field bufnr integer
----@field ns_id integer
 ---@field wpm number
 ---@field raw_wpm number
 ---@field time number
@@ -21,23 +20,20 @@ Stats.__index = Stats
 -- typos is the total number of characters that were typed incorrectly
 -- regardless of whether they were corrected or not
 
----@param bufnr integer
-function Stats.new(bufnr)
-    local self = {
-        bufnr = bufnr,
-        ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
-        wpm = nil,
-        raw_wpm = nil,
-        time = nil,
-        acc = nil,
+function Stats.new()
+    local self = setmetatable({
+        wpm = 0,
+        raw_wpm = 0,
+        time = 0,
+        acc = 0,
         correct_spaces = 0,
         length_of_correct_words = 0,
         correct_chars = 0,
         typed_chars = 0,
         typos = 0,
-        typed_text = Stack.new(),
-    }
-    return setmetatable(self, Stats)
+        typed_text = stack.new(),
+    }, Stats)
+    return self
 end
 
 function Stats:display_stats()
@@ -46,7 +42,7 @@ function Stats:display_stats()
     self:_calculate_raw_wpm()
     self:_calculate_acc()
 
-    Util.disable_buffer_modification()
+    util.disable_buffer_modification(globals.bufnr)
     -- TODO: set buffer text
     print(
         string.format("WPM: %.2f\n", self.wpm),

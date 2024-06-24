@@ -1,17 +1,33 @@
----@class SpeedTyperHighlights
-local Highlights = {}
-Highlights.__index = Highlights
+local M = {}
+local api = vim.api
+local globals = require("speedtyper.globals")
+local grp = nil
 
-function Highlights.setup()
-    vim.api.nvim_set_hl(0, "SpeedTyperButtonActive", { link = "DiagnosticHint" })
-    vim.api.nvim_set_hl(0, "SpeedTyperButtonInactive", { link = "Comment" })
-    vim.api.nvim_set_hl(0, "SpeedTyperTextTyped", { link = "Normal" })
-    vim.api.nvim_set_hl(0, "SpeedTyperTextOk", { link = "DiagnosticOk" })
-    vim.api.nvim_set_hl(0, "SpeedTyperTextUntyped", { link = "Comment" })
-    vim.api.nvim_set_hl(0, "SpeedTyperTextError", { link = "ErrorMsg" })
-    vim.api.nvim_set_hl(0, "SpeedTyperTextWarning", { link = "WarningMsg" })
-    vim.api.nvim_set_hl(0, "SpeedTyperClockNormal", { link = "Normal" })
-    vim.api.nvim_set_hl(0, "SpeedTyperClockWarning", { link = "WarningMsg" })
+local function create_autocmds()
+    grp = api.nvim_create_augroup("SpeedTyperHighlight", {})
+    api.nvim_create_autocmd("Colorscheme", {
+        group = grp,
+        pattern = "*",
+        callback = function()
+            M.setup()
+        end,
+    })
 end
 
-return Highlights
+function M.setup()
+    if not grp then
+        create_autocmds()
+    end
+
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperButtonActive", { link = "DiagnosticHint" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperButtonInactive", { link = "Comment" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextTyped", { link = "Normal" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextOk", { link = "DiagnosticOk" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextUntyped", { link = "Comment" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextError", { link = "ErrorMsg" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextWarning", { link = "WarningMsg" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperClockNormal", { link = "Normal" })
+    api.nvim_set_hl(globals.ns_id, "SpeedTyperClockWarning", { link = "WarningMsg" })
+end
+
+return M

@@ -1,5 +1,7 @@
-local Instructions = require("speedtyper.instructions")
-local Util = require("speedtyper.util")
+local api = vim.api
+local instructions = require("speedtyper.instructions")
+local util = require("speedtyper.util")
+local settings = require("speedtyper.settings")
 
 ---@class SpeedTyperHover
 ---@field bufnr integer
@@ -8,13 +10,14 @@ local Util = require("speedtyper.util")
 local Hover = {}
 Hover.__index = Hover
 
+---@return SpeedTyperHover
 function Hover.new()
-    local self = {
+    local self = setmetatable({
         bufnr = nil,
         winnr = nil,
         instruction = nil,
-    }
-    return setmetatable(self, Hover)
+    }, Hover)
+    return self
 end
 
 function Hover:set_keymaps()
@@ -25,12 +28,17 @@ function Hover:set_keymaps()
             self:_open()
         end
     end
-    vim.keymap.set("n", "K", display_current_word_info, { buffer = true })
+    vim.keymap.set(
+        "n",
+        settings.keymaps.hover,
+        display_current_word_info,
+        { buffer = true, desc = "SpeedTyper: Display the info of the item under the cursor" }
+    )
 end
 
 ---@param item string
 function Hover:_set_instruction(item)
-    self.instruction = Util.split(Instructions.get(item), "\n")
+    self.instruction = util.split(instructions:get(item), "\n")
 end
 
 function Hover:_open()
@@ -42,8 +50,8 @@ function Hover:_open()
     for _, line in pairs(self.instruction) do
         max_len = math.max(max_len, #line)
     end
-    local bufnr = vim.api.nvim_create_buf(false, true)
-    local winnr = vim.api.nvim_open_win(bufnr, false, {
+    local bufnr = api.nvim_create_buf(false, true)
+    local winnr = api.nvim_open_win(bufnr, false, {
         relative = "cursor",
         row = 0,
         col = 1,
@@ -57,16 +65,16 @@ function Hover:_open()
     })
 
     if winnr == 0 then
-        Util.error("Failed to open window")
+        util.error("Failed to open window")
         self:_close()
     end
 
     self.bufnr = bufnr
     self.winnr = winnr
 
-    Util.clear_buffer_text(n_lines, self.bufnr)
+    util.clear_buffer_text(n_lines, self.bufnr)
     for i, line in ipairs(self.instruction) do
-        vim.api.nvim_buf_set_lines(self.bufnr, i - 1, i, false, {
+        api.nvim_buf_set_lines(self.bufnr, i - 1, i, false, {
             line,
         })
     end
@@ -74,20 +82,20 @@ function Hover:_open()
 end
 
 function Hover:_close()
-    if self.bufnr ~= nil and vim.api.nvim_buf_is_valid(self.bufnr) then
-        vim.api.nvim_buf_delete(self.bufnr, { force = true })
+    if self.bufnr ~= nil and api.nvim_buf_is_valid(self.bufnr) then
+        api.nvim_buf_delete(self.bufnr, { force = true })
     end
-    if self.winnr ~= nil and vim.api.nvim_win_is_valid(self.winnr) then
-        vim.api.nvim_win_close(self.winnr, true)
+    if self.winnr ~= nil and api.nvim_win_is_valid(self.winnr) then
+        api.nvim_win_close(self.winnr, true)
     end
     self.bufnr = nil
     self.winnr = nil
-    pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperHover")
+    pcall(api.nvim_del_augroup_by_name, "SpeedTyperHover")
 end
 
 function Hover:_create_autocmds()
-    local autocmd = vim.api.nvim_create_autocmd
-    local augroup = vim.api.nvim_create_augroup
+    local autocmd = api.nvim_create_autocmd
+    local augroup = api.nvim_create_augroup
     local grp = augroup("SpeedTyperHover", {})
 
     autocmd({ "CursorMoved", "CursorMovedI" }, {
@@ -99,4 +107,4 @@ function Hover:_create_autocmds()
     })
 end
 
-return Hover
+return Hover.new()

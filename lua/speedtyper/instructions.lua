@@ -31,161 +31,137 @@
 local Instructions = {}
 Instructions.__index = Instructions
 
----@param item string
-function Instructions.get(item)
-    return Instructions[item] or ""
-end
-
-Instructions.time = [[
+---@return SpeedTyperInstructions
+function Instructions.new()
+    local self = setmetatable({
+        time = [[
 Type as many words as you
 can in the given time.
-]]
-
-Instructions.words = [[
+]],
+        words = [[
 Type the given number of
 words as fast as you can.
-]]
-
-Instructions.rain = [[
+]],
+        rain = [[
     [ Coming soon! ]
 Type the falling words
 before they reach the bottom.
-]]
-
-Instructions.custom = [[
+]],
+        custom = [[
     [ Coming soon! ]
 Provide your own text to type.
-]]
-
-Instructions.punctuation = [[
+]],
+        punctuation = [[
 Add punctuation to the text.
-]]
-
-Instructions.numbers = [[
+]],
+        numbers = [[
 Add numbers to the text.
-]]
-
-Instructions.settings = [[
+]],
+        settings = [[
 The game will instantly apply
 your settings (no need to restart
 Neovim) and settings will
 be saved for future games.
-]]
-
-Instructions.total_time = [[
+]],
+        total_time = [[
 Total time spent typing.
-]]
-
-Instructions.wpm = [[
+]],
+        wpm = [[
 Total number of characters in
 the correctly typed words
 (including spaces), divided
 by 5 and normalised to 60 seconds.
-]]
-
-Instructions.raw_wpm = [[
+]],
+        raw_wpm = [[
 Total number of typed characters
 (correctly or incorrectly typed),
 divided by 5 and normalised to
 60 seconds.
-]]
-
-Instructions.acc = [[
+]],
+        acc = [[
 Total number of correctly typed
 characters divided by the total
 number of characters typed.
-]]
-
-Instructions.language = [[
+]],
+        language = [[
 Choose one of available languages.
-]]
-
-Instructions.theme = [[
+]],
+        theme = [[
 Choose one of the predefined themes.
-]]
-
-Instructions.randomize_theme = [[
+]],
+        randomize_theme = [[
 Randomly select theme before every game.
-]]
-
-Instructions.cursor_style = [[
+]],
+        cursor_style = [[
 Choose one of the predifined cursor styles.
-]]
-
-Instructions.cursor_blinking = [[
+]],
+        cursor_blinking = [[
 Enable/disable cursor blinking.
-]]
-
-Instructions.pace_cursor = [[
+]],
+        pace_cursor = [[
 Displays a second cursor that moves
 at the given pace.
-]]
-
-Instructions.enable_pace_cursor = [[
+]],
+        enable_pace_cursor = [[
 Enable/disable pace cursor.
-]]
-
-Instructions.pace_cursor_style = [[
+]],
+        pace_cursor_style = [[
 Choose one of the predifined pace cursor styles.
-]]
-
-Instructions.pace_cursor_blinking = [[
+]],
+        pace_cursor_blinking = [[
 Enable/disable pace cursor blinking.
-]]
-
-Instructions.strict_space = [[
+]],
+        strict_space = [[
 When disabled, jump to the next word
 when pressing <space>.
-]]
-
-Instructions.stop_on_error = [[
+]],
+        stop_on_error = [[
 You can not continue typing until
 you correct your mistake.
-]]
-
-Instructions.confidence_mode = [[
+]],
+        confidence_mode = [[
 No <bspace> allowed when enabled.
-]]
-
-Instructions.indicate_typos = [[
+]],
+        indicate_typos = [[
 Indicate typos.
-]]
-
-Instructions.sound_volume = [[
+]],
+        sound_volume = [[
 Select the sound volume.
-]]
-
-Instructions.sound_on_keypress = [[
+]],
+        sound_on_keypress = [[
 Select the short sound to play
 when a key is pressed.
-]]
-
-Instructions.sound_on_typo = [[
+]],
+        sound_on_typo = [[
 Select the short sound to play
 when a typo is made.
-]]
-
-Instructions.live_progress = [[
+]],
+        live_progress = [[
 Displays live information about
 remaining time for time mode,
 word count for word mode, and
 remaining lives and word count for rain mode.
-]]
-
-Instructions.average_speed = [[
+]],
+        average_speed = [[
 Show the average speed of the last
 10 attempts.
-]]
-
-Instructions.average_accuracy = [[
+]],
+        average_accuracy = [[
 Show the average accuracy of the last
 10 attempts.
-]]
-
-Instructions.debug_mode = [[
+]],
+        debug_mode = [[
 Enable this if you want to debug
 some issue. Display the log with
 `:SpeedTyperLog`.
-]]
+]],
+    }, Instructions)
+    return self
+end
 
-return Instructions
+---@param item string
+function Instructions:get(item)
+    return self[item] or ""
+end
+
+return Instructions:new()

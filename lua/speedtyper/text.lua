@@ -1,3 +1,5 @@
+local settings = require("speedtyper.settings")
+
 ---@class SpeedTyperText
 ---@field selected_lang string
 ---@field words string[]
@@ -6,7 +8,7 @@ SpeedTyperText.__index = SpeedTyperText
 
 function SpeedTyperText.new()
     local self = {}
-    for lang, selected in pairs(vim.g.speedtyper_settings.language) do
+    for lang, selected in pairs(settings.general.language) do
         if selected then
             self.selected_lang = lang
             self.words = require("speedtyper.langs." .. lang)
@@ -66,4 +68,4 @@ function SpeedTyperText:generate_n_words_text(win_width, n)
     return text
 end
 
-return SpeedTyperText
+return SpeedTyperText.new()

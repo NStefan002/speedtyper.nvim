@@ -1,14 +1,14 @@
-local Util = require("speedtyper.util")
-local TyposTracker = require("speedtyper.typo")
-local Text = require("speedtyper.text")
-local Stats = require("speedtyper.stats")
-local Position = require("speedtyper.position")
+local api = vim.api
+local util = require("speedtyper.util")
+local typostracker = require("speedtyper.typo")
+local stats = require("speedtyper.stats")
+local position = require("speedtyper.position")
 local constants = require("speedtyper.constants")
+local globals = require("speedtyper.globals")
+local settings = require("speedtyper.settings")
 
 ---@class SpeedTyperCountdown
 ---@field timer uv_timer_t
----@field bufnr integer
----@field ns_id integer
 ---@field extm_ids integer[]
 ---@field text string[]
 ---@field time_sec number
@@ -22,22 +22,20 @@ Countdown.__index = Countdown
 
 -- TODO: remove '?'s and 'or's when the text_type option is implemented
 
----@param bufnr integer
 ---@param time? number
 ---@param text_type? string
-function Countdown.new(bufnr, time, text_type)
+function Countdown.new(time, text_type)
     local self = {
         timer = nil,
-        bufnr = bufnr,
-        ns_id = vim.api.nvim_create_namespace("SpeedTyper"),
+        ns_id = api.nvim_create_namespace("SpeedTyper"),
         extm_ids = {},
         text = {},
         time_sec = time or 30,
         text_type = text_type,
-        text_generator = Text.new(),
-        typos_tracker = TyposTracker.new(bufnr),
-        stats = Stats.new(bufnr),
-        prev_cursor_pos = Position.new(3, 1),
+        text_generator = require("speedtyper.text"),
+        typos_tracker = typostracker.new(),
+        stats = stats.new(),
+        prev_cursor_pos = position.new(3, 1),
     }
     return setmetatable(self, Countdown)
 end
@@ -47,9 +45,9 @@ function Countdown:start()
     self:_set_extmarks()
     self:_create_timer()
 
-    vim.api.nvim_create_autocmd("CursorMovedI", {
-        group = vim.api.nvim_create_augroup("SpeedTyperCountdown", {}),
-        buffer = self.bufnr,
+    api.nvim_create_autocmd("CursorMovedI", {
+        group = api.nvim_create_augroup("SpeedTyperCountdown", {}),
+        buffer = globals.bufnr,
         callback = function()
             self:_update_extmarks()
         end,
@@ -64,15 +62,15 @@ function Countdown:stop()
         self.timer = nil
     end
     self:_reset_values()
-    pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
-    pcall(vim.api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
+    pcall(api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
+    pcall(api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
 end
 
 function Countdown:_reset_values()
     pcall(
-        vim.api.nvim_buf_clear_namespace,
-        self.bufnr,
-        self.ns_id,
+        api.nvim_buf_clear_namespace,
+        globals.bufnr,
+        globals.ns_id,
         constants._text_first_line,
         constants._info_line + 1
     )
@@ -84,11 +82,11 @@ function Countdown:_reset_values()
 end
 
 function Countdown:_set_extmarks()
-    local win_width = vim.api.nvim_win_get_width(0)
+    local win_width = api.nvim_win_get_width(0)
     for i = 1, constants._text_first_line + 1 do
         local line = self.text_generator:generate_sentence(win_width)
         local line_idx = constants._text_first_line + i - 1
-        local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line_idx, 0, {
+        local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line_idx, 0, {
             virt_text = { { line, "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
         })
@@ -99,7 +97,7 @@ end
 
 function Countdown:_update_extmarks()
     -- TODO: Possibly try to rewrite this mess
-    local line, col = Util.get_cursor_pos()
+    local line, col = util.get_cursor_pos()
     line = line - constants._text_first_line
     if
         line > self.prev_cursor_pos.line
@@ -127,9 +125,9 @@ function Countdown:_update_extmarks()
         if line < self.prev_cursor_pos.line or col == self.prev_cursor_pos.col then
             vim.cmd.normal("o")
             vim.cmd.normal("k$")
-            vim.api.nvim_buf_set_extmark(
-                self.bufnr,
-                self.ns_id,
+            api.nvim_buf_set_extmark(
+                globals.bufnr,
+                globals.ns_id,
                 line + constants._text_first_line + 1,
                 0,
                 {
@@ -149,7 +147,7 @@ function Countdown:_update_extmarks()
             end
         end
     end
-    vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line + constants._text_first_line, 0, {
+    api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line + constants._text_first_line, 0, {
         id = self.extm_ids[line + 1],
         virt_text = { { string.sub(self.text[line + 1], col + 1), "SpeedTyperTextUntyped" } },
         virt_text_win_col = col,
@@ -159,29 +157,29 @@ function Countdown:_update_extmarks()
 end
 
 function Countdown:_move_up()
-    Util.remove_element(self.text, self.text[1])
-    local win_width = vim.api.nvim_win_get_width(0)
+    util.remove_element(self.text, self.text[1])
+    local win_width = api.nvim_win_get_width(0)
     table.insert(self.text, self.text_generator:generate_sentence(win_width))
 
     for i, line in ipairs(self.text) do
         local line_idx = constants._text_first_line + i - 1
-        vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, line_idx, 0, {
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line_idx, 0, {
             id = self.extm_ids[i],
             virt_text = { { line, "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
         })
     end
 
-    local written_lines = vim.api.nvim_buf_get_lines(
-        self.bufnr,
+    local written_lines = api.nvim_buf_get_lines(
+        globals.bufnr,
         constants._text_first_line,
         constants._text_middle_line + 1,
         false
     )
-    Util.remove_element(written_lines, written_lines[1])
+    util.remove_element(written_lines, written_lines[1])
     table.insert(written_lines, "")
-    vim.api.nvim_buf_set_lines(
-        self.bufnr,
+    api.nvim_buf_set_lines(
+        globals.bufnr,
         constants._text_first_line,
         constants._text_middle_line + 1,
         false,
@@ -199,7 +197,7 @@ function Countdown:_move_up()
         end
     end
     for _, typo in ipairs(to_remove) do
-        Util.remove_element(self.typos_tracker.typos, typo)
+        util.remove_element(self.typos_tracker.typos, typo)
     end
     self.typos_tracker:redraw()
 end
@@ -208,37 +206,35 @@ end
 
 function Countdown:_create_timer()
     self.timer = (vim.uv or vim.loop).new_timer()
-    local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, constants._info_line, 0, {
-        virt_text = {
-            { "Press 'i' to start the game.", "SpeedTyperTextOk" },
-        },
-        virt_text_pos = "right_align",
-    })
-    vim.api.nvim_create_autocmd("InsertEnter", {
-        group = vim.api.nvim_create_augroup("SpeedTyperCountdownTimer", {}),
-        buffer = self.bufnr,
-        once = true,
-        callback = function()
-            local command = string.format("<Esc>:%d<CR>I", constants._text_first_line + 1)
-            vim.api.nvim_feedkeys(
-                vim.api.nvim_replace_termcodes(command, true, false, true),
-                "!",
-                true
-            )
-            vim.api.nvim_buf_del_extmark(self.bufnr, self.ns_id, extm_id)
-            self:_start_timer()
-        end,
-        desc = "Start the countdown game mode.",
-    })
+    local extm_id =
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
+            virt_text = {
+                {
+                    ("Press '%s' to start the game."):format(settings.keymaps.start_game),
+                    "SpeedTyperTextOk",
+                },
+            },
+            virt_text_pos = "right_align",
+        })
+    vim.keymap.set("n", settings.keymaps.start_game, function()
+        api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
+        vim.cmd.startinsert()
+        vim.schedule(function()
+            api.nvim_win_set_cursor(0, { constants._text_first_line + 1, 0 })
+        end)
+        api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
+        self:_start_timer()
+    end, { buffer = globals.bufnr, desc = "Start the time game mode." })
 end
 
 function Countdown:_start_timer()
-    local extm_id = vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, constants._info_line, 0, {
-        virt_text = {
-            { "󱑆 " .. tostring(self.time_sec) .. "    ", "SpeedTyperClockNormal" },
-        },
-        virt_text_pos = "right_align",
-    })
+    local extm_id =
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
+            virt_text = {
+                { "󱑆 " .. tostring(self.time_sec) .. "    ", "SpeedTyperClockNormal" },
+            },
+            virt_text_pos = "right_align",
+        })
     local remaining_time = self.time_sec
 
     self.timer:start(
@@ -249,17 +245,26 @@ function Countdown:_start_timer()
                 self.stats.time = self.time_sec
                 self.stats:display_stats()
                 self:stop()
-                extm_id =
-                    vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, constants._info_line, 0, {
+                extm_id = api.nvim_buf_set_extmark(
+                    globals.bufnr,
+                    globals.ns_id,
+                    constants._info_line,
+                    0,
+                    {
                         virt_text = {
                             { "Time's up!", "SpeedTyperClockWarning" },
                         },
                         virt_text_pos = "right_align",
                         id = extm_id,
-                    })
+                    }
+                )
             else
-                extm_id =
-                    vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, constants._info_line, 0, {
+                extm_id = api.nvim_buf_set_extmark(
+                    globals.bufnr,
+                    globals.ns_id,
+                    constants._info_line,
+                    0,
+                    {
                         virt_text = {
                             {
                                 "󱑆 " .. tostring(remaining_time) .. "    ",
@@ -268,7 +273,8 @@ function Countdown:_start_timer()
                         },
                         virt_text_pos = "right_align",
                         id = extm_id,
-                    })
+                    }
+                )
                 remaining_time = remaining_time - 1
             end
         end)

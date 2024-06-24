@@ -1,46 +1,45 @@
 --- TODO: finish this when other game modes are implemented
-local Countdown = require("speedtyper.game_modes.countdown")
-local Stopwatch = require("speedtyper.game_modes.stopwatch")
-local Rain = require("speedtyper.game_modes.rain")
-local Util = require("speedtyper.util")
+local countdown = require("speedtyper.game_modes.countdown")
+local stopwatch = require("speedtyper.game_modes.stopwatch")
+local rain = require("speedtyper.game_modes.rain")
+local util = require("speedtyper.util")
+local settings = require("speedtyper.settings")
 
 ---@class SpeedTyperRound
 ---@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain
----@field bufnr integer
 local Round = {}
 Round.__index = Round
 
----@param bufnr integer
-function Round.new(bufnr)
-    local self = {
+function Round.new()
+    local self = setmetatable({
         active_game_mode = nil,
-        bufnr = bufnr,
-    }
-    return setmetatable(self, Round)
+    }, Round)
+    return self
 end
 
 function Round:set_game_mode()
     local game_mode = "time" -- default game mode
-    for mode, active in pairs(vim.g.speedtyper_round_settings.game_mode) do
+    for mode, active in pairs(settings.round.game_mode) do
         if active then
             game_mode = mode
         end
     end
     local len = "30" -- default time/number of words
-    for value, active in pairs(vim.g.speedtyper_round_settings.length) do
+    for value, active in pairs(settings.round.length) do
         if active then
             len = value
         end
     end
     -- TODO: finish this when text_type is implemented in game modes
     if game_mode == "time" then
-        self.active_game_mode = Countdown.new(self.bufnr, tonumber(len))
+        -- self.active_game_mode = countdown.new(tonumber(len))
+        self.active_game_mode = countdown.new(tonumber(len))
     elseif game_mode == "words" then
-        self.active_game_mode = Stopwatch.new(self.bufnr, tonumber(len))
+        self.active_game_mode = stopwatch.new(tonumber(len))
     elseif game_mode == "rain" then
-        self.active_game_mode = Rain.new(self.bufnr)
+        self.active_game_mode = rain.new()
     else
-        Util.error("Invalid game mode: " .. game_mode)
+        util.error("Invalid game mode: " .. game_mode)
     end
 end
 
@@ -56,4 +55,4 @@ function Round:end_round()
     end
 end
 
-return Round
+return Round.new()
