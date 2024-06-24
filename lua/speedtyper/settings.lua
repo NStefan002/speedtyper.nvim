@@ -37,7 +37,13 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@field press_button string
 ---TODO: add more
 
+---@class SpeedTyperDefaultSettings
+---@field round SpeedTyperRoundSettings
+---@field general SpeedTyperGeneralSettings
+---@field keymaps SpeedTyperKeymapSettings
+
 ---@class SpeedTyperSettings
+---@field default SpeedTyperDefaultSettings
 ---@field round SpeedTyperRoundSettings
 ---@field general SpeedTyperGeneralSettings
 ---@field keymaps SpeedTyperKeymapSettings
@@ -47,80 +53,87 @@ Settings.__index = Settings
 ---@return SpeedTyperSettings
 function Settings.new()
     local self = setmetatable({
-        round = {
-            text_variant = {
-                ["punctuation"] = false,
-                ["numbers"] = false,
+        default = {
+            round = {
+                text_variant = {
+                    ["punctuation"] = false,
+                    ["numbers"] = false,
+                },
+                game_mode = {
+                    ["time"] = true,
+                    ["words"] = false,
+                    ["rain"] = false,
+                    ["custom"] = false,
+                },
+                length = {
+                    ["15"] = false,
+                    ["30"] = true,
+                    ["60"] = false,
+                    ["120"] = false,
+                },
             },
-            game_mode = {
-                ["time"] = true,
-                ["words"] = false,
-                ["rain"] = false,
-                ["custom"] = false,
-            },
-            length = {
-                ["15"] = false,
-                ["30"] = true,
-                ["60"] = false,
-                ["120"] = false,
-            },
-        },
 
-        general = {
-            language = {
-                ["english"] = true,
-                ["serbian"] = false,
+            general = {
+                language = {
+                    ["english"] = true,
+                    ["serbian"] = false,
+                },
+                theme = {
+                    ["default"] = true,
+                    ["custom"] = false,
+                },
+                randomize_theme = false,
+                cursor_style = {
+                    ["line"] = true,
+                    ["block"] = false,
+                    ["underline"] = false,
+                },
+                cursor_blinking = false,
+                enable_pace_cursor = false,
+                pace_cursor = 100,
+                pace_cursor_style = {
+                    ["line"] = true,
+                    ["block"] = false,
+                    ["underline"] = false,
+                },
+                pace_cursor_blinking = false,
+                strict_space = false,
+                stop_on_error = false,
+                confidence_mode = false,
+                indicate_typos = true,
+                sound_volume = {
+                    ["quiet"] = false,
+                    ["medium"] = true,
+                    ["loud"] = false,
+                },
+                sound_on_keypress = {
+                    ["off"] = true,
+                    ["click"] = false,
+                    ["pop"] = false,
+                },
+                sound_on_typo = {
+                    ["off"] = true,
+                    ["click"] = false,
+                    ["pop"] = false,
+                },
+                live_progress = true,
+                average_speed = false,
+                average_accuracy = false,
+                debug_mode = false,
             },
-            theme = {
-                ["default"] = true,
-                ["custom"] = false,
-            },
-            randomize_theme = false,
-            cursor_style = {
-                ["line"] = true,
-                ["block"] = false,
-                ["underline"] = false,
-            },
-            cursor_blinking = false,
-            enable_pace_cursor = false,
-            pace_cursor = 100,
-            pace_cursor_style = {
-                ["line"] = true,
-                ["block"] = false,
-                ["underline"] = false,
-            },
-            pace_cursor_blinking = false,
-            strict_space = false,
-            stop_on_error = false,
-            confidence_mode = false,
-            indicate_typos = true,
-            sound_volume = {
-                ["quiet"] = false,
-                ["medium"] = true,
-                ["loud"] = false,
-            },
-            sound_on_keypress = {
-                ["off"] = true,
-                ["click"] = false,
-                ["pop"] = false,
-            },
-            sound_on_typo = {
-                ["off"] = true,
-                ["click"] = false,
-                ["pop"] = false,
-            },
-            live_progress = true,
-            average_speed = false,
-            average_accuracy = false,
-            debug_mode = false,
-        },
 
-        keymaps = {
-            start_game = "i",
-            hover = "k",
-            press_button = "<CR>",
+            keymaps = {
+                start_game = "i",
+                hover = "K",
+                press_button = "<CR>",
+            },
         },
     }, Settings)
+
+    self.round = vim.deepcopy(self.default.round)
+    self.general = vim.deepcopy(self.default.general)
+    self.keymaps = vim.deepcopy(self.default.keymaps)
+
     return self
 end
 
@@ -133,7 +146,7 @@ function Settings:load()
         settings = vim.fn.json_decode(json)
     end
     self.round = vim.tbl_deep_extend("force", self.round, settings.round or {})
-    self.general = vim.tbl_deep_extend("force", self.general, settings.general)
+    self.general = vim.tbl_deep_extend("force", self.general, settings.general or {})
     self.keymaps = vim.tbl_deep_extend("force", self.keymaps, settings.keymaps or {})
 end
 
@@ -152,13 +165,5 @@ function Settings:save()
         require("speedtyper.util").error("Failed to save settings")
     end
 end
-
--- ---@param type "round" | "general"
--- function Settings:get_text_representation(type)
---     if type == "round" then
---         return " punctuation   numbers | time   words   rain   custom | 15   30   60   120 "
---     end
---
--- end
 
 return Settings.new()
