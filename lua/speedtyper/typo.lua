@@ -39,6 +39,10 @@ function TyposTracker:redraw()
     end
 end
 
+function TyposTracker:reset()
+    self.typos = {}
+end
+
 ---@param line integer
 ---@param col integer
 function TyposTracker:_mark_typo(line, col)
@@ -52,4 +56,4 @@ function TyposTracker:_mark_typo(line, col)
     )
 end
 
-return TyposTracker
+return TyposTracker.new()

@@ -32,7 +32,6 @@ function Round:set_game_mode()
     end
     -- TODO: finish this when text_type is implemented in game modes
     if game_mode == "time" then
-        -- self.active_game_mode = countdown.new(tonumber(len))
         self.active_game_mode = countdown.new(tonumber(len))
     elseif game_mode == "words" then
         self.active_game_mode = stopwatch.new(tonumber(len))

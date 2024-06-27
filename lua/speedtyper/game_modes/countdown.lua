@@ -1,7 +1,5 @@
 local api = vim.api
 local util = require("speedtyper.util")
-local typostracker = require("speedtyper.typo")
-local stats = require("speedtyper.stats")
 local position = require("speedtyper.position")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
@@ -25,7 +23,7 @@ Countdown.__index = Countdown
 ---@param time? number
 ---@param text_type? string
 function Countdown.new(time, text_type)
-    local self = {
+    local self = setmetatable({
         timer = nil,
         ns_id = api.nvim_create_namespace("SpeedTyper"),
         extm_ids = {},
@@ -33,11 +31,11 @@ function Countdown.new(time, text_type)
         time_sec = time or 30,
         text_type = text_type,
         text_generator = require("speedtyper.text"),
-        typos_tracker = typostracker.new(),
-        stats = stats.new(),
+        typos_tracker = require("speedtyper.typo"),
+        stats = require("speedtyper.stats"),
         prev_cursor_pos = position.new(3, 1),
-    }
-    return setmetatable(self, Countdown)
+    }, Countdown)
+    return self
 end
 
 function Countdown:start()
@@ -76,8 +74,8 @@ function Countdown:_reset_values()
     )
     self.extm_ids = {}
     self.text = {}
-    self.typos_tracker.typos = {}
     self.prev_cursor_pos:update(0, 0)
+    self.typos_tracker:reset()
     self.stats:reset()
 end
 
@@ -206,11 +204,15 @@ end
 
 function Countdown:_create_timer()
     self.timer = (vim.uv or vim.loop).new_timer()
+    local keys = type(settings.keymaps.start_game) == "table"
+            ---@diagnostic disable-next-line: param-type-mismatch
+            and table.concat(settings.keymaps.start_game, "/")
+        or settings.keymaps.start_game
     local extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
             virt_text = {
                 {
-                    ("Press '%s' to start the game."):format(settings.keymaps.start_game),
+                    ("Press %s to start the game."):format(keys),
                     "SpeedTyperTextOk",
                 },
             },

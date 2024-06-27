@@ -1,7 +1,5 @@
 local api = vim.api
 local util = require("speedtyper.util")
-local typostracker = require("speedtyper.typo")
-local stats = require("speedtyper.stats")
 local position = require("speedtyper.position")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
@@ -26,7 +24,7 @@ Stopwatch.__index = Stopwatch
 ---@param number_of_words? integer
 ---@param text_type? string
 function Stopwatch.new(number_of_words, text_type)
-    local self = {
+    local self = setmetatable({
         timer = nil,
         extm_ids = {},
         text = {},
@@ -34,11 +32,11 @@ function Stopwatch.new(number_of_words, text_type)
         number_of_words = number_of_words or 30,
         text_type = text_type,
         text_generator = require("speedtyper.text"),
-        typos_tracker = typostracker.new(),
-        stats = stats.new(),
+        typos_tracker = require("speedtyper.typo"),
+        stats = require("speedtyper.stats"),
         prev_cursor_pos = position.new(0, 0),
-    }
-    return setmetatable(self, Stopwatch)
+    }, Stopwatch)
+    return self
 end
 
 function Stopwatch:start()
@@ -78,8 +76,8 @@ function Stopwatch:_reset_values()
     local win_width = api.nvim_win_get_width(0)
     self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     self.timer = nil
-    self.typos_tracker.typos = {}
     self.prev_cursor_pos:update(0, 0)
+    self.typos_tracker:reset()
     self.stats:reset()
 end
 
@@ -218,11 +216,15 @@ end
 
 function Stopwatch:_create_timer()
     self.timer = (vim.uv or vim.loop).new_timer()
+    local keys = type(settings.keymaps.start_game) == "table"
+            ---@diagnostic disable-next-line: param-type-mismatch
+            and table.concat(settings.keymaps.start_game, "/")
+        or settings.keymaps.start_game
     local extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
             virt_text = {
                 {
-                    ("Press '%s' to start the game."):format(settings.keymaps.start_game),
+                    ("Press %s to start the game."):format(keys),
                     "SpeedTyperTextOk",
                 },
             },

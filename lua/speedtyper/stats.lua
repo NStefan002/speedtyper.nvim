@@ -20,6 +20,7 @@ Stats.__index = Stats
 -- typos is the total number of characters that were typed incorrectly
 -- regardless of whether they were corrected or not
 
+---@return SpeedTyperStats
 function Stats.new()
     local self = setmetatable({
         wpm = 0,
@@ -43,6 +44,7 @@ function Stats:display_stats()
     self:_calculate_acc()
 
     util.disable_buffer_modification(globals.bufnr)
+    P(self)
     -- TODO: set buffer text
     print(
         string.format("WPM: %.2f\n", self.wpm),
@@ -108,4 +110,4 @@ function Stats:_calculate_acc()
     self.acc = (self.correct_chars / (self.correct_chars + self.typos)) * 100
 end
 
-return Stats
+return Stats.new()
