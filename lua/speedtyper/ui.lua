@@ -2,11 +2,13 @@ local api = vim.api
 local util = require("speedtyper.util")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
+local settings = require("speedtyper.settings")
 
 ---@class SpeedTyperUI
 ---@field active boolean
 ---@field menu SpeedTyperMenu
 ---@field hover SpeedTyperHover
+---@field vim_opt table vim options to restore after closing Speedtyper
 local UI = {}
 UI.__index = UI
 
@@ -16,6 +18,8 @@ function UI.new()
         active = false,
         menu = require("speedtyper.menu"),
         hover = require("speedtyper.hover"),
+        -- TODO: is it ok like this??
+        vim_opt = {},
     }
     return setmetatable(self, UI)
 end
@@ -122,13 +126,13 @@ function UI:_open()
     end
 
     api.nvim_win_set_hl_ns(globals.winnr, globals.ns_id)
-    self:_set_options()
     self._disable_cmp()
     self:_create_autocmds()
     util.clear_buffer_text(10, globals.bufnr)
     self.menu:display_menu()
     self.hover:set_keymaps()
-    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
+    self:_save_options()
+    self:_set_options()
 end
 
 function UI:_close()
@@ -149,6 +153,7 @@ function UI:_close()
     self.menu:exit_menu()
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperUI")
     self._enable_cmp()
+    self:_restore_options()
 end
 
 function UI:toggle()
@@ -159,9 +164,27 @@ function UI:toggle()
     end
 end
 
-function UI:_set_options()
+function UI._set_options()
+    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
     api.nvim_set_option_value("filetype", "speedtyper", { buf = globals.bufnr })
-    vim.wo[globals.winnr].wrap = false
+    api.nvim_set_option_value("wrap", false, { win = globals.winnr })
+    for style, active in pairs(settings.general.cursor_style) do
+        if active then
+            api.nvim_set_option_value(
+                "guicursor",
+                util.create_cursor(style, settings.general.cursor_blinking),
+                { scope = "global" }
+            )
+        end
+    end
+end
+
+function UI:_save_options()
+    self.vim_opt.guicursor = api.nvim_get_option_value("guicursor", { scope = "global" })
+end
+
+function UI:_restore_options()
+    api.nvim_set_option_value("guicursor", self.vim_opt.guicursor, { scope = "global" })
 end
 
 -- NOTE: this will probably be removed and be asked of the user to do,

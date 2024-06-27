@@ -211,4 +211,23 @@ function M.set_keymaps(lhs, rhs, opts)
     end
 end
 
+---See :help 'guicursor'
+---@param type SpeedTyperCursorStyle
+---@param blinking boolean
+---@return string
+function M.create_cursor(type, blinking)
+    local styles_to_vim_config = {
+        ["block"] = "block",
+        ["line"] = "ver30",
+        ["underline"] = "hor25",
+    }
+    local cursor = ("i:%s"):format(styles_to_vim_config[type])
+
+    if blinking then
+        cursor = ("%s,%s"):format(cursor, "i:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor")
+    end
+
+    return cursor
+end
+
 return M

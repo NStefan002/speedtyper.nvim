@@ -2,6 +2,8 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 
 -- NOTE: see each field info in instructions.lua
 
+---@alias SpeedTyperCursorStyle "block" | "line" | "underline"
+
 ---@class SpeedTyperRoundSettings
 ---@field text_variant table<"punctuation" | "numbers", boolean>
 ---@field game_mode table<"time" | "word" | "rain", boolean>
@@ -11,11 +13,11 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@field language table<string, boolean>
 ---@field theme table<string, boolean>
 ---@field randomize_theme boolean
----@field cursor_style table<string, boolean>
+---@field cursor_style table<SpeedTyperCursorStyle, boolean>
 ---@field cursor_blinking boolean
 ---@field enable_pace_cursor boolean
 ---@field pace_cursor integer
----@field pace_cursor_style table<string, boolean>
+---@field pace_cursor_style table<SpeedTyperCursorStyle, boolean>
 ---@field pace_cursor_blinking boolean
 ---@field strict_space boolean
 ---@field stop_on_error boolean
