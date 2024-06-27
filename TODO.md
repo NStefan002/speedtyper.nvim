@@ -22,7 +22,7 @@
   - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
   - [ ] customize settings in the ui and refresh them live
   - [x] save settings in json somewhere
-  - [ ] language
+  - [x] language
   - [ ] theme
   - [ ] randomize_theme
   - [x] cursor_style
