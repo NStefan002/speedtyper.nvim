@@ -44,7 +44,6 @@ function Stats:display_stats()
     self:_calculate_acc()
 
     util.disable_buffer_modification(globals.bufnr)
-    P(self)
     -- TODO: set buffer text
     print(
         string.format("WPM: %.2f\n", self.wpm),

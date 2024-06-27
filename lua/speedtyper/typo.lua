@@ -26,7 +26,7 @@ function TyposTracker:check_curr_char(should_be)
     if typed ~= should_be then
         self.typos = self.typos or {}
         table.insert(self.typos, position.new(line, col))
-        self:_mark_typo(line, col)
+        self._mark_typo(line, col)
         return false
     end
     util.remove_element(self.typos, position.new(line, col))
@@ -35,7 +35,7 @@ end
 
 function TyposTracker:redraw()
     for _, pos in ipairs(self.typos) do
-        self:_mark_typo(pos.line, pos.col)
+        self._mark_typo(pos.line, pos.col)
     end
 end
 
@@ -45,7 +45,7 @@ end
 
 ---@param line integer
 ---@param col integer
-function TyposTracker:_mark_typo(line, col)
+function TyposTracker._mark_typo(line, col)
     api.nvim_buf_add_highlight(
         globals.bufnr,
         globals.ns_id,

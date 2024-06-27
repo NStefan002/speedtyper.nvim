@@ -15,7 +15,10 @@ function Rain.new()
     local self = {
         timer = nil,
         extm_ids = {},
-        text = {},
+        text = {
+            "Rain mode coming soon!",
+            "Please select another game mode.",
+        },
         text_generator = nil,
         typos_tracker = nil,
         prev_cursor_pos = nil,
@@ -24,12 +27,7 @@ function Rain.new()
 end
 
 function Rain:start()
-    local lines = {
-        "Rain mode coming soon!",
-        "Please select another game mode.",
-    }
-
-    for i, line in ipairs(lines) do
+    for i, line in ipairs(self.text) do
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, i + 1, 0, {
             virt_text = { { line, "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
@@ -37,6 +35,8 @@ function Rain:start()
     end
 end
 
-function Rain:stop() end
+function Rain:stop()
+    self.text = {}
+end
 
 return Rain
