@@ -3,29 +3,33 @@ local settings = require("speedtyper.settings")
 ---@class SpeedTyperText
 ---@field selected_lang string
 ---@field words string[]
-local SpeedTyperText = {}
-SpeedTyperText.__index = SpeedTyperText
+local Text = {}
+Text.__index = Text
 
-function SpeedTyperText.new()
-    local self = {}
+function Text.new()
+    local self = setmetatable({}, Text)
+    self:update_lang()
+    return self
+end
+
+function Text:update_lang()
     for lang, selected in pairs(settings.general.language) do
-        if selected then
+        if selected and self.selected_lang ~= lang then
             self.selected_lang = lang
-            self.words = require("speedtyper.langs." .. lang)
+            self.words = require(("speedtyper.langs.%s"):format(lang))
             break
         end
     end
-    return setmetatable(self, SpeedTyperText)
 end
 
 ---@return string
-function SpeedTyperText:get_word()
+function Text:get_word()
     return self.words[math.random(#self.words)]
 end
 
 ---@param win_width integer
 ---@return string
-function SpeedTyperText:generate_sentence(win_width)
+function Text:generate_sentence(win_width)
     local border_width = 2
     local extra_space = 1 -- at the end of the sentence
     local usable_width = win_width - 2 * border_width - extra_space -- 2 * border -> left and right border
@@ -41,7 +45,7 @@ end
 ---@param win_width integer
 ---@param n integer
 ---@return string[]
-function SpeedTyperText:generate_n_words_text(win_width, n)
+function Text:generate_n_words_text(win_width, n)
     local text = {}
 
     local border_width = 2
@@ -68,4 +72,4 @@ function SpeedTyperText:generate_n_words_text(win_width, n)
     return text
 end
 
-return SpeedTyperText.new()
+return Text.new()

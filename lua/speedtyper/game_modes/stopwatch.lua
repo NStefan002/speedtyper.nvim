@@ -40,6 +40,7 @@ function Stopwatch.new(number_of_words, text_type)
 end
 
 function Stopwatch:start()
+    self.text_generator:update_lang()
     self:_reset_values()
     self:_set_extmarks()
     self:_create_timer()
@@ -118,7 +119,7 @@ function Stopwatch:_update_extmarks()
             self.stats.typed_text:pop()
         end
     end
-    if line + 1 == #self.text and col == #self.text[#self.text] then
+    if line + 1 == #self.text and col == #self.text[#self.text] - 1 then
         -- no more text to type
         self:stop()
         self.stats.time = self.time_sec
@@ -238,7 +239,7 @@ function Stopwatch:_create_timer()
         end)
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
         self:_start_timer()
-    end, { buffer = globals.bufnr, desc = "Start the words game mode." })
+    end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
 end
 
 function Stopwatch:_start_timer()

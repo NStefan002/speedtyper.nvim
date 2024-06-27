@@ -39,6 +39,7 @@ function Countdown.new(time, text_type)
 end
 
 function Countdown:start()
+    self.text_generator:update_lang()
     self:_reset_values()
     self:_set_extmarks()
     self:_create_timer()
@@ -226,7 +227,7 @@ function Countdown:_create_timer()
         end)
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
         self:_start_timer()
-    end, { buffer = globals.bufnr, desc = "Start the time game mode." })
+    end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
 end
 
 function Countdown:_start_timer()
