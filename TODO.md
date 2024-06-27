@@ -1,44 +1,44 @@
-## ✅☑️ TODO
+# ✅☑️ TODO (for the v2 branch)
 
-### V1
-
--   [ ] Add more options
-    -   [x] Cursor type
--   [ ] Add new game modes
-    -   [ ] Add game mode for practising code snippets
-    -   [x] Add variant without time limit
-    -   [x] Add falling words gamemode
-    -   [ ] Add game mode for practising vim motions
--   [ ] Add support for more languages
--   [x] Display current game stats
--   [ ] Add stats tracking
--   [x] Add custom highlight groups
--   [ ] Add option for typing sentences (capitalization, punctuation, numbers, etc.)
-
-### V2
-
--   [ ] Rewrite plugin
--   [ ] Add tests
--   [ ] Make independent ui
-    -   [ ] Select game mode in new ui
-    -   [ ] Possibly make similar ui like monkeytype (+ rain mode)
--   [ ] Stats
-    -   [x] wpm
-    -   [x] raw wpm
-    -   [x] accuracy
-    -   [x] total time
-    -   [ ] consistency (maaaybe)
-    -   [ ] Additional stats and units (the user selects which ones to display)
-        -   [ ] wps, cps, cpm
-    -   [ ] save stats
--   [ ] Instructions
-    -   [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
-    -   [x] show each game mode details in a pop-up window (like lsp.hover)
--   [ ] Settings
-    -   [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
-    -   [ ] customize settings in the ui and refresh them live
-    -   [x] save settings in json somewhere
-
-    -   [ ] select the game theme (from predefined themes)
-    -   [ ] select sound the game makes when typing (create `health.lua` for this one)
-    -   [ ] select cursor type
+- [ ] Rewrite plugin
+- [ ] Add tests
+- [ ] create `health.lua` for dependencies
+- [ ] Make independent ui
+  - [ ] Select game mode in new ui
+  - [ ] Possibly make ui similar to monkeytype's (+ rain mode)
+- [ ] Stats
+  - [x] wpm
+  - [x] raw wpm
+  - [x] accuracy
+  - [x] total time
+  - [ ] consistency (maaaybe)
+  - [ ] Additional stats and units (the user selects which ones to display)
+    - [ ] wps, cps, cpm
+  - [ ] save stats
+- [ ] Instructions
+  - [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
+  - [x] show each game mode details in a pop-up window (like lsp.hover)
+- [ ] Settings
+  - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
+  - [ ] customize settings in the ui and refresh them live
+  - [x] save settings in json somewhere
+  - [ ] language
+  - [ ] theme
+  - [ ] randomize_theme
+  - [x] cursor_style
+  - [x] cursor_blinking
+  - [ ] enable_pace_cursor
+  - [ ] pace_cursor
+  - [ ] pace_cursor_style
+  - [ ] pace_cursor_blinking
+  - [ ] strict_space
+  - [ ] stop_on_error
+  - [ ] confidence_mode
+  - [ ] indicate_typos
+  - [ ] sound_volume
+  - [ ] sound_on_keypress
+  - [ ] sound_on_typo
+  - [ ] live_progress
+  - [ ] average_speed
+  - [ ] average_accuracy
+  - [ ] debug_mode
