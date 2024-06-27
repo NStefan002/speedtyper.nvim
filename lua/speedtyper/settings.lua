@@ -1,5 +1,3 @@
--- TODO: implement default settings (use it in menu to reset settings)
-
 local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("data"))
 
 -- NOTE: see each field info in instructions.lua
@@ -32,9 +30,9 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@field debug_mode boolean
 
 ---@class SpeedTyperKeymapSettings
----@field start_game string
----@field hover string
----@field press_button string
+---@field start_game string | string[]
+---@field hover string | string[]
+---@field press_button string | string[]
 ---TODO: add more
 
 ---@class SpeedTyperDefaultSettings
@@ -125,7 +123,7 @@ function Settings.new()
             keymaps = {
                 start_game = "i",
                 hover = "K",
-                press_button = "<CR>",
+                press_button = { "<CR>", "<2-LeftMouse>" },
             },
         },
     }, Settings)

@@ -29,15 +29,10 @@ function Hover:set_keymaps()
             self:_open()
         end
     end
-    vim.keymap.set(
-        "n",
-        settings.keymaps.hover,
-        display_current_word_info,
-        {
-            buffer = globals.bufnr,
-            desc = "SpeedTyper: Display the info of the item under the cursor",
-        }
-    )
+    util.set_keymaps(settings.keymaps.hover, display_current_word_info, {
+        buffer = globals.bufnr,
+        desc = "SpeedTyper: Display the info of the item under the cursor",
+    })
 end
 
 ---@param item string

@@ -134,10 +134,7 @@ function Menu:_set_keymaps()
             self:_activate_button(button)
         end
     end
-    -- TODO: probably remove and leave to users to define
-    -- vim.keymap.set("n", "<2-LeftMouse>", get_cword, { buffer = true })
-    vim.keymap.set(
-        "n",
+    util.set_keymaps(
         settings.keymaps.press_button,
         get_cword,
         { buffer = globals.bufnr, desc = "SpeedTyper: press button" }

@@ -200,4 +200,15 @@ function M.calc_size(size, viewport)
     return math.min(size, viewport)
 end
 
+---@param lhs string | string[]
+---@param rhs string | fun()
+---@param opts? table
+function M.set_keymaps(lhs, rhs, opts)
+    ---@type string[]
+    local keys = type(lhs) == "table" and lhs or { lhs }
+    for _, key in ipairs(keys) do
+        vim.keymap.set("n", key, rhs, opts)
+    end
+end
+
 return M

@@ -216,7 +216,7 @@ function Countdown:_create_timer()
             },
             virt_text_pos = "right_align",
         })
-    vim.keymap.set("n", settings.keymaps.start_game, function()
+    util.set_keymaps(settings.keymaps.start_game, function()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
         vim.cmd.startinsert()
         vim.schedule(function()
