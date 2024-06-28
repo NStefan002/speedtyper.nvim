@@ -31,7 +31,7 @@
   - [ ] pace_cursor
   - [ ] pace_cursor_style
   - [ ] pace_cursor_blinking
-  - [ ] strict_space
+  - [x] strict_space
   - [ ] stop_on_error
   - [ ] confidence_mode
   - [ ] indicate_typos
