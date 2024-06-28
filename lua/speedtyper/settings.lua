@@ -29,6 +29,7 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@field live_progress boolean
 ---@field average_speed boolean
 ---@field average_accuracy boolean
+---@field demojify boolean
 ---@field debug_mode boolean
 
 ---@class SpeedTyperKeymapSettings
@@ -119,6 +120,7 @@ function Settings.new()
                 live_progress = true,
                 average_speed = false,
                 average_accuracy = false,
+                demojify = false,
                 debug_mode = false,
             },
 

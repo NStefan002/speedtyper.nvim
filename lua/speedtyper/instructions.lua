@@ -150,6 +150,11 @@ Show the average speed of the last
 Show the average accuracy of the last
 10 attempts.
 ]],
+        demojify = [[
+If enabled, emojis will not be displayed.
+]],
+        show_instructions = [[
+]],
         debug_mode = [[
 Enable this if you want to debug
 some issue. Display the log with

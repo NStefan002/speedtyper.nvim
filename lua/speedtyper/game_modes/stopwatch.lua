@@ -8,6 +8,7 @@ local settings = require("speedtyper.settings")
 ---@class SpeedTyperStopwatch
 ---@field timer uv_timer_t
 ---@field extm_ids integer[]
+---@field info_extm_id integer
 ---@field text string[]
 ---@field time_sec number
 ---@field number_of_words integer
@@ -26,6 +27,7 @@ function Stopwatch.new(number_of_words, text_type)
     local self = setmetatable({
         timer = nil,
         extm_ids = {},
+        info_extm_id = nil,
         text = {},
         time_sec = 0.0,
         number_of_words = number_of_words or 30,
@@ -58,6 +60,7 @@ function Stopwatch:stop()
         self.timer:close()
         self.timer = nil
     end
+    pcall(util.unset_keymaps, settings.keymaps.start_game)
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperStopwatch")
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperStopwatchTimer")
 end
@@ -91,6 +94,7 @@ function Stopwatch:_set_extmarks()
     end
 end
 
+local curr_word = 0
 function Stopwatch:_update_extmarks()
     -- TODO: rename line_idx or totally remove it
     local line, col = util.get_cursor_pos()
@@ -102,6 +106,12 @@ function Stopwatch:_update_extmarks()
         local typed = api.nvim_buf_get_text(globals.bufnr, line, col - 1, line, col, {})[1]
         local curr_char = self.text[line_idx]:sub(col, col)
 
+        if settings.general.live_progress and curr_char == " " then
+            curr_word = curr_word + 1
+            self:_update_live_progress(
+                ("%s / %s"):format(tostring(curr_word), self.number_of_words)
+            )
+        end
         if settings.general.strict_space and typed == " " and curr_char ~= " " then
             -- if the typed character is a space and it should not be a space, then jump to the next word (if possible)
             -- and fill the gaps with spaces and mark them as mistyped
@@ -129,6 +139,7 @@ function Stopwatch:_update_extmarks()
 
     if line_idx == #self.text and col == #self.text[#self.text] - 1 then
         -- no more text to type
+        self:_update_live_progress(("%s / %s"):format(self.number_of_words, self.number_of_words))
         self:stop()
         self.stats.time = self.time_sec
         self.stats:display_stats()
@@ -237,6 +248,22 @@ function Stopwatch:_move_up()
     self.stats:redraw_typos()
 end
 
+---@param text string
+function Stopwatch:_update_live_progress(text)
+    local timer_text = "󱀽 "
+    if settings.general.demojify then
+        timer_text = "Word count: "
+    end
+    self.info_extm_id =
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
+            virt_text = {
+                { ("%s%s    "):format(timer_text, text), "SpeedTyperClockNormal" },
+            },
+            virt_text_pos = "right_align",
+            id = self.info_extm_id,
+        })
+end
+
 ---------------------------- timer stuff ------------------------------------------
 
 function Stopwatch:_create_timer()
@@ -265,6 +292,7 @@ function Stopwatch:_create_timer()
 end
 
 function Stopwatch:_start_timer()
+    self:_update_live_progress(("0 / %s"):format(self.number_of_words))
     self.timer:start(
         0,
         50,

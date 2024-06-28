@@ -219,6 +219,7 @@ function Menu:_gen_settings_text()
         "live_progress",
         "average_speed",
         "average_accuracy",
+        "demojify",
         "debug_mode",
     }
     local buf_lines = {}

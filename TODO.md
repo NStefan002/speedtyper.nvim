@@ -38,7 +38,8 @@
   - [ ] sound_volume
   - [ ] sound_on_keypress
   - [ ] sound_on_typo
-  - [ ] live_progress
+  - [x] live_progress
   - [ ] average_speed
   - [ ] average_accuracy
+  - [x] demojify
   - [ ] debug_mode

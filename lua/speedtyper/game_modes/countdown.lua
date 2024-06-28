@@ -9,6 +9,7 @@ local settings = require("speedtyper.settings")
 ---@field private closing boolean
 ---@field timer uv_timer_t
 ---@field extm_ids integer[]
+---@field info_extm_id integer
 ---@field text string[]
 ---@field time_sec number
 ---@field text_type string
@@ -26,8 +27,8 @@ function Countdown.new(time, text_type)
     local self = setmetatable({
         closing = false,
         timer = nil,
-        ns_id = api.nvim_create_namespace("SpeedTyper"),
         extm_ids = {},
+        info_extm_id = nil,
         text = {},
         time_sec = time or 30,
         text_type = text_type,
@@ -62,6 +63,7 @@ function Countdown:stop()
         self.timer = nil
     end
     self:_reset_values()
+    pcall(util.unset_keymaps, settings.keymaps.start_game)
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
 end
@@ -230,6 +232,22 @@ end
 
 ---------------------------- timer stuff ------------------------------------------
 
+---@param text string
+function Countdown:_update_live_progress(text)
+    local timer_text = "󱑆 "
+    if settings.general.demojify then
+        timer_text = "Time left: "
+    end
+    self.info_extm_id =
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
+            virt_text = {
+                { ("%s%s    "):format(timer_text, text), "SpeedTyperClockNormal" },
+            },
+            virt_text_pos = "right_align",
+            id = self.info_extm_id,
+        })
+end
+
 function Countdown:_create_timer()
     self.timer = (vim.uv or vim.loop).new_timer()
     local keys = type(settings.keymaps.start_game) == "table"
@@ -256,14 +274,6 @@ function Countdown:_create_timer()
 end
 
 function Countdown:_start_timer()
-    local extm_id =
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
-            virt_text = {
-                { "󱑆 " .. tostring(self.time_sec) .. "    ", "SpeedTyperClockNormal" },
-            },
-            virt_text_pos = "right_align",
-        })
-
     local remaining_time = self.time_sec
     self.timer:start(
         0,
@@ -273,7 +283,7 @@ function Countdown:_start_timer()
                 self.stats.time = self.time_sec
                 self.stats:display_stats()
                 self:stop()
-                extm_id = api.nvim_buf_set_extmark(
+                self.info_extm_id = api.nvim_buf_set_extmark(
                     globals.bufnr,
                     globals.ns_id,
                     constants._info_line,
@@ -283,26 +293,11 @@ function Countdown:_start_timer()
                             { "Time's up!", "SpeedTyperClockWarning" },
                         },
                         virt_text_pos = "right_align",
-                        id = extm_id,
+                        id = self.info_extm_id,
                     }
                 )
             else
-                extm_id = api.nvim_buf_set_extmark(
-                    globals.bufnr,
-                    globals.ns_id,
-                    constants._info_line,
-                    0,
-                    {
-                        virt_text = {
-                            {
-                                "󱑆 " .. tostring(remaining_time) .. "    ",
-                                "SpeedTyperClockNormal",
-                            },
-                        },
-                        virt_text_pos = "right_align",
-                        id = extm_id,
-                    }
-                )
+                self:_update_live_progress(tostring(remaining_time))
                 remaining_time = remaining_time - 1
             end
         end)

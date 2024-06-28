@@ -1,4 +1,5 @@
 local api = vim.api
+local globals = require("speedtyper.globals")
 local M = {}
 
 ---notify user of an error
@@ -217,6 +218,15 @@ function M.set_keymaps(lhs, rhs, opts)
     local keys = type(lhs) == "table" and lhs or { lhs }
     for _, key in ipairs(keys) do
         vim.keymap.set("n", key, rhs, opts)
+    end
+end
+
+---@param lhs string | string[]
+function M.unset_keymaps(lhs)
+    ---@type string[]
+    local keys = type(lhs) == "table" and lhs or { lhs }
+    for _, key in ipairs(keys) do
+        vim.keymap.del("n", key, { buffer = globals.bufnr })
     end
 end
 
