@@ -118,7 +118,7 @@ function Stats:_set_data()
     local word_is_correct = true
     for _, info in ipairs(text_info) do
         local char = info.should_be
-        local correct = info:is_typo()
+        local correct = not info:is_typo()
         if char == " " then
             if correct then
                 self.correct_spaces = self.correct_spaces + 1
