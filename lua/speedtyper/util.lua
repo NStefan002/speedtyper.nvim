@@ -24,6 +24,15 @@ function M.get_cursor_pos()
     return line, col
 end
 
+---@param line integer
+---@param col integer
+---@param winnr integer
+function M.set_cursor_pos(line, col, winnr)
+    vim.schedule(function()
+        api.nvim_win_set_cursor(winnr, { line, col })
+    end)
+end
+
 --- HACK: compare two floats
 ---@param a number
 ---@param b number
