@@ -1,5 +1,7 @@
+local api = vim.api
 local util = require("speedtyper.util")
 local stack = require("speedtyper.stack")
+local char_info = require("speedtyper.char_info")
 local globals = require("speedtyper.globals")
 
 ---@class SpeedTyperStats
@@ -11,14 +13,14 @@ local globals = require("speedtyper.globals")
 ---@field correct_chars integer number of correctly typed characters
 ---@field correct_spaces integer number of correctly typed spaces
 ---@field typed_chars integer number of characters typed
----@field typos integer number of characters typed incorrectly
----@field typed_text SpeedTyperStack
+---@field typos integer
+---@field text_info SpeedTyperStack stack contains elements of type SpeedTyperCharInfo
 local Stats = {}
 Stats.__index = Stats
 
 -- NOTE: typos != typed_chars - correct_chars
--- typos is the total number of characters that were typed incorrectly
--- regardless of whether they were corrected or not
+-- typos is the total number of characters that were typed
+-- incorrectly regardless of whether they were corrected or not
 
 ---@return SpeedTyperStats
 function Stats.new()
@@ -32,7 +34,7 @@ function Stats.new()
         correct_chars = 0,
         typed_chars = 0,
         typos = 0,
-        typed_text = stack.new(),
+        text_info = stack.new(),
     }, Stats)
     return self
 end
@@ -62,17 +64,61 @@ function Stats:reset()
     self.correct_chars = 0
     self.typed_chars = 0
     self.typos = 0
-    self.typed_text:clear()
+    self.text_info:clear()
+end
+
+---@param typed string
+---@param should_be string
+---@param line integer
+---@param col integer
+function Stats:check_curr_char(typed, should_be, line, col)
+    if col == 0 then
+        return
+    end
+
+    self.text_info:push(char_info.new(typed, should_be, line, col))
+    if typed ~= should_be then
+        self._mark_typo(line, col)
+        self.typos = self.typos + 1
+    end
+end
+
+---@return SpeedTyperCharInfo[]
+function Stats:get_typos()
+    return vim.tbl_filter(function(char)
+        return char:is_typo()
+    end, self.text_info:get_table())
+end
+
+function Stats:redraw_typos()
+    local typos = self:get_typos()
+    for _, info in ipairs(typos) do
+        self._mark_typo(info.pos.line, info.pos.col)
+    end
+end
+
+---@param line integer
+---@param col integer
+function Stats._mark_typo(line, col)
+    api.nvim_buf_add_highlight(
+        globals.bufnr,
+        globals.ns_id,
+        "SpeedTyperTextError",
+        line,
+        col - 1,
+        col
+    )
 end
 
 function Stats:_set_data()
-    local typed_text = self.typed_text:get_table()
-    self.typed_chars = #typed_text
+    ---@type SpeedTyperCharInfo[]
+    local text_info = self.text_info:get_table()
+    self.typed_chars = #text_info
     local word_len = 0
     local word_is_correct = true
-    for _, x in ipairs(typed_text) do
-        local char = x[1]
-        local correct = x[2]
+    for _, info in ipairs(text_info) do
+        local char = info.should_be
+        local correct = info:is_typo()
         if char == " " then
             if correct then
                 self.correct_spaces = self.correct_spaces + 1

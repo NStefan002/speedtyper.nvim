@@ -25,14 +25,26 @@ function Stack:push(value)
     self._stack[self._top] = value
 end
 
-function Stack:pop()
+---@return any?
+function Stack:peek()
     if self:is_empty() then
         return nil
     end
-    local value = self._stack[self._top]
+    return self._stack[self._top]
+end
+
+function Stack:pop()
+    if self:is_empty() then
+        return
+    end
     self._stack[self._top] = nil
     self._top = self._top - 1
-    return value
+end
+
+function Stack:pop_n(n)
+    for _ = 1, n do
+        self:pop()
+    end
 end
 
 function Stack:get_table()
