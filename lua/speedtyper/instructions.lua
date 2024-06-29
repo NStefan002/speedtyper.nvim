@@ -28,6 +28,7 @@
 ---@field live_progress string
 ---@field average_speed string
 ---@field average_accuracy string
+---@field reset_settings string
 local Instructions = {}
 Instructions.__index = Instructions
 
@@ -159,6 +160,11 @@ If enabled, emojis will not be displayed.
 Enable this if you want to debug
 some issue. Display the log with
 `:SpeedTyperLog`.
+]],
+        reset_settings = [[
+Set settings to the default values.
+**Warning:** this action can not be
+undone.
 ]],
     }, Instructions)
     return self

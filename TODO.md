@@ -43,3 +43,4 @@
   - [ ] average_accuracy
   - [x] demojify
   - [ ] debug_mode
+  - [x] reset settings

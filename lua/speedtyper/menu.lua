@@ -200,6 +200,7 @@ end
 function Menu:_gen_settings_text()
     api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
     local items = {
+        "reset_settings",
         "language",
         "theme",
         "randomize_theme",
@@ -237,17 +238,25 @@ function Menu:_gen_settings_text()
             info = ("<%s>"):format(t_settings)
         elseif type(t_settings) == "boolean" then
             info = ("[%s]"):format(t_settings and "x" or " ")
+        else
+            info = "!    "
         end
         table.insert(buf_lines, "  ")
         table.insert(buf_lines, self:_left_right_align(t, info))
     end
     api.nvim_buf_set_lines(globals.bufnr, 0, -1, false, buf_lines)
+    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
 end
 
 ---@param button string
 function Menu:_settings_button_pressed(button)
+    api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
     local t_settings = settings.general[button]
-    if type(t_settings) == "table" then
+    if button == "reset_settings" then
+        settings:reset_settings()
+        self:_gen_settings_text()
+        return
+    elseif type(t_settings) == "table" then
         local items = {}
         for k, _ in pairs(t_settings) do
             table.insert(items, k)
@@ -284,6 +293,7 @@ function Menu:_settings_button_pressed(button)
         settings.general[button] = not settings.general[button]
         self:_gen_settings_text()
     end
+    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
 end
 
 ---@param text1 string

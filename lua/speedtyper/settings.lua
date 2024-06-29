@@ -57,14 +57,14 @@ function Settings.new()
         default = {
             round = {
                 text_variant = {
-                    ["punctuation"] = false,
-                    ["numbers"] = false,
+                    punctuation = false,
+                    numbers = false,
                 },
                 game_mode = {
-                    ["time"] = true,
-                    ["words"] = false,
-                    ["rain"] = false,
-                    ["custom"] = false,
+                    time = true,
+                    words = false,
+                    rain = false,
+                    custom = false,
                 },
                 length = {
                     ["15"] = false,
@@ -76,26 +76,26 @@ function Settings.new()
 
             general = {
                 language = {
-                    ["english"] = true,
-                    ["serbian"] = false,
+                    english = true,
+                    serbian = false,
                 },
                 theme = {
-                    ["default"] = true,
-                    ["custom"] = false,
+                    default = true,
+                    custom = false,
                 },
                 randomize_theme = false,
                 cursor_style = {
-                    ["line"] = true,
-                    ["block"] = false,
-                    ["underline"] = false,
+                    line = true,
+                    block = false,
+                    underline = false,
                 },
                 cursor_blinking = false,
                 enable_pace_cursor = false,
                 pace_cursor = 100,
                 pace_cursor_style = {
-                    ["line"] = true,
-                    ["block"] = false,
-                    ["underline"] = false,
+                    line = true,
+                    block = false,
+                    underline = false,
                 },
                 pace_cursor_blinking = false,
                 strict_space = false,
@@ -103,19 +103,19 @@ function Settings.new()
                 confidence_mode = false,
                 indicate_typos = true,
                 sound_volume = {
-                    ["quiet"] = false,
-                    ["medium"] = true,
-                    ["loud"] = false,
+                    quiet = false,
+                    medium = true,
+                    loud = false,
                 },
                 sound_on_keypress = {
-                    ["off"] = true,
-                    ["click"] = false,
-                    ["pop"] = false,
+                    off = true,
+                    click = false,
+                    pop = false,
                 },
                 sound_on_typo = {
-                    ["off"] = true,
-                    ["click"] = false,
-                    ["pop"] = false,
+                    off = true,
+                    click = false,
+                    pop = false,
                 },
                 live_progress = true,
                 average_speed = false,
@@ -166,6 +166,12 @@ function Settings:save()
     else
         require("speedtyper.util").error("Failed to save settings")
     end
+end
+
+function Settings:reset_settings()
+    self.round = vim.deepcopy(self.default.round)
+    self.general = vim.deepcopy(self.default.general)
+    self.keymaps = vim.deepcopy(self.default.keymaps)
 end
 
 return Settings.new()
