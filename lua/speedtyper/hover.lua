@@ -78,6 +78,7 @@ function Hover:_open()
         })
     end
     self:_create_autocmds()
+    api.nvim_set_option_value("filetype", "markdown", { buf = self.bufnr })
 end
 
 function Hover:_close()
