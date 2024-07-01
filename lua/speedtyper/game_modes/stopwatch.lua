@@ -94,6 +94,7 @@ function Stopwatch:_reset_values()
 end
 
 function Stopwatch:_set_extmarks()
+    self.extm_ids = {}
     local n = math.min(constants._text_num_lines, #self.text)
     for i = 1, n do
         local line = constants._text_first_line + i - 1
@@ -230,7 +231,6 @@ function Stopwatch:_move_up()
         constants._text_first_line,
         constants._text_first_line + constants._text_num_lines + 1
     )
-    self.extm_ids = {}
     self:_set_extmarks()
 
     local written_lines = api.nvim_buf_get_lines(
@@ -317,6 +317,10 @@ function Stopwatch:_create_timer()
         vim.cmd.startinsert()
         util.set_cursor_pos(constants._text_first_line + 1, 0, globals.winnr)
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
+        vim.schedule(function()
+            util.clear_buffer_text(constants._win_height, globals.bufnr)
+            self:_set_extmarks()
+        end)
         self:_start_timer()
     end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
 end

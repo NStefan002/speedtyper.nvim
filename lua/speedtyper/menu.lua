@@ -28,6 +28,7 @@ function Menu.new()
 end
 
 function Menu:display_menu()
+    util.clear_buffer_text(constants._win_height, globals.bufnr)
     self.settings_menu_active = false
     api.nvim_buf_set_lines(
         globals.bufnr,

@@ -122,4 +122,17 @@ function Text:generate_n_words_text(win_width, n, numbers, punctuation)
     return text
 end
 
+---@param n_lines integer number of lines
+---@param max_len integer maximum length of the line
+---@param numbers boolean add numbers to the text
+---@param punctuation boolean add punctuation to the text
+---@return string[]
+function Text:generate_n_lines_text(n_lines, max_len, numbers, punctuation)
+    local text = {}
+    for _ = 1, n_lines do
+        table.insert(text, self:generate_sentence(max_len, numbers, punctuation))
+    end
+    return text
+end
+
 return Text.new()
