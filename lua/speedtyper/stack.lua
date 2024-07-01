@@ -30,7 +30,7 @@ function Stack:peek()
     if self:is_empty() then
         return nil
     end
-    return self._stack[self._top]
+    return vim.deepcopy(self._stack[self._top])
 end
 
 function Stack:pop()

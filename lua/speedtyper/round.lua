@@ -24,19 +24,12 @@ function Round:set_game_mode()
             game_mode = mode
         end
     end
-    local len = "30" -- default time/number of words
-    for value, active in pairs(settings.round.length) do
-        if active then
-            len = value
-        end
-    end
-    -- TODO: finish this when text_type is implemented in game modes
     if game_mode == "time" then
-        self.active_game_mode = countdown.new(tonumber(len))
+        self.active_game_mode = countdown
     elseif game_mode == "words" then
-        self.active_game_mode = stopwatch.new(tonumber(len))
+        self.active_game_mode = stopwatch
     elseif game_mode == "rain" then
-        self.active_game_mode = rain.new()
+        self.active_game_mode = rain
     else
         util.error("Invalid game mode: " .. game_mode)
     end

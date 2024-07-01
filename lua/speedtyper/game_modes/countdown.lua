@@ -12,34 +12,39 @@ local settings = require("speedtyper.settings")
 ---@field info_extm_id integer
 ---@field text string[]
 ---@field time_sec number
----@field text_type string
 ---@field text_generator SpeedTyperText
 ---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
 local Countdown = {}
 Countdown.__index = Countdown
 
--- TODO: remove '?'s and 'or's when the text_type option is implemented
-
----@param time? number
----@param text_type? string
-function Countdown.new(time, text_type)
+---@return SpeedTyperCountdown
+function Countdown.new()
     local self = setmetatable({
         closing = false,
         timer = nil,
         extm_ids = {},
         info_extm_id = nil,
         text = {},
-        time_sec = time or 30,
-        text_type = text_type,
         text_generator = require("speedtyper.text"),
         stats = require("speedtyper.stats"),
         prev_cursor_pos = position.new(3, 1),
     }, Countdown)
+    self:_apply_settings()
     return self
 end
 
+function Countdown:_apply_settings()
+    for len, active in pairs(settings.round.length) do
+        if active then
+            ---@diagnostic disable-next-line: assign-type-mismatch
+            self.time_sec = tonumber(len)
+        end
+    end
+end
+
 function Countdown:start()
+    self:_apply_settings()
     self.text_generator:update_lang()
     self:_reset_values()
     self:_set_extmarks()
@@ -62,7 +67,6 @@ function Countdown:stop()
         self.timer:close()
         self.timer = nil
     end
-    self:_reset_values()
     pcall(util.unset_keymaps, settings.keymaps.start_game)
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperCountdown")
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperCountdownTimer")
@@ -76,6 +80,7 @@ function Countdown:_reset_values()
         constants._text_first_line,
         constants._info_line + 1
     )
+    self.closing = false
     self.extm_ids = {}
     self.text = {}
     self.prev_cursor_pos:update(0, 0)
@@ -83,9 +88,13 @@ function Countdown:_reset_values()
 end
 
 function Countdown:_set_extmarks()
-    local win_width = api.nvim_win_get_width(0)
+    local win_width = api.nvim_win_get_width(globals.winnr)
     for i = 1, constants._text_first_line + 1 do
-        local line = self.text_generator:generate_sentence(win_width)
+        local line = self.text_generator:generate_sentence(
+            win_width,
+            settings.round.text_variant.numbers,
+            settings.round.text_variant.punctuation
+        )
         local line_idx = constants._text_first_line + i - 1
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line_idx, 0, {
             virt_text = { { line, "SpeedTyperTextUntyped" } },
@@ -181,7 +190,14 @@ end
 function Countdown:_move_up()
     util.remove_element(self.text, self.text[1])
     local win_width = api.nvim_win_get_width(globals.winnr)
-    table.insert(self.text, self.text_generator:generate_sentence(win_width))
+    table.insert(
+        self.text,
+        self.text_generator:generate_sentence(
+            win_width,
+            settings.round.text_variant.numbers,
+            settings.round.text_variant.punctuation
+        )
+    )
 
     for i, line in ipairs(self.text) do
         local line_idx = constants._text_first_line + i - 1
@@ -234,10 +250,7 @@ end
 
 ---@param text string
 function Countdown:_update_live_progress(text)
-    local timer_text = "󱑆 "
-    if settings.general.demojify then
-        timer_text = "Time left: "
-    end
+    local timer_text = settings.general.demojify and "Time left: " or "󱑆 "
     self.info_extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
             virt_text = {
@@ -304,4 +317,4 @@ function Countdown:_start_timer()
     )
 end
 
-return Countdown
+return Countdown.new()

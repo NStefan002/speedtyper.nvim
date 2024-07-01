@@ -6,13 +6,13 @@ local globals = require("speedtyper.globals")
 ---@field extm_ids integer[]
 ---@field text string[]
 ---@field text_generator SpeedTyperText
----@field typos_tracker SpeedTyperTyposTracker
 ---@field prev_cursor_pos Position
 local Rain = {}
 Rain.__index = Rain
 
+---@return SpeedTyperRain
 function Rain.new()
-    local self = {
+    local self = setmetatable({
         timer = nil,
         extm_ids = {},
         text = {
@@ -20,10 +20,9 @@ function Rain.new()
             "Please select another game mode.",
         },
         text_generator = nil,
-        typos_tracker = nil,
         prev_cursor_pos = nil,
-    }
-    return setmetatable(self, Rain)
+    }, Rain)
+    return self
 end
 
 function Rain:start()
@@ -39,4 +38,4 @@ function Rain:stop()
     self.text = {}
 end
 
-return Rain
+return Rain.new()
