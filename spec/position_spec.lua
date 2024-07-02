@@ -1,14 +1,10 @@
----@diagnostic disable: undefined-field, undefined-global
-local Position = require("speedtyper.position")
 local eq = assert.are.same
 
 describe("Position tests", function()
-    before_each(function()
-        Position = require("speedtyper.position")
-    end)
+    local position = require("speedtyper.position")
 
     it("update", function()
-        local pos = Position.new(1, 1)
+        local pos = position.new(1, 1)
 
         eq(1, pos.line)
         eq(1, pos.col)
@@ -20,8 +16,8 @@ describe("Position tests", function()
     end)
 
     it("equals", function()
-        local pos1 = Position.new(1, 1)
-        local pos2 = Position.new(1, 1)
+        local pos1 = position.new(1, 1)
+        local pos2 = position.new(1, 1)
 
         eq(true, pos1 == pos2)
 
@@ -30,6 +26,6 @@ describe("Position tests", function()
         eq(false, pos1 == pos2)
         pos2:update(2, 3)
 
-        eq(true, Position.equal(pos1, pos2))
+        eq(true, position.equal(pos1, pos2))
     end)
 end)
