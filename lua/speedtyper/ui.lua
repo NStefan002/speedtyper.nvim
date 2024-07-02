@@ -31,11 +31,15 @@ function UI:_create_autocmds()
 
     -- TODO: add vim/window resize autocommands
 
+    local schedule_close = vim.schedule_wrap(function()
+        self:_close()
+    end)
+
     autocmd("WinClosed", {
         group = grp,
         callback = function(ev)
             if ev.match == tostring(globals.winnr) then
-                self:_close()
+                schedule_close()
             end
         end,
         desc = "Internally close the SpeedTyper when its gets closed.",
@@ -44,9 +48,7 @@ function UI:_create_autocmds()
         group = grp,
         buffer = globals.bufnr,
         callback = function()
-            vim.schedule(function()
-                self:_close()
-            end)
+            schedule_close()
         end,
         desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
     })

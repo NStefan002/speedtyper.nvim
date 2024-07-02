@@ -66,15 +66,19 @@ describe("UI tests", function()
 
         vim.cmd("q")
 
-        eq(false, api.nvim_buf_is_valid(globals.bufnr))
-        eq(false, api.nvim_win_is_valid(globals.winnr))
-        eq(-1, globals.bufnr)
-        eq(-1, globals.winnr)
+        -- NOTE: we have to schedule this because of the
+        -- WinClosed autocmd in ui.lua
+        vim.schedule(function()
+            eq(false, api.nvim_buf_is_valid(globals.bufnr))
+            eq(false, api.nvim_win_is_valid(globals.winnr))
+            eq(-1, globals.bufnr)
+            eq(-1, globals.winnr)
 
-        ui:_open()
+            ui:_open()
 
-        eq(true, api.nvim_buf_is_valid(globals.bufnr))
-        eq(true, api.nvim_win_is_valid(globals.winnr))
+            eq(true, api.nvim_buf_is_valid(globals.bufnr))
+            eq(true, api.nvim_win_is_valid(globals.winnr))
+        end)
     end)
 
     it("leaving the buffer with something like :bprev / :bnext / :e file", function()
