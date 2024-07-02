@@ -2,10 +2,13 @@ ignore = {
     "631", -- max_line_length
     "122", -- setting read-only field of global variable 'vim'
 }
-read_globals = {
+globals = {
     "vim",
+}
+read_globals = {
     "describe",
     "it",
-    "assert",
     "before_each",
+    "after_each",
+    "assert",
 }
