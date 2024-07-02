@@ -35,7 +35,6 @@ function UI:_create_autocmds()
         group = grp,
         callback = function(ev)
             if ev.match == tostring(globals.winnr) then
-                require("speedtyper.settings"):save()
                 self:_close()
             end
         end,
@@ -45,7 +44,6 @@ function UI:_create_autocmds()
         group = grp,
         buffer = globals.bufnr,
         callback = function()
-            require("speedtyper.settings"):save()
             vim.schedule(function()
                 self:_close()
             end)
@@ -138,6 +136,7 @@ function UI:_close()
     if not self.active then
         return
     end
+    self.active = false
 
     if globals.bufnr ~= -1 and api.nvim_buf_is_valid(globals.bufnr) then
         api.nvim_buf_delete(globals.bufnr, { force = true })
@@ -148,11 +147,12 @@ function UI:_close()
     end
     globals.bufnr = -1
     globals.winnr = -1
-    self.active = false
     self.menu:exit_menu()
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperUI")
     self._enable_cmp()
     self:_restore_options()
+
+    require("speedtyper.settings"):save()
 end
 
 function UI:toggle()
