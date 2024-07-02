@@ -1,7 +1,14 @@
+local api = vim.api
 local eq = assert.are.same
 
 describe("Util test", function()
     local util = require("speedtyper.util")
+
+    before_each(function()
+        api.nvim_set_option_value("modifiable", true, { buf = 0 })
+        util.clear_buffer_text(10, 0)
+        api.nvim_win_set_cursor(0, { 1, 0 })
+    end)
 
     it("simulate input", function()
         util.simulate_input("abc")

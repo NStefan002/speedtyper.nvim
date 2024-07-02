@@ -7,7 +7,8 @@ local M = {}
 function M.error(msg)
     -- "\n" for nvim configs that don't use nvim-notify
     vim.notify("\n" .. msg, vim.log.levels.ERROR, { title = "Speedtyper" })
-    error(msg)
+    -- TODO: figure out if we should call error() here
+    -- error(msg)
 end
 
 ---@param msg string
