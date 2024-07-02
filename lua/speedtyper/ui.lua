@@ -5,10 +5,10 @@ local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 
 ---@class SpeedTyperUI
----@field active boolean
+---@field private active boolean
 ---@field menu SpeedTyperMenu
 ---@field hover SpeedTyperHover
----@field vim_opt table vim options to restore after closing Speedtyper
+---@field private vim_opt table vim options to restore after closing Speedtyper
 local UI = {}
 UI.__index = UI
 
@@ -139,15 +139,15 @@ function UI:_close()
         return
     end
 
-    if globals.bufnr ~= nil and api.nvim_buf_is_valid(globals.bufnr) then
+    if globals.bufnr ~= -1 and api.nvim_buf_is_valid(globals.bufnr) then
         api.nvim_buf_delete(globals.bufnr, { force = true })
     end
 
-    if globals.winnr ~= nil and api.nvim_win_is_valid(globals.winnr) then
+    if globals.winnr ~= -1 and api.nvim_win_is_valid(globals.winnr) then
         api.nvim_win_close(globals.winnr, true)
     end
     globals.bufnr = -1
-    globals.winnr = nil
+    globals.winnr = -1
     self.active = false
     self.menu:exit_menu()
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperUI")

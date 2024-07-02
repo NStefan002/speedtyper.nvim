@@ -75,9 +75,7 @@ function Text:generate_sentence(max_len, numbers, punctuation)
         sentence = sentence .. " " .. word
         word = self:get_word(numbers)
     end
-    if punctuation then
-        return self:_add_punctuation(sentence)
-    end
+    sentence = punctuation and self:_add_punctuation(sentence) or sentence
     return sentence .. " "
 end
 

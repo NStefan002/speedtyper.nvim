@@ -1,5 +1,6 @@
 local api = vim.api
 local util = require("speedtyper.util")
+local settings = require("speedtyper.settings")
 
 ---@class SpeedTyperLogger
 ---@field lines string[]
@@ -17,8 +18,7 @@ end
 
 ---@param ... any
 function Logger:log(...)
-    local enabled = vim.g.speedtyper_settings.debug_mode["on"]
-    if not enabled then
+    if not settings.general.debug_mode then
         return
     end
     local processed = {}
@@ -51,8 +51,7 @@ function Logger:clear()
 end
 
 function Logger:display()
-    local enabled = vim.g.speedtyper_settings.debug_mode["on"]
-    if not enabled then
+    if not settings.general.debug_mode then
         return
     end
     local bufnr = api.nvim_create_buf(false, true)
