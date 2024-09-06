@@ -110,4 +110,27 @@ describe("Util test", function()
         cursor = util.create_cursor("block", true)
         eq("i:block,i:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor", cursor)
     end)
+
+    pending("map completion", function()
+        local tbl = {
+            foo = true,
+            bar = 100,
+            baz = "abc",
+        }
+        -- TODO: sort arrays or call tbl_contains for each element
+        eq({ "foo", "bar", "baz" }, util.get_map_option_completion("", tbl))
+        eq({ "bar", "baz" }, util.get_map_option_completion("b", tbl))
+        eq({ "bar", "baz" }, util.get_map_option_completion("ba", tbl))
+        eq({ "bar" }, util.get_map_option_completion("bar", tbl))
+        eq({}, util.get_map_option_completion("c", tbl))
+        eq({}, util.get_map_option_completion("bay", tbl))
+    end)
+
+    it("bool completion", function()
+        eq({ "on", "off" }, util.get_bool_option_completion(""))
+        eq({ "on", "off" }, util.get_bool_option_completion("o"))
+        eq({ "on" }, util.get_bool_option_completion("on"))
+        eq({ "off" }, util.get_bool_option_completion("of"))
+        eq({}, util.get_bool_option_completion("b"))
+    end)
 end)
