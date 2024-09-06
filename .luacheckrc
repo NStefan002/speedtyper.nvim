@@ -11,4 +11,5 @@ read_globals = {
     "before_each",
     "after_each",
     "assert",
+    "pending",
 }
