@@ -306,20 +306,15 @@ function Settings:create_user_commands()
     local function cmd(data)
         local fargs = data.fargs
         if #fargs == 0 then
-            vim.notify(
-                "SpeedTyperSettings: command expects at least one argument",
-                vim.log.levels.ERROR
-            )
+            util.error("SpeedTyperSettings: command expects at least one argument")
+            return
         end
         local subcommand_key = fargs[1]
         -- get the subcommand's arguments, if any
         local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
         local subcmd = subcmds[subcommand_key]
         if not subcmd then
-            vim.notify(
-                ("SpeedTyperSettings: unknown command '%s'"):format(subcommand_key),
-                vim.log.levels.ERROR
-            )
+            util.error(("SpeedTyperSettings: unknown command '%s'"):format(subcommand_key))
             return
         end
         -- invoke the subcommand
