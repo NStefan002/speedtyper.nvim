@@ -1,4 +1,9 @@
+local util = require("speedtyper.util")
 local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("data"))
+
+---@class SpeedTyperSettingsSubcmd
+---@field impl fun(args:string[], data: table) The command implementation
+---@field complete? fun(subcmd_arg_lead: string): string[] Command completions callback, taking the lead of the subcommand's arguments
 
 -- NOTE: see each field info in instructions.lua
 
@@ -15,8 +20,8 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@field randomize_theme boolean
 ---@field cursor_style table<SpeedTyperCursorStyle, boolean>
 ---@field cursor_blinking boolean
----@field enable_pace_cursor boolean
----@field pace_cursor integer
+---@field pace_cursor boolean
+---@field pace_cursor_speed integer
 ---@field pace_cursor_style table<SpeedTyperCursorStyle, boolean>
 ---@field pace_cursor_blinking boolean
 ---@field strict_space boolean
@@ -90,8 +95,8 @@ function Settings.new()
                     underline = false,
                 },
                 cursor_blinking = false,
-                enable_pace_cursor = false,
-                pace_cursor = 100,
+                pace_cursor = false,
+                pace_cursor_speed = 100,
                 pace_cursor_style = {
                     line = true,
                     block = false,
@@ -172,6 +177,184 @@ function Settings:reset_settings()
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
     self.keymaps = vim.deepcopy(self.default.keymaps)
+end
+
+---@param option string
+---@return SpeedTyperSettingsSubcmd
+function Settings:_create_subcmd_for_map_option(option)
+    return {
+        impl = function(args, data)
+            if #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
+                        data.fargs[1]
+                    )
+                )
+                return
+            end
+            if
+                not util.tbl_contains(
+                    util.get_map_option_completion("", self.general[option]),
+                    args[1]
+                )
+            then
+                util.error(
+                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
+                )
+                return
+            end
+            for opt, _ in pairs(self.general[option]) do
+                self.general[option][opt] = false
+            end
+            self.general[option][args[1]] = true
+        end,
+        complete = function(subcmd_arg_lead)
+            return util.get_map_option_completion(subcmd_arg_lead, self.general[option])
+        end,
+    }
+end
+
+---@param option string
+---@return SpeedTyperSettingsSubcmd
+function Settings:_create_subcmd_for_bool_option(option)
+    return {
+        impl = function(args, data)
+            if #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
+                        data.fargs[1]
+                    )
+                )
+                return
+            end
+            if not util.tbl_contains(util.get_bool_option_completion(""), args[1]) then
+                util.error(
+                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
+                )
+                return
+            end
+            ---@type boolean
+            local new_val = args[1] == "on"
+            self.general[option] = new_val
+        end,
+        complete = function(subcmd_arg_lead)
+            return util.get_bool_option_completion(subcmd_arg_lead)
+        end,
+    }
+end
+
+function Settings:_create_info_subcmd()
+    local all_options = {}
+    for option, _ in pairs(self.general) do
+        table.insert(all_options, option)
+    end
+    return {
+        impl = function(args, data)
+            if #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
+                        data.fargs[1]
+                    )
+                )
+                return
+            end
+            if not util.tbl_contains(all_options, args[1]) then
+                util.error(
+                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
+                )
+                return
+            end
+            util.info(require("speedtyper.instructions"):get(args[1]))
+        end,
+        complete = function(subcmd_arg_lead)
+            return vim.iter(all_options)
+                :filter(function(arg)
+                    return arg:find(subcmd_arg_lead) ~= nil
+                end)
+                :totable()
+        end,
+    }
+end
+
+-- TODO: redraw speedtyper window (if active) when some option is changed
+function Settings:create_user_commands()
+    ---@type table<string, SpeedTyperSettingsSubcmd>
+    local subcmds = {
+        info = self:_create_info_subcmd(),
+        language = self:_create_subcmd_for_map_option("language"),
+        theme = self:_create_subcmd_for_map_option("theme"),
+        randomize_theme = self:_create_subcmd_for_bool_option("randomize_theme"),
+        cursor_style = self:_create_subcmd_for_map_option("cursor_style"),
+        cursor_blinking = self:_create_subcmd_for_bool_option("cursor_blinking"),
+        pace_cursor = self:_create_subcmd_for_bool_option("pace_cursor"),
+        -- TODO: pace_cursor_speed = ...
+        pace_cursor_style = self:_create_subcmd_for_map_option("pace_cursor_style"),
+        strict_space = self:_create_subcmd_for_bool_option("strict_space"),
+        stop_on_error = self:_create_subcmd_for_bool_option("stop_on_error"),
+        confidence_mode = self:_create_subcmd_for_bool_option("confidence_mode"),
+        indicate_typos = self:_create_subcmd_for_bool_option("indicate_typos"),
+        sound_volume = self:_create_subcmd_for_map_option("sound_volume"),
+        sound_on_keypress = self:_create_subcmd_for_map_option("sound_on_keypress"),
+        sound_on_typo = self:_create_subcmd_for_map_option("sound_on_typo"),
+        live_progress = self:_create_subcmd_for_bool_option("live_progress"),
+        average_speed = self:_create_subcmd_for_bool_option("average_speed"),
+        average_accuracy = self:_create_subcmd_for_bool_option("average_accuracy"),
+        demojify = self:_create_subcmd_for_bool_option("demojify"),
+        debug_mode = self:_create_subcmd_for_bool_option("debug_mode"),
+    }
+
+    local function cmd(data)
+        local fargs = data.fargs
+        if #fargs == 0 then
+            vim.notify(
+                "SpeedTyperSettings: command expects at least one argument",
+                vim.log.levels.ERROR
+            )
+        end
+        local subcommand_key = fargs[1]
+        -- get the subcommand's arguments, if any
+        local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
+        local subcmd = subcmds[subcommand_key]
+        if not subcmd then
+            vim.notify(
+                ("SpeedTyperSettings: unknown command '%s'"):format(subcommand_key),
+                vim.log.levels.ERROR
+            )
+            return
+        end
+        -- invoke the subcommand
+        subcmd.impl(args, data)
+    end
+
+    local function cmd_completion(arg_lead, cmdline, _)
+        -- get the subcommand
+        local subcmd_key, subcmd_arg_lead = cmdline:match("^SpeedTyperSettings%s(%S+)%s(.*)$")
+        if
+            subcmd_key
+            and subcmd_arg_lead
+            and subcmds[subcmd_key]
+            and subcmds[subcmd_key].complete
+        then
+            -- the subcommand has completions, return them
+            return subcmds[subcmd_key].complete(subcmd_arg_lead)
+        end
+        -- check if cmdline is a subcommand
+        if cmdline:match("^SpeedTyperSettings%s+%w*$") then
+            -- filter subcommands that match
+            local subcommand_keys = vim.tbl_keys(subcmds)
+            return vim.iter(subcommand_keys)
+                :filter(function(key)
+                    return key:find(arg_lead) ~= nil
+                end)
+                :totable()
+        end
+    end
+
+    vim.api.nvim_create_user_command("SpeedTyperSettings", cmd, {
+        desc = "Change SpeedTyper settings.",
+        complete = cmd_completion,
+        nargs = "*",
+    })
 end
 
 return Settings.new()

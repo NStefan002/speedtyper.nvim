@@ -10,7 +10,6 @@ local settings = require("speedtyper.settings")
 ---@field end_of_game_text string TODO: implement later
 ---@field round SpeedTyperRound
 ---@field round_settings_text string
----@field settings_menu_active boolean
 local Menu = {}
 Menu.__index = Menu
 
@@ -18,7 +17,6 @@ Menu.__index = Menu
 function Menu.new()
     local self = setmetatable({
         round = require("speedtyper.round"),
-        settings_menu_active = false,
     }, Menu)
 
     self.round_settings_text =
@@ -39,22 +37,28 @@ function Menu:display_menu()
             self.round_settings_text,
         }
     )
+    local settings_info = " :SpeedTyperSettings <option> <value>"
     api.nvim_buf_set_lines(globals.bufnr, -2, -1, false, {
-        " settings",
+        settings_info,
     })
+    api.nvim_buf_add_highlight(
+        globals.bufnr,
+        globals.ns_id,
+        "DiagnosticInfo",
+        constants._win_height - 1,
+        0,
+        #settings_info
+    )
     self:_set_keymaps()
     self:_highlight_buttons()
     self.round:set_game_mode()
     self.round:start_round()
-    self:_create_autocmds()
 end
 
 function Menu:exit_menu()
     if self.round then
         self.round:end_round()
     end
-    self.settings_menu_active = false
-    pcall(api.nvim_del_augroup_by_name, "SpeedTyperMenu")
 end
 
 ---@return integer
@@ -62,44 +66,8 @@ function Menu:get_width()
     return #self.round_settings_text
 end
 
-function Menu:_create_autocmds()
-    local autocmd = api.nvim_create_autocmd
-    local augroup = api.nvim_create_augroup
-    local grp = augroup("SpeedTyperMenu", {})
-
-    local last_line = 0
-    autocmd({ "CursorMoved", "CursorMovedI", "ModeChanged" }, {
-        group = grp,
-        callback = function()
-            if not self.settings_menu_active then
-                return
-            end
-            local line, _ = util.get_cursor_pos()
-            if line % 2 == 0 then
-                line = line + (line > last_line and 1 or -1)
-                line = math.max(line, 1)
-                line = math.min(line, api.nvim_buf_line_count(globals.bufnr) - 1)
-            end
-            last_line = line
-            vim.schedule(function()
-                -- if the menu closes (or something similar happens) before `nvim_win_set_cursor`
-                if not self.settings_menu_active then
-                    return
-                end
-                api.nvim_win_set_cursor(globals.winnr, { line + 1, 1 })
-            end)
-        end,
-        desc = "Fix cursor to the first column when the settings menu is active.",
-    })
-end
-
 ---@param button string
 function Menu:_activate_button(button)
-    if button == "settings" then
-        self:_display_settings_menu()
-        return
-    end
-
     -- find out in which group the button belongs
     if settings.round.text_variant[button] ~= nil then
         -- both can be active at the same time
@@ -129,11 +97,7 @@ function Menu:_set_keymaps()
     local function get_cword()
         local button = vim.fn.expand("<cword>")
         button = util.trim(button)
-        if self.settings_menu_active then
-            self:_settings_button_pressed(button)
-        else
-            self:_activate_button(button)
-        end
+        self:_activate_button(button)
     end
     util.set_keymaps(
         settings.keymaps.press_button,
@@ -176,125 +140,6 @@ function Menu:_highlight_buttons()
             end
         end
     end
-end
-
-function Menu:_display_settings_menu()
-    self.round:end_round()
-    self.settings_menu_active = true
-    local lines = vim.o.lines - vim.o.cmdheight
-    local cols = vim.o.columns
-    local height = util.calc_size(constants.settings_window_height_percentage, lines)
-    local width = self:get_width()
-    api.nvim_win_set_config(globals.winnr, {
-        relative = "editor",
-        title = "SpeedTyper Settings - restart the game to apply settings",
-        title_pos = "center",
-        row = math.floor((lines - height) / 2),
-        col = math.floor((cols - width) / 2),
-        height = height,
-        width = width,
-    })
-    self:_gen_settings_text()
-    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
-end
-
-function Menu:_gen_settings_text()
-    api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
-    local items = {
-        "reset_settings",
-        "language",
-        "theme",
-        "randomize_theme",
-        "cursor_style",
-        "cursor_blinking",
-        "enable_pace_cursor",
-        "pace_cursor",
-        "pace_cursor_style",
-        "pace_cursor_blinking",
-        "strict_space",
-        "stop_on_error",
-        "confidence_mode",
-        "indicate_typos",
-        "sound_volume",
-        "sound_on_keypress",
-        "sound_on_typo",
-        "live_progress",
-        "average_speed",
-        "average_accuracy",
-        "demojify",
-        "debug_mode",
-    }
-    local buf_lines = {}
-    for _, t in ipairs(items) do
-        local info = ""
-        local t_settings = settings.general[t]
-        if type(t_settings) == "table" then
-            for k, v in pairs(t_settings) do
-                if v then
-                    info = ("| %s |"):format(k)
-                    break
-                end
-            end
-        elseif type(t_settings) == "number" then
-            info = ("<%s>"):format(t_settings)
-        elseif type(t_settings) == "boolean" then
-            info = ("[%s]"):format(t_settings and "x" or " ")
-        else
-            info = "!    "
-        end
-        table.insert(buf_lines, "  ")
-        table.insert(buf_lines, self:_left_right_align(t, info))
-    end
-    api.nvim_buf_set_lines(globals.bufnr, 0, -1, false, buf_lines)
-    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
-end
-
----@param button string
-function Menu:_settings_button_pressed(button)
-    api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
-    local t_settings = settings.general[button]
-    if button == "reset_settings" then
-        settings:reset_settings()
-        self:_gen_settings_text()
-        return
-    elseif type(t_settings) == "table" then
-        local items = {}
-        for k, _ in pairs(t_settings) do
-            table.insert(items, k)
-        end
-        vim.ui.select(
-            items,
-            { prompt = ("Select %s:"):format(button), kind = button },
-            function(item, _)
-                if not item then
-                    return
-                end
-                for k, _ in pairs(t_settings) do
-                    settings.general[button][k] = false
-                end
-                settings.general[button][item] = true
-                self:_gen_settings_text()
-            end
-        )
-    elseif type(t_settings) == "number" then
-        vim.ui.input({
-            prompt = ("Enter a number value for %s:"):format(button),
-        }, function(input)
-            if not input then
-                return
-            end
-            if not tonumber(input) then
-                util.info("Input must be a number.")
-                return
-            end
-            settings.general[button] = tonumber(input)
-            self:_gen_settings_text()
-        end)
-    elseif type(t_settings) == "boolean" then
-        settings.general[button] = not settings.general[button]
-        self:_gen_settings_text()
-    end
-    api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
 end
 
 ---@param text1 string

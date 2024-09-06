@@ -35,7 +35,7 @@ function M.set_cursor_pos(line, col, winnr)
     end)
 end
 
---- HACK: compare two floats
+---HACK: compare two floats
 ---@param a number
 ---@param b number
 ---@return boolean
@@ -152,14 +152,14 @@ end
 
 ---@param tbl table
 ---@param el any
----@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
+---@param cmp? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return integer idx index of the element `el` or 0 if `tbl` does not contain `el`
-function M.find_element(tbl, el, eq)
-    eq = eq or function(a, b)
+function M.find_element(tbl, el, cmp)
+    cmp = cmp or function(a, b)
         return a == b
     end
     for idx, val in ipairs(tbl) do
-        if eq(val, el) then
+        if cmp(val, el) then
             return idx
         end
     end
@@ -168,23 +168,23 @@ end
 
 ---@param tbl table
 ---@param el any
----@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
+---@param cmp? fun(a: any, b: any) : boolean returns true if elements are the same
 ---@return boolean
-function M.tbl_contains(tbl, el, eq)
-    eq = eq or function(a, b)
+function M.tbl_contains(tbl, el, cmp)
+    cmp = cmp or function(a, b)
         return a == b
     end
-    return M.find_element(tbl, el, eq) > 0
+    return M.find_element(tbl, el, cmp) > 0
 end
 
 ---@param tbl table
 ---@param el any
----@param eq? fun(a: any, b: any) : boolean returns true if elements are the same
-function M.remove_element(tbl, el, eq)
-    eq = eq or function(a, b)
+---@param cmp? fun(a: any, b: any) : boolean returns true if elements are the same
+function M.remove_element(tbl, el, cmp)
+    cmp = cmp or function(a, b)
         return a == b
     end
-    local idx = M.find_element(tbl, el, eq)
+    local idx = M.find_element(tbl, el, cmp)
     if idx > 0 then
         table.remove(tbl, idx)
     end
@@ -248,6 +248,32 @@ function M.create_cursor(type, blinking)
     end
 
     return cursor
+end
+
+---@param subcmd_arg_lead string
+---@param tbl table<string, any>
+---@return string[]
+function M.get_map_option_completion(subcmd_arg_lead, tbl)
+    local subcmd_args = {}
+    for el, _ in pairs(tbl) do
+        table.insert(subcmd_args, el)
+    end
+    return vim.iter(subcmd_args)
+        :filter(function(arg)
+            return arg:find(subcmd_arg_lead) ~= nil
+        end)
+        :totable()
+end
+
+---@param subcmd_arg_lead string
+---@return string[]
+function M.get_bool_option_completion(subcmd_arg_lead)
+    local subcmd_args = { "on", "off" }
+    return vim.iter(subcmd_args)
+        :filter(function(arg)
+            return arg:find(subcmd_arg_lead) ~= nil
+        end)
+        :totable()
 end
 
 return M

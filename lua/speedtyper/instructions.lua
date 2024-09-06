@@ -14,8 +14,8 @@
 ---@field randomize_theme string
 ---@field cursor_style string
 ---@field cursor_blinking string
+---@field pace_cursor_speed string
 ---@field pace_cursor string
----@field enable_pace_cursor string
 ---@field pace_cursor_style string
 ---@field pace_cursor_blinking string
 ---@field strict_space string
@@ -99,11 +99,11 @@ Choose one of the predifined cursor styles.
         cursor_blinking = [[
 Enable/disable cursor blinking.
 ]],
-        pace_cursor = [[
+        pace_cursor_speed = [[
 Displays a second cursor that moves
 at the given pace.
 ]],
-        enable_pace_cursor = [[
+        pace_cursor = [[
 Enable/disable pace cursor.
 ]],
         pace_cursor_style = [[
