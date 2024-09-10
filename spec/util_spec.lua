@@ -111,18 +111,29 @@ describe("Util test", function()
         eq("i:block,i:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor", cursor)
     end)
 
-    pending("map completion", function()
+    it("map completion", function()
         local tbl = {
             foo = true,
             bar = 100,
             baz = "abc",
         }
-        -- TODO: sort arrays or call tbl_contains for each element
-        eq({ "foo", "bar", "baz" }, util.get_map_option_completion("", tbl))
-        eq({ "bar", "baz" }, util.get_map_option_completion("b", tbl))
-        eq({ "bar", "baz" }, util.get_map_option_completion("ba", tbl))
+
+        local expected = table.sort({ "foo", "bar", "baz" })
+        local got = table.sort(util.get_map_option_completion("", tbl))
+        eq(expected, got)
+
+        expected = table.sort({ "bar", "baz" })
+        got = table.sort(util.get_map_option_completion("b", tbl))
+        eq(expected, got)
+
+        expected = table.sort({ "bar", "baz" })
+        got = table.sort(util.get_map_option_completion("ba", tbl))
+        eq(expected, got)
+
         eq({ "bar" }, util.get_map_option_completion("bar", tbl))
+
         eq({}, util.get_map_option_completion("c", tbl))
+
         eq({}, util.get_map_option_completion("bay", tbl))
     end)
 
