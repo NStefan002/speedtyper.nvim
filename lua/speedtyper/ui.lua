@@ -165,6 +165,15 @@ function UI:toggle()
     end
 end
 
+function UI:redraw()
+    if self.active then
+        self:toggle()
+        vim.schedule(function()
+            self:toggle()
+        end)
+    end
+end
+
 function UI._set_options()
     api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
     api.nvim_set_option_value("filetype", "speedtyper", { buf = globals.bufnr })

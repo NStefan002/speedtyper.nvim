@@ -207,6 +207,7 @@ function Settings:_create_subcmd_for_map_option(option)
                 self.general[option][opt] = false
             end
             self.general[option][args[1]] = true
+            require("speedtyper.ui"):redraw()
         end,
         complete = function(subcmd_arg_lead)
             return util.get_map_option_completion(subcmd_arg_lead, self.general[option])
@@ -236,6 +237,7 @@ function Settings:_create_subcmd_for_bool_option(option)
             ---@type boolean
             local new_val = args[1] == "on"
             self.general[option] = new_val
+            require("speedtyper.ui"):redraw()
         end,
         complete = function(subcmd_arg_lead)
             return util.get_bool_option_completion(subcmd_arg_lead)
@@ -276,7 +278,6 @@ function Settings:_create_info_subcmd()
     }
 end
 
--- TODO: redraw speedtyper window (if active) when some option is changed
 function Settings:create_user_commands()
     ---@type table<string, SpeedTyperSettingsSubcmd>
     local subcmds = {
