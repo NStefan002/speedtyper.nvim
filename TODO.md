@@ -1,11 +1,14 @@
-# ✅☑️ TODO (for the v2 branch)
+# ✅☑️ TODO (v2 branch)
 
 - [ ] Rewrite plugin
-- [ ] Add tests
+- [x] Add tests
+- [ ] Add vimdoc ci
+- [ ] Update README
 - [ ] create `health.lua` for dependencies
 - [ ] Make independent ui
-  - [ ] Select game mode in new ui
-  - [ ] Possibly make ui similar to monkeytype's (+ rain mode)
+- [ ] punctuation game modifier
+- [x] numbers game modifier
+- [ ] Possibly make ui similar to monkeytype's (+ rain mode)
 - [ ] Stats
   - [x] wpm
   - [x] raw wpm
@@ -20,15 +23,15 @@
   - [x] show each game mode details in a pop-up window (like lsp.hover)
 - [ ] Settings
   - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
-  - [ ] customize settings in the ui and refresh them live
+  - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere
   - [x] language
   - [ ] theme
   - [ ] randomize_theme
   - [x] cursor_style
   - [x] cursor_blinking
-  - [ ] enable_pace_cursor
   - [ ] pace_cursor
+  - [ ] pace_cursor_speed
   - [ ] pace_cursor_style
   - [ ] pace_cursor_blinking
   - [x] strict_space
