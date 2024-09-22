@@ -9,6 +9,7 @@ local function hl(name, val)
     api.nvim_set_hl(globals.ns_id, name, val)
 end
 
+-- NOTE: subject to change
 function M.setup()
     hl("SpeedTyperButtonActive", { link = "DiagnosticHint" })
     hl("SpeedTyperButtonInactive", { link = "Comment" })

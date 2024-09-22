@@ -1,6 +1,5 @@
 local M = {}
 local api = vim.api
-local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local grp = nil
 

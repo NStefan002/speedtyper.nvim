@@ -17,8 +17,7 @@ vim.api.nvim_create_user_command("SpeedTyper", function(event)
     require("speedtyper.highlights").setup()
 
     -- open up speedtyper window
-    local ui = require("speedtyper.ui")
-    ui:toggle()
+    require("speedtyper.ui"):toggle()
 end, {
     nargs = "*",
     desc = "Start SpeedTyper",

@@ -6,6 +6,9 @@
 - [ ] Update README
 - [ ] create `health.lua` for dependencies
 - [ ] Make independent ui
+  - [x] hover instructions
+  - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like in v1)
+  - [ ] dislpay requested info in the speedtyper ui
 - [ ] punctuation game modifier
 - [x] numbers game modifier
 - [ ] Possibly make ui similar to monkeytype's (+ rain mode)

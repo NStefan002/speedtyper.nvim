@@ -53,7 +53,9 @@ before they reach the bottom.
 Provide your own text to type.
 ]],
         punctuation = [[
-Add punctuation to the text.
+Text contains punctuation
+and sentences begin with the
+capital letter.
 ]],
         numbers = [[
 Add numbers to the text.
