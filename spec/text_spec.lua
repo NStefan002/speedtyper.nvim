@@ -64,7 +64,7 @@ describe("Text tests", function()
         local width = 80
         local mistake = false
         for _ = 1, 10000 do
-            local paragraph = text:generate_n_lines_text(n, width, true, true)
+            local paragraph = text:generate_n_lines_text(n, width)
             local total_words = 0
             for _, line in ipairs(paragraph) do
                 if #line > width - 4 then

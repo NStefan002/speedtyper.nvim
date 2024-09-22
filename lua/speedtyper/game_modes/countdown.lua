@@ -48,12 +48,7 @@ function Countdown:start()
     self.text_generator:update_lang()
     self:_reset_values()
     local win_width = api.nvim_win_get_width(globals.winnr)
-    self.text = self.text_generator:generate_n_lines_text(
-        constants.text_num_lines,
-        win_width,
-        settings.round.text_variant.numbers,
-        settings.round.text_variant.punctuation
-    )
+    self.text = self.text_generator:generate_n_lines_text(constants.text_num_lines, win_width)
     self:_set_extmarks()
     self:_create_timer()
 
