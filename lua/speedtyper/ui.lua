@@ -126,6 +126,7 @@ function UI:_open()
     end
 
     api.nvim_win_set_hl_ns(globals.winnr, globals.ns_id)
+    require("speedtyper.highlights").setup()
     self._disable_cmp()
     self:_create_autocmds()
     self.menu:display_menu()
