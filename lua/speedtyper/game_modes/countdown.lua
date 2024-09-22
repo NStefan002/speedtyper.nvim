@@ -191,14 +191,7 @@ end
 function Countdown:_move_up()
     util.remove_element(self.text, self.text[1])
     local win_width = api.nvim_win_get_width(globals.winnr)
-    table.insert(
-        self.text,
-        self.text_generator:generate_sentence(
-            win_width,
-            settings.round.text_variant.numbers,
-            settings.round.text_variant.punctuation
-        )
-    )
+    table.insert(self.text, self.text_generator:generate_sentence(win_width))
 
     self:_set_extmarks()
 

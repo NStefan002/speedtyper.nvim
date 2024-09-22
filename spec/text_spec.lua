@@ -16,7 +16,7 @@ describe("Text tests", function()
     it("high width generate sentence", function()
         local width_overflow = false
         for _ = 1, 10000 do
-            local sentence = text:generate_sentence(80, true, true)
+            local sentence = text:generate_sentence(80)
             if #sentence > 76 then
                 width_overflow = true
                 break
@@ -28,7 +28,7 @@ describe("Text tests", function()
     it("low width generate sentence", function()
         local width_overflow = false
         for _ = 1, 10000 do
-            local sentence = text:generate_sentence(20, true, true)
+            local sentence = text:generate_sentence(20)
             if #sentence > 16 then
                 width_overflow = true
                 break
@@ -42,7 +42,7 @@ describe("Text tests", function()
         local width = 80
         local mistake = false
         for _ = 1, 10000 do
-            local paragraph = text:generate_n_words_text(width, n, true, true)
+            local paragraph = text:generate_n_words_text(width, n)
             local total_words = 0
             for _, line in ipairs(paragraph) do
                 if #line > width - 4 then

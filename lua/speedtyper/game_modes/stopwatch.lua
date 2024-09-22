@@ -82,12 +82,7 @@ function Stopwatch:_reset_values()
     self.time_sec = 0.0
     self.extm_ids = {}
     local win_width = api.nvim_win_get_width(globals.winnr)
-    self.text = self.text_generator:generate_n_words_text(
-        win_width,
-        self.number_of_words,
-        settings.round.text_variant.numbers,
-        settings.round.text_variant.punctuation
-    )
+    self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     self.timer = nil
     self.prev_cursor_pos:update(0, 0)
     self.stats:reset()
