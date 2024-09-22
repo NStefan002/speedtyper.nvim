@@ -28,7 +28,7 @@ function Countdown.new()
         text = {},
         text_generator = require("speedtyper.text"),
         stats = require("speedtyper.stats"),
-        prev_cursor_pos = position.new(3, 1),
+        prev_cursor_pos = position.new(constants.text_first_line, 1),
     }, Countdown)
     self:_apply_settings()
     return self
@@ -49,7 +49,7 @@ function Countdown:start()
     self:_reset_values()
     local win_width = api.nvim_win_get_width(globals.winnr)
     self.text = self.text_generator:generate_n_lines_text(
-        constants._text_num_lines,
+        constants.text_num_lines,
         win_width,
         settings.round.text_variant.numbers,
         settings.round.text_variant.punctuation
@@ -84,8 +84,8 @@ function Countdown:_reset_values()
         api.nvim_buf_clear_namespace,
         globals.bufnr,
         globals.ns_id,
-        constants._text_first_line,
-        constants._info_line + 1
+        constants.info_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
     self.closing = false
     self.extm_ids = {}
@@ -96,8 +96,8 @@ end
 
 function Countdown:_set_extmarks()
     self.extm_ids = {}
-    for i = 1, constants._text_num_lines do
-        local line = constants._text_first_line + i - 1
+    for i = 1, constants.text_num_lines do
+        local line = constants.text_first_line + i - 1
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
@@ -109,7 +109,7 @@ end
 function Countdown:_update_extmarks()
     -- TODO: rename line_idx or totally remove it
     local line, col = util.get_cursor_pos()
-    local line_idx = line - constants._text_first_line + 1
+    local line_idx = line - constants.text_first_line + 1
     if
         line_idx > self.prev_cursor_pos.line
         or (line_idx == self.prev_cursor_pos.line and col > self.prev_cursor_pos.col)
@@ -149,13 +149,13 @@ function Countdown:_update_extmarks()
             api.nvim_buf_set_extmark(
                 globals.bufnr,
                 globals.ns_id,
-                line_idx + constants._text_first_line,
+                line_idx + constants.text_first_line,
                 0,
                 {
-                    id = self.extm_ids[line_idx + constants._text_first_line - 1],
+                    id = self.extm_ids[line_idx + constants.text_first_line - 1],
                     virt_text = {
                         {
-                            self.text[line_idx + constants._text_first_line - 1],
+                            self.text[line_idx + constants.text_first_line - 1],
                             "SpeedTyperTextUntyped",
                         },
                     },
@@ -163,7 +163,7 @@ function Countdown:_update_extmarks()
                 }
             )
         else
-            if line_idx + constants._text_first_line - 1 == constants._text_middle_line then
+            if line_idx + constants.text_first_line - 1 == constants.text_middle_line then
                 self:_move_up()
                 col = 0
             else
@@ -174,7 +174,7 @@ function Countdown:_update_extmarks()
     api.nvim_buf_set_extmark(
         globals.bufnr,
         globals.ns_id,
-        line_idx + constants._text_first_line - 1,
+        line_idx + constants.text_first_line - 1,
         0,
         {
             id = self.extm_ids[line_idx],
@@ -204,16 +204,16 @@ function Countdown:_move_up()
 
     local written_lines = api.nvim_buf_get_lines(
         globals.bufnr,
-        constants._text_first_line,
-        constants._text_middle_line + 1,
+        constants.text_first_line,
+        constants.text_middle_line + 1,
         false
     )
     util.remove_element(written_lines, written_lines[1])
     table.insert(written_lines, "")
     api.nvim_buf_set_lines(
         globals.bufnr,
-        constants._text_first_line,
-        constants._text_middle_line + 1,
+        constants.text_first_line,
+        constants.text_middle_line + 1,
         false,
         written_lines
     )
@@ -225,7 +225,7 @@ function Countdown:_move_up()
     local text_info = self.stats.text_info:get_table()
     local to_remove = {}
     for _, info in ipairs(text_info) do
-        if info.pos.line == constants._text_first_line then
+        if info.pos.line == constants.text_first_line then
             table.insert(to_remove, info)
         end
     end
@@ -246,11 +246,10 @@ end
 function Countdown:_update_live_progress(text)
     local timer_text = settings.general.demojify and "Time left: " or "󱑆 "
     self.info_extm_id =
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
             virt_text = {
-                { ("%s%s    "):format(timer_text, text), "SpeedTyperClockNormal" },
+                { (" %s%s  "):format(timer_text, text), "SpeedTyperCountNormal" },
             },
-            virt_text_pos = "right_align",
             id = self.info_extm_id,
         })
 end
@@ -261,23 +260,21 @@ function Countdown:_create_timer()
             ---@diagnostic disable-next-line: param-type-mismatch
             and table.concat(settings.keymaps.start_game, "/")
         or settings.keymaps.start_game
-    local extm_id =
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
-            virt_text = {
-                {
-                    ("Press %s to start the game."):format(keys),
-                    "SpeedTyperTextOk",
-                },
+    local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
+        virt_text = {
+            {
+                ("Press %s to start the game."):format(keys),
+                "SpeedTyperTextOk",
             },
-            virt_text_pos = "right_align",
-        })
+        },
+    })
     util.set_keymaps(settings.keymaps.start_game, function()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
         vim.cmd.startinsert()
-        util.set_cursor_pos(constants._text_first_line + 1, 0, globals.winnr)
+        util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
         vim.schedule(function()
-            util.clear_buffer_text(constants._win_height, globals.bufnr)
+            util.clear_buffer_text(constants.win_height, globals.bufnr)
             self:_set_extmarks()
         end)
         self:_start_timer()
@@ -294,19 +291,13 @@ function Countdown:_start_timer()
                 self.stats.time = self.time_sec
                 self.stats:display_stats()
                 self:stop()
-                self.info_extm_id = api.nvim_buf_set_extmark(
-                    globals.bufnr,
-                    globals.ns_id,
-                    constants._info_line,
-                    0,
-                    {
+                self.info_extm_id =
+                    api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
                         virt_text = {
-                            { "Time's up!", "SpeedTyperClockWarning" },
+                            { "Time's up!", "SpeedTyperCountWarning" },
                         },
-                        virt_text_pos = "right_align",
                         id = self.info_extm_id,
-                    }
-                )
+                    })
             else
                 self:_update_live_progress(tostring(remaining_time))
                 remaining_time = remaining_time - 1

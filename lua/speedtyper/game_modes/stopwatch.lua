@@ -76,8 +76,8 @@ function Stopwatch:_reset_values()
         api.nvim_buf_clear_namespace,
         globals.bufnr,
         globals.ns_id,
-        constants._text_first_line,
-        constants._info_line + 1
+        constants.info_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
     self.time_sec = 0.0
     self.extm_ids = {}
@@ -95,9 +95,9 @@ end
 
 function Stopwatch:_set_extmarks()
     self.extm_ids = {}
-    local n = math.min(constants._text_num_lines, #self.text)
+    local n = math.min(constants.text_num_lines, #self.text)
     for i = 1, n do
-        local line = constants._text_first_line + i - 1
+        local line = constants.text_first_line + i - 1
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
@@ -123,7 +123,7 @@ end
 function Stopwatch:_update_extmarks()
     -- TODO: rename line_idx or totally remove it
     local line, col = util.get_cursor_pos()
-    local line_idx = line - constants._text_first_line + 1
+    local line_idx = line - constants.text_first_line + 1
     if
         line_idx > self.prev_cursor_pos.line
         or (line_idx == self.prev_cursor_pos.line and col > self.prev_cursor_pos.col)
@@ -177,13 +177,13 @@ function Stopwatch:_update_extmarks()
             api.nvim_buf_set_extmark(
                 globals.bufnr,
                 globals.ns_id,
-                line_idx + constants._text_first_line,
+                line_idx + constants.text_first_line,
                 0,
                 {
-                    id = self.extm_ids[line_idx + constants._text_first_line - 1],
+                    id = self.extm_ids[line_idx + constants.text_first_line - 1],
                     virt_text = {
                         {
-                            self.text[line_idx + constants._text_first_line - 1],
+                            self.text[line_idx + constants.text_first_line - 1],
                             "SpeedTyperTextUntyped",
                         },
                     },
@@ -191,7 +191,7 @@ function Stopwatch:_update_extmarks()
                 }
             )
         else
-            if line_idx + constants._text_first_line - 1 == constants._text_middle_line then
+            if line_idx + constants.text_first_line - 1 == constants.text_middle_line then
                 self:_move_up()
                 col = 0
             else
@@ -202,7 +202,7 @@ function Stopwatch:_update_extmarks()
     api.nvim_buf_set_extmark(
         globals.bufnr,
         globals.ns_id,
-        line_idx + constants._text_first_line - 1,
+        line_idx + constants.text_first_line - 1,
         0,
         {
             id = self.extm_ids[line_idx],
@@ -216,8 +216,8 @@ function Stopwatch:_update_extmarks()
     api.nvim_buf_clear_namespace(
         globals.bufnr,
         globals.ns_id,
-        #self.text + constants._text_first_line,
-        constants._text_first_line + constants._text_num_lines + 1
+        #self.text + constants.text_first_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
 
     self.prev_cursor_pos:update(line_idx, col)
@@ -228,23 +228,23 @@ function Stopwatch:_move_up()
     api.nvim_buf_clear_namespace(
         globals.bufnr,
         globals.ns_id,
-        constants._text_first_line,
-        constants._text_first_line + constants._text_num_lines + 1
+        constants.text_first_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
     self:_set_extmarks()
 
     local written_lines = api.nvim_buf_get_lines(
         globals.bufnr,
-        constants._text_first_line,
-        constants._text_middle_line + 1,
+        constants.text_first_line,
+        constants.text_middle_line + 1,
         false
     )
     util.remove_element(written_lines, written_lines[1])
     table.insert(written_lines, "")
     api.nvim_buf_set_lines(
         globals.bufnr,
-        constants._text_first_line,
-        constants._text_middle_line + 1,
+        constants.text_first_line,
+        constants.text_middle_line + 1,
         false,
         written_lines
     )
@@ -256,7 +256,7 @@ function Stopwatch:_move_up()
     local text_info = self.stats.text_info:get_table()
     local to_remove = {}
     for _, info in ipairs(text_info) do
-        if info.pos.line == constants._text_first_line then
+        if info.pos.line == constants.text_first_line then
             table.insert(to_remove, info)
         end
     end
@@ -278,18 +278,17 @@ function Stopwatch:_update_live_progress()
 
     local word_count_text = settings.general.demojify and "Word count: " or "󱀽 "
     self.info_extm_id =
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
             virt_text = {
                 {
-                    ("%s%s / %s    "):format(
+                    (" %s%s / %s  "):format(
                         word_count_text,
                         self:_current_word(),
                         self.number_of_words
                     ),
-                    "SpeedTyperClockNormal",
+                    "SpeedTyperCountNormal",
                 },
             },
-            virt_text_pos = "right_align",
             id = self.info_extm_id,
         })
 end
@@ -302,23 +301,21 @@ function Stopwatch:_create_timer()
             ---@diagnostic disable-next-line: param-type-mismatch
             and table.concat(settings.keymaps.start_game, "/")
         or settings.keymaps.start_game
-    local extm_id =
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants._info_line, 0, {
-            virt_text = {
-                {
-                    ("Press %s to start the game."):format(keys),
-                    "SpeedTyperTextOk",
-                },
+    local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
+        virt_text = {
+            {
+                ("Press %s to start the game."):format(keys),
+                "SpeedTyperTextOk",
             },
-            virt_text_pos = "right_align",
-        })
+        },
+    })
     util.set_keymaps(settings.keymaps.start_game, function()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
         vim.cmd.startinsert()
-        util.set_cursor_pos(constants._text_first_line + 1, 0, globals.winnr)
+        util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
         vim.schedule(function()
-            util.clear_buffer_text(constants._win_height, globals.bufnr)
+            util.clear_buffer_text(constants.win_height, globals.bufnr)
             self:_set_extmarks()
         end)
         self:_start_timer()

@@ -96,7 +96,7 @@ function UI:_open()
     local width = self.menu:get_width()
     local nvim_uis = api.nvim_list_uis()
     if #nvim_uis > 0 then
-        if nvim_uis[1].height <= constants._win_height or nvim_uis[1].width <= width then
+        if nvim_uis[1].height <= constants.win_height or nvim_uis[1].width <= width then
             util.error("Increase the size of your Neovim instance.")
         end
     end
@@ -107,10 +107,10 @@ function UI:_open()
         relative = "editor",
         anchor = "NW",
         title = "SpeedTyper",
-        row = math.floor((lines - constants._win_height) / 2),
+        row = math.floor((lines - constants.win_height) / 2),
         col = math.floor((cols - width) / 2),
         width = width,
-        height = constants._win_height,
+        height = constants.win_height,
         style = "minimal",
         border = "double",
         noautocmd = true,
