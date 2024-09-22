@@ -1,6 +1,7 @@
 local M = {}
 local api = vim.api
 local globals = require("speedtyper.globals")
+local settings = require("speedtyper.settings")
 local grp = nil
 
 local function create_autocmds()
@@ -9,7 +10,7 @@ local function create_autocmds()
         group = grp,
         pattern = "*",
         callback = function()
-            M.setup()
+            vim.schedule(M.setup)
         end,
     })
 end
@@ -19,15 +20,14 @@ function M.setup()
         create_autocmds()
     end
 
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperButtonActive", { link = "DiagnosticHint" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperButtonInactive", { link = "Comment" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextTyped", { link = "Normal" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextOk", { link = "DiagnosticOk" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextUntyped", { link = "Comment" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextError", { link = "ErrorMsg" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperTextWarning", { link = "WarningMsg" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperClockNormal", { link = "Normal" })
-    api.nvim_set_hl(globals.ns_id, "SpeedTyperClockWarning", { link = "WarningMsg" })
+    local active_theme = "default"
+    for theme, active in pairs(settings.general.theme) do
+        if active then
+            active_theme = theme
+            break
+        end
+    end
+    require("speedtyper.themes." .. active_theme).setup()
 end
 
 return M

@@ -86,7 +86,6 @@ function Settings.new()
                 },
                 theme = {
                     default = true,
-                    custom = false,
                 },
                 randomize_theme = false,
                 cursor_style = {
@@ -207,6 +206,7 @@ function Settings:_create_subcmd_for_map_option(option)
                 self.general[option][opt] = false
             end
             self.general[option][args[1]] = true
+            require("speedtyper.highlights").setup()
             require("speedtyper.ui"):redraw()
         end,
         complete = function(subcmd_arg_lead)
