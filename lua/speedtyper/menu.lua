@@ -142,19 +142,4 @@ function Menu:_highlight_buttons()
     end
 end
 
----@param text1 string
----@param text2 string
-function Menu:_left_right_align(text1, text2)
-    local width = self:get_width()
-    local sep = string.rep(" ", width - #text1 - #text2 - 2, "")
-    return string.format(" %s%s%s ", text1, sep, text2)
-end
-
----@param text string
-function Menu:_center_align(text)
-    local width = self:get_width()
-    local sep = string.rep(" ", math.floor((width - #text) / 2), "")
-    return string.format("%s%s%s", sep, text, sep)
-end
-
 return Menu.new()

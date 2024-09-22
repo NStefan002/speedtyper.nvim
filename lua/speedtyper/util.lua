@@ -276,4 +276,10 @@ function M.get_bool_option_completion(subcmd_arg_lead)
         :totable()
 end
 
+---@param text string
+function M.center_text(text, buff_width)
+    local sep = string.rep(" ", math.floor((buff_width - #text) / 2), "")
+    return string.format("%s%s%s", sep, text, sep)
+end
+
 return M
