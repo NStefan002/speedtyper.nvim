@@ -76,34 +76,6 @@ end
 function M.disable_buffer_modification(bufnr)
     -- exit insert mode
     api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
-    -- HACK: disable buffer modification by disabling all modifying keys
-    -- local keys_to_disable = {
-    --     "i",
-    --     "a",
-    --     "o",
-    --     "r",
-    --     "x",
-    --     "s",
-    --     "d",
-    --     "c",
-    --     "u",
-    --     "p",
-    --     "I",
-    --     "A",
-    --     "O",
-    --     "R",
-    --     "S",
-    --     "D",
-    --     "C",
-    --     "U",
-    --     "P",
-    --     "n",
-    --     "N",
-    --     ".",
-    -- }
-    -- for _, key in pairs(keys_to_disable) do
-    --     vim.keymap.set({ "n", "v" }, key, "<Nop>", { buffer = 0 })
-    -- end
     api.nvim_set_option_value("modifiable", false, { buf = bufnr })
 end
 

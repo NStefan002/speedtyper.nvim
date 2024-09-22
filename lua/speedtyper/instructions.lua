@@ -172,7 +172,7 @@ end
 
 ---@param item string
 function Instructions:get(item)
-    return self[item] or ""
+    return self[item:lower()] or ""
 end
 
 return Instructions:new()

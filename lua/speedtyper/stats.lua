@@ -3,6 +3,7 @@ local util = require("speedtyper.util")
 local stack = require("speedtyper.stack")
 local char_info = require("speedtyper.char_info")
 local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 
 ---@class SpeedTyperStats
 ---@field wpm number
@@ -45,13 +46,46 @@ function Stats:display_stats()
     self:_calculate_raw_wpm()
     self:_calculate_acc()
 
-    util.disable_buffer_modification(globals.bufnr)
-    -- TODO: set buffer text
-    print(
-        string.format("WPM: %.2f\n", self.wpm),
-        string.format("Raw WPM: %.2f\n", self.raw_wpm),
-        string.format("Accuracy: %.2f%%", self.acc)
+    -- util.clear_buffer_text(constants.win_height, globals.bufnr)
+    local wpm_text = ("WPM: %.2f"):format(self.wpm)
+    local raw_wpm_text = ("Raw_WPM: %.2f"):format(self.raw_wpm)
+    local acc_text = ("Accuracy: %.2f%%"):format(self.acc)
+    local text = util.center_text(
+        ("%s        %s        %s"):format(wpm_text, raw_wpm_text, acc_text),
+        api.nvim_win_get_width(globals.winnr)
     )
+    api.nvim_buf_set_lines(
+        globals.bufnr,
+        constants.stats_line,
+        constants.stats_line + 1,
+        false,
+        { text }
+    )
+
+    vim.schedule(function()
+        util.disable_buffer_modification(globals.bufnr)
+    end)
+
+    local wpm_idx = text:find("WPM") or 0
+    local raw_wpm_idx = text:find("Raw_WPM") or 0
+    local acc_idx = text:find("Accuracy") or 0
+
+    ---NOTE: this will highlight one char after text, but in this case I think it looks cool
+    ---@param col_start integer
+    ---@param len integer
+    local function hl_stats(col_start, len)
+        api.nvim_buf_add_highlight(
+            globals.bufnr,
+            globals.ns_id,
+            "SpeedTyperInfo",
+            constants.stats_line,
+            col_start - 1,
+            col_start + len
+        )
+    end
+    hl_stats(wpm_idx, #wpm_text)
+    hl_stats(raw_wpm_idx, #raw_wpm_text)
+    hl_stats(acc_idx, #acc_text)
 end
 
 function Stats:reset()
