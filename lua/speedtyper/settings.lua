@@ -17,7 +17,6 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@class SpeedTyperGeneralSettings
 ---@field language table<string, boolean>
 ---@field theme table<string, boolean>
----@field randomize_theme boolean
 ---@field cursor_style table<SpeedTyperCursorStyle, boolean>
 ---@field cursor_blinking boolean
 ---@field pace_cursor boolean
@@ -86,8 +85,8 @@ function Settings.new()
                 },
                 theme = {
                     default = true,
+                    random = false,
                 },
-                randomize_theme = false,
                 cursor_style = {
                     line = true,
                     block = false,
@@ -284,7 +283,6 @@ function Settings:create_user_commands()
         info = self:_create_info_subcmd(),
         language = self:_create_subcmd_for_map_option("language"),
         theme = self:_create_subcmd_for_map_option("theme"),
-        randomize_theme = self:_create_subcmd_for_bool_option("randomize_theme"),
         cursor_style = self:_create_subcmd_for_map_option("cursor_style"),
         cursor_blinking = self:_create_subcmd_for_bool_option("cursor_blinking"),
         pace_cursor = self:_create_subcmd_for_bool_option("pace_cursor"),

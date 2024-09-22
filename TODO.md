@@ -30,8 +30,7 @@
   - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere
   - [x] language
-  - [ ] theme
-  - [ ] randomize_theme
+  - [x] theme
   - [x] cursor_style
   - [x] cursor_blinking
   - [ ] pace_cursor

@@ -11,7 +11,6 @@
 ---@field acc string
 ---@field language string
 ---@field theme string
----@field randomize_theme string
 ---@field cursor_style string
 ---@field cursor_blinking string
 ---@field pace_cursor_speed string
@@ -91,9 +90,8 @@ Choose one of available languages.
 ]],
         theme = [[
 Choose one of the predefined themes.
-]],
-        randomize_theme = [[
-Randomly select theme before every game.
+If `random` is selected, SpeedTyper
+will randomly apply one of the themes.
 ]],
         cursor_style = [[
 Choose one of the predifined cursor styles.
