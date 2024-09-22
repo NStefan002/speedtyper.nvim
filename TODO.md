@@ -18,6 +18,7 @@
   - [ ] Additional stats and units (the user selects which ones to display)
     - [ ] wps, cps, cpm
   - [ ] save stats
+  - [ ] detect AFK
 - [ ] Instructions
   - [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
   - [x] show each game mode details in a pop-up window (like lsp.hover)
@@ -47,3 +48,5 @@
   - [x] demojify
   - [ ] debug_mode
   - [x] reset settings
+- [ ] Other
+  - [ ] get rid of magic constants (put them in `constants.lua`)
