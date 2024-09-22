@@ -89,11 +89,7 @@ function Text:generate_sentence(max_len)
     if settings.round.text_variant.punctuation then
         sentence = self._capitalize_word(sentence)
     end
-    return ("%s%s%s"):format(
-        sentence,
-        self._get_punctuation(true),
-        string.rep(" ", extra_space, "")
-    )
+    return ("%s%s%s"):format(sentence, self._get_punctuation(true), string.rep(" ", extra_space))
 end
 
 ---@param win_width integer
@@ -120,7 +116,7 @@ function Text:generate_n_words_text(win_width, n)
                 ("%s%s%s"):format(
                     sentence,
                     self._get_punctuation(true),
-                    string.rep(" ", extra_space, "")
+                    string.rep(" ", extra_space)
                 )
             )
             sentence = self:get_word()
@@ -137,7 +133,7 @@ function Text:generate_n_words_text(win_width, n)
     -- finish the last sentence
     table.insert(
         text,
-        ("%s%s%s"):format(sentence, self._get_punctuation(true), string.rep(" ", extra_space, ""))
+        ("%s%s%s"):format(sentence, self._get_punctuation(true), string.rep(" ", extra_space))
     )
 
     return text
