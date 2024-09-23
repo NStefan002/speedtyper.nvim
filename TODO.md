@@ -39,9 +39,9 @@
   - [ ] pace_cursor_blinking
   - [x] strict_space
   - [ ] stop_on_error
-  - [ ] confidence_mode
+  - [x] confidence_mode
   - [ ] indicate_typos
-  - [ ] sound_volume
+  - [ ] sound_volume (pplay, mpv, ffmpeg->ffplay, cvlc, mplayer, sox->play)
   - [ ] sound_on_keypress
   - [ ] sound_on_typo
   - [x] live_progress
