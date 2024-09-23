@@ -50,6 +50,6 @@
   - [ ] average_accuracy
   - [x] demojify
   - [ ] debug_mode
-  - [ ] reset settings
+  - [x] reset settings
 - [ ] Other
   - [ ] get rid of magic constants (put them in `constants.lua`)
