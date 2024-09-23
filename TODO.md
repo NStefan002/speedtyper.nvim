@@ -27,6 +27,7 @@
   - [x] show each game mode details in a pop-up window (like lsp.hover)
 - [ ] Settings
   - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
+  - [ ] if no arguments are passed to `:SpeedTyperSettings <option>` then show the current value
   - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere
   - [x] language
@@ -49,6 +50,6 @@
   - [ ] average_accuracy
   - [x] demojify
   - [ ] debug_mode
-  - [x] reset settings
+  - [ ] reset settings
 - [ ] Other
   - [ ] get rid of magic constants (put them in `constants.lua`)
