@@ -188,6 +188,12 @@ function UI._set_options()
             )
         end
     end
+    if settings.general.confidence_mode then
+        vim.keymap.set("i", "<BS>", "<Nop>", { buffer = globals.bufnr })
+        vim.keymap.set("i", "<C-w>", "<Nop>", { buffer = globals.bufnr })
+        vim.keymap.set("i", "<C-u>", "<Nop>", { buffer = globals.bufnr })
+        vim.keymap.set("i", "<C-h>", "<Nop>", { buffer = globals.bufnr })
+    end
 end
 
 function UI:_save_options()
