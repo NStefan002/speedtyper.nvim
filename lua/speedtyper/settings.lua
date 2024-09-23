@@ -172,6 +172,7 @@ function Settings:save()
 end
 
 function Settings:reset_settings()
+    vim.fn.delete(settings_path)
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
     self.keymaps = vim.deepcopy(self.default.keymaps)
@@ -181,12 +182,18 @@ end
 ---@return SpeedTyperSettingsSubcmd
 function Settings:_create_subcmd_for_map_option(option)
     return {
-        impl = function(args, data)
-            if #args ~= 1 then
+        impl = function(args, _)
+            -- if no arguments are given, display the current value
+            if #args == 0 then
+                for opt, _ in pairs(self.general[option]) do
+                    if self.general[option][opt] then
+                        util.info(("Option '%s' is currently set to '%s'."):format(option, opt))
+                        return
+                    end
+                end
+            elseif #args > 1 then
                 util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
-                        data.fargs[1]
-                    )
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
                 )
                 return
             end
@@ -196,9 +203,7 @@ function Settings:_create_subcmd_for_map_option(option)
                     args[1]
                 )
             then
-                util.error(
-                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
-                )
+                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
                 return
             end
             for opt, _ in pairs(self.general[option]) do
@@ -217,19 +222,23 @@ end
 ---@return SpeedTyperSettingsSubcmd
 function Settings:_create_subcmd_for_bool_option(option)
     return {
-        impl = function(args, data)
-            if #args ~= 1 then
-                util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
-                        data.fargs[1]
+        impl = function(args, _)
+            if #args == 0 then
+                util.info(
+                    ("Option '%s' is currently %s."):format(
+                        option,
+                        self.general[option] and "ON" or "OFF"
                     )
+                )
+                return
+            elseif #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
                 )
                 return
             end
             if not util.tbl_contains(util.get_bool_option_completion(""), args[1]) then
-                util.error(
-                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
-                )
+                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
                 return
             end
             ---@type boolean
@@ -276,10 +285,30 @@ function Settings:_create_info_subcmd()
     }
 end
 
+function Settings:_create_reset_subcmd()
+    return {
+        impl = function(args, _)
+            if #args ~= 0 then
+                util.error("SpeedTyperSettings reset_settings: no arguments expected")
+                return
+            end
+            local prompt = require("speedtyper.instructions"):get("reset_settings")
+            vim.ui.select({ "No", "Yes" }, { prompt = prompt }, function(selected, _)
+                if selected == "Yes" then
+                    self:reset_settings()
+                    require("speedtyper.ui"):redraw()
+                    util.info("Settings have been reset.")
+                end
+            end)
+        end,
+    }
+end
+
 function Settings:create_user_commands()
     ---@type table<string, SpeedTyperSettingsSubcmd>
     local subcmds = {
         info = self:_create_info_subcmd(),
+        reset_settings = self:_create_reset_subcmd(),
         language = self:_create_subcmd_for_map_option("language"),
         theme = self:_create_subcmd_for_map_option("theme"),
         cursor_style = self:_create_subcmd_for_map_option("cursor_style"),

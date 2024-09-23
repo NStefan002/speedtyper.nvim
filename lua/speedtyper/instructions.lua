@@ -162,8 +162,8 @@ some issue. Display the log with
 `:SpeedTyperLog`.
 ]],
         reset_settings = [[
-Set settings to the default values.
-**Warning:** this action can not be
+Reset to default settings.
+**Warning** this action can not be
 undone.
 ]],
     }, Instructions)
