@@ -172,7 +172,6 @@ function Settings:save()
 end
 
 function Settings:reset_settings()
-    vim.fn.delete(settings_path)
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
     self.keymaps = vim.deepcopy(self.default.keymaps)
@@ -210,6 +209,7 @@ function Settings:_create_subcmd_for_map_option(option)
                 self.general[option][opt] = false
             end
             self.general[option][args[1]] = true
+            self:save()
             require("speedtyper.ui"):redraw()
         end,
         complete = function(subcmd_arg_lead)
@@ -244,6 +244,7 @@ function Settings:_create_subcmd_for_bool_option(option)
             ---@type boolean
             local new_val = args[1] == "on"
             self.general[option] = new_val
+            self:save()
             require("speedtyper.ui"):redraw()
         end,
         complete = function(subcmd_arg_lead)
@@ -280,6 +281,7 @@ function Settings:_create_subcmd_for_number_option(option, min, max)
                 return
             end
             self.general[option] = new_val
+            self:save()
             require("speedtyper.ui"):redraw()
         end,
     }
@@ -329,6 +331,7 @@ function Settings:_create_reset_subcmd()
             vim.ui.select({ "No", "Yes" }, { prompt = prompt }, function(selected, _)
                 if selected == "Yes" then
                     self:reset_settings()
+                    self:save()
                     require("speedtyper.ui"):redraw()
                     util.info("Settings have been reset.")
                 end
