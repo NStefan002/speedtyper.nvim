@@ -1,6 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local position = require("speedtyper.position")
+local pace_cursor = require("speedtyper.pace_cursor")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
@@ -15,6 +16,7 @@ local settings = require("speedtyper.settings")
 ---@field text_generator SpeedTyperText
 ---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
+---@field pace_cursor SpeedTyperPaceCursor
 local Countdown = {}
 Countdown.__index = Countdown
 
@@ -29,6 +31,7 @@ function Countdown.new()
         text_generator = require("speedtyper.text"),
         stats = require("speedtyper.stats"),
         prev_cursor_pos = position.new(constants.text_first_line, 1),
+        pace_cursor = nil,
     }, Countdown)
     self:_apply_settings()
     return self
@@ -51,6 +54,12 @@ function Countdown:start()
     self.text = self.text_generator:generate_n_lines_text(constants.text_num_lines, win_width)
     self:_set_extmarks()
     self:_create_timer()
+    -- map lines to the length of each line
+    self.pace_cursor = pace_cursor.new(vim.iter(self.text)
+        :map(function(line)
+            return #line
+        end)
+        :totable())
 
     api.nvim_create_autocmd("CursorMovedI", {
         group = api.nvim_create_augroup("SpeedTyperCountdown", {}),
@@ -64,6 +73,7 @@ end
 
 function Countdown:stop()
     self.closing = true
+    self.pace_cursor:stop()
     if self.timer then
         self.timer:stop()
         self.timer:close()
@@ -96,6 +106,7 @@ function Countdown:_set_extmarks()
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
+            priority = 50,
         })
         table.insert(self.extm_ids, extm_id)
     end
@@ -155,6 +166,7 @@ function Countdown:_update_extmarks()
                         },
                     },
                     virt_text_win_col = 0,
+                    priority = 50,
                 }
             )
         else
@@ -177,6 +189,7 @@ function Countdown:_update_extmarks()
                 { self.text[line_idx]:sub(col + 1), "SpeedTyperTextUntyped" },
             },
             virt_text_win_col = col,
+            priority = 50,
         }
     )
 
@@ -239,6 +252,7 @@ function Countdown:_update_live_progress(text)
                 { (" %s%s  "):format(timer_text, text), "SpeedTyperCountNormal" },
             },
             id = self.info_extm_id,
+            priority = 50,
         })
 end
 
@@ -255,6 +269,7 @@ function Countdown:_create_timer()
                 "SpeedTyperTextOk",
             },
         },
+        priority = 50,
     })
     util.set_keymaps(settings.keymaps.start_game, function()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
@@ -266,6 +281,7 @@ function Countdown:_create_timer()
             self:_set_extmarks()
         end)
         self:_start_timer()
+        self.pace_cursor:run()
     end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
 end
 
@@ -273,7 +289,7 @@ function Countdown:_start_timer()
     local remaining_time = self.time_sec
     self.timer:start(
         0,
-        1000,
+        constants.sec_to_ms,
         vim.schedule_wrap(function()
             if remaining_time <= 0 or self.closing then
                 self.stats.time = self.time_sec
@@ -285,6 +301,7 @@ function Countdown:_start_timer()
                             { "Time's up!", "SpeedTyperCountWarning" },
                         },
                         id = self.info_extm_id,
+                        priority = 50,
                     })
             else
                 self:_update_live_progress(tostring(remaining_time))

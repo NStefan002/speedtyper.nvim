@@ -21,6 +21,7 @@ function M.setup()
     hl("SpeedTyperCountNormal", { link = "Normal" })
     hl("SpeedTyperCountWarning", { link = "WarningMsg" })
     hl("SpeedTyperInfo", { link = "DiagnosticInfo" })
+    hl("SpeedTyperPaceCursor", { bg = "White" })
 end
 
 return M

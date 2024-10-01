@@ -176,13 +176,13 @@ function Stats:_set_data()
 end
 
 function Stats:_calculate_wpm()
-    local words = self.correct_chars / 5
-    self.wpm = words / (self.time / 60)
+    local words = self.correct_chars / constants.word_length
+    self.wpm = words / (self.time / constants.min_to_sec)
 end
 
 function Stats:_calculate_raw_wpm()
-    local words = self.typed_chars / 5
-    self.raw_wpm = words / (self.time / 60)
+    local words = self.typed_chars / constants.word_length
+    self.raw_wpm = words / (self.time / constants.min_to_sec)
 end
 
 function Stats:_calculate_acc()

@@ -26,4 +26,11 @@ SpeedTyperConstants.stats_line = SpeedTyperConstants.text_first_line
 
 SpeedTyperConstants.info_line = SpeedTyperConstants.text_first_line - 1
 
+-- for calculating different things --
+SpeedTyperConstants.min_to_sec = 60
+
+SpeedTyperConstants.sec_to_ms = 1000
+
+SpeedTyperConstants.word_length = 5
+
 return SpeedTyperConstants

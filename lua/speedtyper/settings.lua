@@ -252,6 +252,39 @@ function Settings:_create_subcmd_for_bool_option(option)
     }
 end
 
+---@param option string
+---@param min number
+---@param max number
+---@return SpeedTyperSettingsSubcmd
+function Settings:_create_subcmd_for_number_option(option, min, max)
+    return {
+        impl = function(args, _)
+            if #args == 0 then
+                util.info(("Option '%s' is currently set to."):format(option, self.general[option]))
+                return
+            elseif #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                )
+                return
+            end
+            local new_val = tonumber(args[1])
+            if new_val == nil or new_val < min or new_val > max then
+                util.error(
+                    ("SpeedTyperSettings %s: value must be between %d and %d"):format(
+                        option,
+                        min,
+                        max
+                    )
+                )
+                return
+            end
+            self.general[option] = new_val
+            require("speedtyper.ui"):redraw()
+        end,
+    }
+end
+
 function Settings:_create_info_subcmd()
     local all_options = {}
     for option, _ in pairs(self.general) do
@@ -314,7 +347,7 @@ function Settings:create_user_commands()
         cursor_style = self:_create_subcmd_for_map_option("cursor_style"),
         cursor_blinking = self:_create_subcmd_for_bool_option("cursor_blinking"),
         pace_cursor = self:_create_subcmd_for_bool_option("pace_cursor"),
-        -- TODO: pace_cursor_speed = ...
+        pace_cursor_speed = self:_create_subcmd_for_number_option("pace_cursor_speed", 1, 1000),
         pace_cursor_style = self:_create_subcmd_for_map_option("pace_cursor_style"),
         strict_space = self:_create_subcmd_for_bool_option("strict_space"),
         stop_on_error = self:_create_subcmd_for_bool_option("stop_on_error"),

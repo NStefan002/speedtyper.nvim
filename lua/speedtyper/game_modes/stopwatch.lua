@@ -1,6 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local position = require("speedtyper.position")
+local pace_cursor = require("speedtyper.pace_cursor")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
@@ -15,6 +16,7 @@ local settings = require("speedtyper.settings")
 ---@field text_generator SpeedTyperText
 ---@field stats SpeedTyperStats
 ---@field prev_cursor_pos Position
+---@field pace_cursor SpeedTyperPaceCursor
 local Stopwatch = {}
 Stopwatch.__index = Stopwatch
 
@@ -30,6 +32,7 @@ function Stopwatch.new()
         text_generator = require("speedtyper.text"),
         stats = require("speedtyper.stats"),
         prev_cursor_pos = position.new(0, 0),
+        pace_cursor = nil,
     }, Stopwatch)
     self:_apply_settings()
     return self
@@ -50,6 +53,13 @@ function Stopwatch:start()
     self:_reset_values()
     self:_set_extmarks()
     self:_create_timer()
+    -- map lines to the length of each line
+    self.pace_cursor = pace_cursor.new(vim.iter(self.text)
+        :map(function(line)
+            return #line
+        end)
+        :totable())
+
     api.nvim_create_autocmd("CursorMovedI", {
         group = api.nvim_create_augroup("SpeedTyperStopwatch", {}),
         buffer = globals.bufnr,
@@ -61,6 +71,7 @@ function Stopwatch:start()
 end
 
 function Stopwatch:stop()
+    self.pace_cursor:stop()
     if self.timer then
         self.timer:stop()
         self.timer:close()
@@ -84,6 +95,7 @@ function Stopwatch:_reset_values()
     local win_width = api.nvim_win_get_width(globals.winnr)
     self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     self.timer = nil
+    self.pace_cursor = nil
     self.prev_cursor_pos:update(0, 0)
     self.stats:reset()
 end
@@ -96,6 +108,7 @@ function Stopwatch:_set_extmarks()
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
+            priority = 50,
         })
         table.insert(self.extm_ids, extm_id)
     end
@@ -183,6 +196,7 @@ function Stopwatch:_update_extmarks()
                         },
                     },
                     virt_text_win_col = 0,
+                    priority = 50,
                 }
             )
         else
@@ -205,6 +219,7 @@ function Stopwatch:_update_extmarks()
                 { self.text[line_idx]:sub(col + 1), "SpeedTyperTextUntyped" },
             },
             virt_text_win_col = col,
+            priority = 50,
         }
     )
 
@@ -285,6 +300,7 @@ function Stopwatch:_update_live_progress()
                 },
             },
             id = self.info_extm_id,
+            priority = 50,
         })
 end
 
@@ -303,6 +319,7 @@ function Stopwatch:_create_timer()
                 "SpeedTyperTextOk",
             },
         },
+        priority = 50,
     })
     util.set_keymaps(settings.keymaps.start_game, function()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
@@ -314,6 +331,7 @@ function Stopwatch:_create_timer()
             self:_set_extmarks()
         end)
         self:_start_timer()
+        self.pace_cursor:run()
     end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
 end
 
