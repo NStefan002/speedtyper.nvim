@@ -34,8 +34,9 @@
   - [x] theme
   - [x] cursor_style
   - [x] cursor_blinking
-  - [ ] pace_cursor
-  - [ ] pace_cursor_speed
+  - [x] pace_cursor
+  - [ ] make sure that the pace_cursor `move_up` logic is good
+  - [x] pace_cursor_speed
   - [ ] pace_cursor_style
   - [ ] pace_cursor_blinking
   - [x] strict_space
