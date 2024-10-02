@@ -29,8 +29,6 @@ function UI:_create_autocmds()
     local augroup = api.nvim_create_augroup
     local grp = augroup("SpeedTyperUI", {})
 
-    -- TODO: add vim/window resize autocommands
-
     local schedule_close = vim.schedule_wrap(function()
         self:_close()
     end)
@@ -50,7 +48,14 @@ function UI:_create_autocmds()
         callback = function()
             schedule_close()
         end,
-        desc = "Close SpeedTyper window when leaving buffer (to update the ui internal state)",
+        desc = "Close the SpeedTyper window when leaving buffer (to update the ui internal state)",
+    })
+    autocmd("VimResized", {
+        group = grp,
+        callback = function()
+            self:redraw()
+        end,
+        desc = "Redraw the SpeedTyper window when the user resizes the editor.",
     })
     -- TODO: FIND OUT WHY THIS DOESN'T WORK FOR UNLISTED/SCRATCH BUFFERS EVEN THOUGH THEY GET HIDDEN
     -- autocmd("BufHidden", {
