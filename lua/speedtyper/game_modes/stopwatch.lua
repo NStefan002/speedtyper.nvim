@@ -202,6 +202,11 @@ function Stopwatch:_update_extmarks()
         else
             if line_idx + constants.text_first_line - 1 == constants.text_middle_line then
                 self:_move_up()
+                self.pace_cursor:move_up(vim.iter(self.text)
+                    :map(function(l)
+                        return #l
+                    end)
+                    :totable())
                 col = 0
             else
                 vim.cmd.normal("j0")
