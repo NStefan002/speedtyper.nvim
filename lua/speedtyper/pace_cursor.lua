@@ -43,13 +43,20 @@ end
 
 ---@param line_lengths integer[]
 function PaceCursor:move_up(line_lengths)
-    local idx = self.line - constants.text_first_line + 1
-    if idx <= 1 then
-        self.total_len_before = self.total_len_before + self.line_lengths[1]
-    elseif idx > #self.line_lengths + 1 then
-        self.total_len_after = self.total_len_after - self.line_lengths[#self.line_lengths]
+    if self.line == constants.text_first_line then
+        self.total_len_before = self.total_len_before + self.line_lengths[1] - self.col
     else
         self.line = self.line - 1
+    end
+
+    if self.total_len_after > 0 then
+        if self.total_len_after > line_lengths[#line_lengths] then
+            self.total_len_after = self.total_len_after - #line_lengths[#line_lengths]
+        else
+            self.col = self.total_len_after
+            self.line = constants.text_first_line + #line_lengths - 1
+            self.total_len_after = 0
+        end
     end
     self.line_lengths = line_lengths
 end
@@ -65,37 +72,28 @@ function PaceCursor:run()
 
             if self.total_len_before > 0 then
                 self.total_len_before = self.total_len_before - 1
-                self:_hide_cursor()
+                self:_show_cursor(false)
                 self.col = 0
                 return
             end
 
             if self.total_len_after > 0 then
-                self.total_len_after = self.total_len_after - 1
-                self:_hide_cursor()
-                self.col = 0
-                return
-            end
-
-            local idx = self.line - constants.text_first_line + 1
-            if idx > #self.line_lengths then
                 self.total_len_after = self.total_len_after + 1
-                self:_hide_cursor()
+                self:_show_cursor(false)
                 self.col = 0
                 return
             end
 
-            api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, self.line, 0, {
-                virt_text = { { " ", "SpeedTyperPaceCursor" } },
-                virt_text_win_col = self.col,
-                id = self.extm_id,
-                priority = 150,
-            })
+            self:_show_cursor(true)
 
             self.col = self.col + 1
-            if self.col == self.line_lengths[idx] then
+            if self.col == self.line_lengths[self.line - constants.text_first_line + 1] then
                 self.col = 0
                 self.line = self.line + 1
+                if self.line == constants.text_first_line + #self.line_lengths then
+                    self.total_len_after = 1
+                    self.line = self.line - 1
+                end
             end
         end)
     )
@@ -114,12 +112,13 @@ function PaceCursor:stop()
     end
 end
 
-function PaceCursor:_hide_cursor()
+---@param visible boolean
+function PaceCursor:_show_cursor(visible)
     if not self.extm_id then
         return
     end
     api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, self.line, 0, {
-        virt_text = { { "", "SpeedTyperPaceCursor" } },
+        virt_text = { { visible and " " or "", "SpeedTyperPaceCursor" } },
         virt_text_win_col = self.col,
         id = self.extm_id,
         priority = 150,
