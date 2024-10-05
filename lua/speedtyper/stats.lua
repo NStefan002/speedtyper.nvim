@@ -1,4 +1,5 @@
 local api = vim.api
+local settings = require("speedtyper.settings")
 local util = require("speedtyper.util")
 local stack = require("speedtyper.stack")
 local char_info = require("speedtyper.char_info")
@@ -134,6 +135,10 @@ end
 ---@param line integer
 ---@param col integer
 function Stats._mark_typo(line, col)
+    if not settings.general.indicate_typos then
+        return
+    end
+
     api.nvim_buf_add_highlight(
         globals.bufnr,
         globals.ns_id,
