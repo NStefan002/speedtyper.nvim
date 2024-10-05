@@ -27,7 +27,7 @@
   - [x] show each game mode details in a pop-up window (like lsp.hover)
 - [ ] Settings
   - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
-  - [ ] if no arguments are passed to `:SpeedTyperSettings <option>` then show the current value
+  - [x] if no arguments are passed to `:SpeedTyperSettings <option>` then show the current value
   - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere
   - [x] language
@@ -35,14 +35,14 @@
   - [x] cursor_style
   - [x] cursor_blinking
   - [x] pace_cursor
-  - [ ] make sure that the pace_cursor `move_up` logic is good
+  - [x] make sure that the pace_cursor `move_up` logic is good
   - [x] pace_cursor_speed
   - [ ] pace_cursor_style
   - [ ] pace_cursor_blinking
   - [x] strict_space
   - [ ] stop_on_error
   - [x] confidence_mode
-  - [ ] indicate_typos
+  - [x] indicate_typos
   - [ ] sound_volume (pplay, mpv, ffmpeg->ffplay, cvlc, mplayer, sox->play)
   - [ ] sound_on_keypress
   - [ ] sound_on_typo
