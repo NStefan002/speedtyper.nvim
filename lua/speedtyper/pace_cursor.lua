@@ -62,6 +62,10 @@ function PaceCursor:move_up(line_lengths)
 end
 
 function PaceCursor:run()
+    if not settings.general.pace_cursor then
+        return
+    end
+
     self.timer:start(
         0,
         self.interval,
