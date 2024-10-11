@@ -150,7 +150,6 @@ function Stopwatch:_update_extmarks()
             api.nvim_buf_set_lines(globals.bufnr, line, line + 1, false, { text_line .. spaces })
             util.set_cursor_pos(line + 1, next_space + 1, globals.winnr)
             self.stats:redraw_typos()
-            self:_update_live_progress()
             return
         end
 

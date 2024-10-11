@@ -111,7 +111,13 @@ function Stats:check_curr_char(typed, should_be, line, col)
         return
     end
 
-    self.text_info:push(char_info.new(typed, should_be, line, col))
+    local new_char = char_info.new(typed, should_be, line, col)
+
+    if self.text_info:peek() == new_char then
+        return
+    end
+
+    self.text_info:push(new_char)
     if typed ~= should_be then
         self._mark_typo(line, col)
         self.typos = self.typos + 1
