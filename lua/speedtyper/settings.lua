@@ -27,7 +27,7 @@ local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("dat
 ---@field stop_on_error boolean
 ---@field confidence_mode boolean
 ---@field indicate_typos boolean
----@field sound_volume table<"quiet" | "medium" | "loud", boolean>
+---@field sound_volume integer
 ---@field sound_on_keypress table<string, boolean>
 ---@field sound_on_typo table<string, boolean>
 ---@field live_progress boolean
@@ -105,11 +105,7 @@ function Settings.new()
                 stop_on_error = false,
                 confidence_mode = false,
                 indicate_typos = true,
-                sound_volume = {
-                    quiet = false,
-                    medium = true,
-                    loud = false,
-                },
+                sound_volume = 50,
                 sound_on_keypress = {
                     off = true,
                     click = false,
@@ -356,7 +352,7 @@ function Settings:create_user_commands()
         stop_on_error = self:_create_subcmd_for_bool_option("stop_on_error"),
         confidence_mode = self:_create_subcmd_for_bool_option("confidence_mode"),
         indicate_typos = self:_create_subcmd_for_bool_option("indicate_typos"),
-        sound_volume = self:_create_subcmd_for_map_option("sound_volume"),
+        sound_volume = self:_create_subcmd_for_number_option("sound_volume", 0, 100),
         sound_on_keypress = self:_create_subcmd_for_map_option("sound_on_keypress"),
         sound_on_typo = self:_create_subcmd_for_map_option("sound_on_typo"),
         live_progress = self:_create_subcmd_for_bool_option("live_progress"),
