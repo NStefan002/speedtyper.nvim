@@ -338,6 +338,18 @@ function Settings:_create_reset_subcmd()
     }
 end
 
+function Settings:get_selected(option)
+    if type(self.general[option]) == "table" then
+        for opt, selected in pairs(self.general[option]) do
+            if selected then
+                return opt
+            end
+        end
+    end
+    -- if the option is a boolean or number
+    return self.general[option]
+end
+
 function Settings:create_user_commands()
     ---@type table<string, SpeedTyperSettingsSubcmd>
     local subcmds = {
