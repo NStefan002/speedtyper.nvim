@@ -257,7 +257,9 @@ function Settings:_create_subcmd_for_number_option(option, min, max)
     return {
         impl = function(args, _)
             if #args == 0 then
-                util.info(("Option '%s' is currently set to."):format(option, self.general[option]))
+                util.info(
+                    ("Option '%s' is currently set to %d."):format(option, self.general[option])
+                )
                 return
             elseif #args ~= 1 then
                 util.error(
