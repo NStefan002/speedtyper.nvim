@@ -43,9 +43,9 @@
   - [ ] stop_on_error
   - [x] confidence_mode
   - [x] indicate_typos
-  - [ ] sound_volume (pplay, mpv, ffmpeg->ffplay, cvlc, mplayer, sox->play)
-  - [ ] sound_on_keypress
-  - [ ] sound_on_typo
+  - [x] sound_volume (pplay, mpv, ffmpeg->ffplay, cvlc, mplayer, sox->play)
+  - [x] sound_on_keypress
+  - [x] sound_on_typo
   - [x] live_progress
   - [ ] average_speed
   - [ ] average_accuracy
