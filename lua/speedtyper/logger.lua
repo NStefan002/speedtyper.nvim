@@ -18,7 +18,7 @@ end
 
 ---@param ... any
 function Logger:log(...)
-    if not settings.general.debug_mode then
+    if not settings:get_selected("debug_mode") then
         return
     end
     local processed = {}
@@ -51,7 +51,7 @@ function Logger:clear()
 end
 
 function Logger:display()
-    if not settings.general.debug_mode then
+    if not settings:get_selected("debug_mode") then
         return
     end
     local bufnr = api.nvim_create_buf(false, true)

@@ -13,12 +13,10 @@ function Text.new()
 end
 
 function Text:update_lang()
-    for lang, selected in pairs(settings.general.language) do
-        if selected and self.selected_lang ~= lang then
-            self.selected_lang = lang
-            self.words = require(("speedtyper.langs.%s"):format(lang))
-            break
-        end
+    local lang = settings:get_selected("language")
+    if self.selected_lang ~= lang then
+        self.selected_lang = lang
+        self.words = require(("speedtyper.langs.%s"):format(lang))
     end
 end
 

@@ -2,7 +2,7 @@ local util = require("speedtyper.util")
 local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("data"))
 
 ---@class SpeedTyperSettingsSubcmd
----@field impl fun(args:string[], data: table) The command implementation
+---@field impl fun(args: string[], data: table) The command implementation
 ---@field complete? fun(subcmd_arg_lead: string): string[] Command completions callback, taking the lead of the subcommand's arguments
 
 -- NOTE: see each field info in instructions.lua
@@ -180,12 +180,13 @@ function Settings:_create_subcmd_for_map_option(option)
         impl = function(args, _)
             -- if no arguments are given, display the current value
             if #args == 0 then
-                for opt, _ in pairs(self.general[option]) do
-                    if self.general[option][opt] then
-                        util.info(("Option '%s' is currently set to '%s'."):format(option, opt))
-                        return
-                    end
-                end
+                util.info(
+                    ("Option '%s' is currently set to '%s'."):format(
+                        option,
+                        self:get_selected(option)
+                    )
+                )
+                return
             elseif #args > 1 then
                 util.error(
                     ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
@@ -223,7 +224,7 @@ function Settings:_create_subcmd_for_bool_option(option)
                 util.info(
                     ("Option '%s' is currently %s."):format(
                         option,
-                        self.general[option] and "ON" or "OFF"
+                        self:get_selected(option) and "ON" or "OFF"
                     )
                 )
                 return
@@ -258,7 +259,10 @@ function Settings:_create_subcmd_for_number_option(option, min, max)
         impl = function(args, _)
             if #args == 0 then
                 util.info(
-                    ("Option '%s' is currently set to %d."):format(option, self.general[option])
+                    ("Option '%s' is currently set to %d."):format(
+                        option,
+                        self:get_selected(option)
+                    )
                 )
                 return
             elseif #args ~= 1 then
@@ -338,6 +342,8 @@ function Settings:_create_reset_subcmd()
     }
 end
 
+---@param option string
+---@return any
 function Settings:get_selected(option)
     if type(self.general[option]) == "table" then
         for opt, selected in pairs(self.general[option]) do
@@ -418,7 +424,7 @@ function Settings:create_user_commands()
         end
     end
 
-    vim.api.nvim_create_user_command("SpeedTyperSettings", cmd, {
+    api.nvim_create_user_command("SpeedTyperSettings", cmd, {
         desc = "Change SpeedTyper settings.",
         complete = cmd_completion,
         nargs = "*",

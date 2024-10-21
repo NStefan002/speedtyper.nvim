@@ -184,16 +184,13 @@ function UI._set_options()
     api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
     api.nvim_set_option_value("filetype", "speedtyper", { buf = globals.bufnr })
     api.nvim_set_option_value("wrap", false, { win = globals.winnr })
-    for style, active in pairs(settings.general.cursor_style) do
-        if active then
-            api.nvim_set_option_value(
-                "guicursor",
-                util.create_cursor(style, settings.general.cursor_blinking),
-                { scope = "global" }
-            )
-        end
-    end
-    if settings.general.confidence_mode then
+    local cursor_style = settings:get_selected("cursor_style")
+    api.nvim_set_option_value(
+        "guicursor",
+        util.create_cursor(cursor_style, settings:get_selected("cursor_blinking")),
+        { scope = "global" }
+    )
+    if settings:get_selected("confidence_mode") then
         vim.keymap.set("i", "<BS>", "<Nop>", { buffer = globals.bufnr })
         vim.keymap.set("i", "<C-w>", "<Nop>", { buffer = globals.bufnr })
         vim.keymap.set("i", "<C-u>", "<Nop>", { buffer = globals.bufnr })

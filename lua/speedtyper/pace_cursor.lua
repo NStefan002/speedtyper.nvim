@@ -23,7 +23,7 @@ function PaceCursor.new(line_lengths)
         line = constants.text_first_line,
         col = 0,
         interval = constants.min_to_sec
-            / (settings.general.pace_cursor_speed * constants.word_length)
+            / (settings:get_selected("pace_cursor_speed") * constants.word_length)
             * constants.sec_to_ms,
         line_lengths = line_lengths,
         total_len_before = 0,
@@ -62,7 +62,7 @@ function PaceCursor:move_up(line_lengths)
 end
 
 function PaceCursor:run()
-    if not settings.general.pace_cursor then
+    if not settings:get_selected("pace_cursor") then
         return
     end
 

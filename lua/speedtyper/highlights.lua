@@ -19,13 +19,7 @@ function M.setup()
         create_autocmds()
     end
 
-    local active_theme = "default"
-    for theme, active in pairs(settings.general.theme) do
-        if active then
-            active_theme = theme
-            break
-        end
-    end
+    local active_theme = settings:get_selected("theme")
     require("speedtyper.themes." .. active_theme).setup()
 end
 
