@@ -85,7 +85,6 @@ function Menu:_activate_button(button)
         end
         settings.round.length[button] = true
     end
-    vim.g.speedtyper_round_settings = settings.round
     self:_highlight_buttons()
 
     self.round:end_round()
