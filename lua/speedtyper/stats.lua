@@ -48,9 +48,9 @@ function Stats:display_stats()
     self:_calculate_acc()
 
     -- util.clear_buffer_text(constants.win_height, globals.bufnr)
-    local wpm_text = ("WPM: %.2f"):format(self.wpm)
-    local raw_wpm_text = ("Raw_WPM: %.2f"):format(self.raw_wpm)
-    local acc_text = ("Accuracy: %.2f%%"):format(self.acc)
+    local wpm_text = ("WPM %.2f"):format(self.wpm)
+    local raw_wpm_text = ("Raw_WPM %.2f"):format(self.raw_wpm)
+    local acc_text = ("Accuracy %.2f%%"):format(self.acc)
     local text = util.center_text(
         ("%s        %s        %s"):format(wpm_text, raw_wpm_text, acc_text),
         api.nvim_win_get_width(globals.winnr)
@@ -141,7 +141,7 @@ end
 ---@param line integer
 ---@param col integer
 function Stats._mark_typo(line, col)
-    if not settings.general.indicate_typos then
+    if not settings:get_selected("indicate_typos") then
         return
     end
 
