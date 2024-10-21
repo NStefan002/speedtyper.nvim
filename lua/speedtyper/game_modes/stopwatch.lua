@@ -138,7 +138,7 @@ function Stopwatch:_update_extmarks()
     then
         local typed = api.nvim_buf_get_text(globals.bufnr, line, col - 1, line, col, {})[1]
         local curr_char = self.text[line_idx]:sub(col, col)
-        if not settings.general.strict_space and typed == " " and curr_char ~= " " then
+        if not settings:get_selected("strict_space") and typed == " " and curr_char ~= " " then
             -- if the typed character is a space and it should not be a space, then jump to the next word (if possible)
             -- and fill the gaps with spaces and mark them as mistyped
             local next_space = string.find(self.text[line_idx], " ", col) or #self.text[line_idx]
@@ -286,11 +286,11 @@ function Stopwatch:_move_up()
 end
 
 function Stopwatch:_update_live_progress()
-    if not settings.general.live_progress then
+    if not settings:get_selected("live_progress") then
         return
     end
 
-    local word_count_text = settings.general.demojify and "Word count: " or "󱀽 "
+    local word_count_text = settings:get_selected("demojify") and "Word count: " or "󱀽 "
     self.info_extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
             virt_text = {
