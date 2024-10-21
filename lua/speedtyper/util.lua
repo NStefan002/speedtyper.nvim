@@ -124,7 +124,7 @@ end
 
 ---@param tbl table
 ---@param el any
----@param cmp? fun(a: any, b: any) : boolean returns true if elements are the same
+---@param cmp? fun(a: any, b: any): boolean returns true if elements are the same
 ---@return integer idx index of the element `el` or 0 if `tbl` does not contain `el`
 function M.find_element(tbl, el, cmp)
     cmp = cmp or function(a, b)
@@ -140,7 +140,7 @@ end
 
 ---@param tbl table
 ---@param el any
----@param cmp? fun(a: any, b: any) : boolean returns true if elements are the same
+---@param cmp? fun(a: any, b: any): boolean returns true if elements are the same
 ---@return boolean
 function M.tbl_contains(tbl, el, cmp)
     cmp = cmp or function(a, b)
@@ -151,7 +151,7 @@ end
 
 ---@param tbl table
 ---@param el any
----@param cmp? fun(a: any, b: any) : boolean returns true if elements are the same
+---@param cmp? fun(a: any, b: any): boolean returns true if elements are the same
 function M.remove_element(tbl, el, cmp)
     cmp = cmp or function(a, b)
         return a == b
@@ -252,6 +252,20 @@ end
 function M.center_text(text, buff_width)
     local sep = string.rep(" ", math.floor((buff_width - #text) / 2))
     return string.format("%s%s%s", sep, text, sep)
+end
+
+--- returns all of the elements from <tbl> that match <pattern>
+---@param tbl string[]
+---@param pattern string
+---@return string[]
+function M.fuzzy_search(tbl, pattern)
+    local results = {}
+    for _, str in ipairs(tbl) do
+        if str:match(pattern) then
+            table.insert(results, str)
+        end
+    end
+    return results
 end
 
 return M
