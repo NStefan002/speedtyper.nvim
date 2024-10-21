@@ -5,6 +5,7 @@ local pace_cursor = require("speedtyper.pace_cursor")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
+local sounds = require("speedtyper.sounds")
 
 ---@class SpeedTyperCountdown
 ---@field private closing boolean
@@ -66,6 +67,10 @@ function Countdown:start()
         buffer = globals.bufnr,
         callback = function()
             self:_update_extmarks()
+            local last_typed = self.stats.text_info:peek()
+            if last_typed ~= nil then
+                sounds:play_sound(last_typed.typed ~= last_typed.should_be)
+            end
         end,
         desc = "Countdown game mode runner.",
     })
