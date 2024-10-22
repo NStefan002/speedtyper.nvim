@@ -51,7 +51,6 @@ function Menu:display_menu()
     )
     self:_set_keymaps()
     self:_highlight_buttons()
-    self.round:set_game_mode()
     self.round:start_round()
 end
 
@@ -88,7 +87,6 @@ function Menu:_activate_button(button)
     self:_highlight_buttons()
 
     self.round:end_round()
-    self.round:set_game_mode()
     self.round:start_round()
 end
 
