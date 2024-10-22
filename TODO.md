@@ -2,6 +2,7 @@
 
 - [ ] Rewrite plugin
 - [x] Add tests
+- [ ] more tests
 - [ ] Add vimdoc ci
 - [ ] Update README
 - [ ] create `health.lua` for dependencies
@@ -22,7 +23,7 @@
     - [ ] wps, cps, cpm
   - [ ] save stats
   - [ ] detect AFK
-- [ ] Instructions
+- [x] Instructions
   - [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
   - [x] show each game mode details in a pop-up window (like lsp.hover)
 - [ ] Settings
