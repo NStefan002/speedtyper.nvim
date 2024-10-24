@@ -1,4 +1,6 @@
-vim.api.nvim_create_user_command("SpeedTyper", function(event)
+local api = vim.api
+
+api.nvim_create_user_command("SpeedTyper", function(event)
     local util = require("speedtyper.util")
     if #event.fargs > 0 then
         util.error("Command does not take arguments.")
@@ -19,17 +21,17 @@ vim.api.nvim_create_user_command("SpeedTyper", function(event)
     -- open up speedtyper window
     require("speedtyper.ui"):toggle()
 end, {
-    nargs = "*",
+    nargs = 0,
     desc = "Start SpeedTyper",
 })
 
--- TODO:
--- vim.api.nvim_create_user_command("SpeedTyperLog", function(event)
---     if #event.fargs > 0 then
---         util.error("Command does not take arguments.")
---     end
---     Logger:display()
--- end, {
---     nargs = 0,
---     desc = "Display SpeedTyper Log",
--- })
+api.nvim_create_user_command("SpeedTyperLog", function(event)
+    local util = require("speedtyper.util")
+    if #event.fargs > 0 then
+        util.error("Command does not take arguments.")
+    end
+    require("speedtyper.logger"):display()
+end, {
+    nargs = 0,
+    desc = "Display SpeedTyper Log",
+})

@@ -1,6 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("data"))
+local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperSettingsSubcmd
 ---@field impl fun(args: string[], data: table) The command implementation
@@ -320,6 +321,7 @@ function Settings.new()
                 debug_mode = false,
             },
 
+            -- TODO: figure out how to set these (commandline or via `setup`)
             keymaps = {
                 start_game = "i",
                 hover = "K",
@@ -342,6 +344,9 @@ function Settings:load()
         local json = file:read("*a")
         file:close()
         settings = vim.fn.json_decode(json)
+        logger:log("settings loaded from file")
+    else
+        logger:log("settings file not found, using default settings")
     end
     self.round = vim.tbl_deep_extend("force", self.round, settings.round or {})
     self.general = vim.tbl_deep_extend("force", self.general, settings.general or {})
@@ -359,8 +364,9 @@ function Settings:save()
     if file then
         file:write(json)
         file:close()
+        logger:log("settings saved")
     else
-        require("speedtyper.util").error("Failed to save settings")
+        util.error("failed to save settings")
     end
 end
 
@@ -368,6 +374,7 @@ function Settings:reset_settings()
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
     self.keymaps = vim.deepcopy(self.default.keymaps)
+    logger:log("settings reset")
 end
 
 ---@param option string

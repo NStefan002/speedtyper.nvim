@@ -4,6 +4,7 @@ local stopwatch = require("speedtyper.game_modes.stopwatch")
 local rain = require("speedtyper.game_modes.rain")
 local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
+local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperRound
 ---@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain
@@ -33,17 +34,20 @@ function Round:_set_game_mode()
     else
         util.error(("Invalid game mode: %s"):format(game_mode))
     end
+    logger:log(("game mode set to: %s"):format(game_mode))
 end
 
 function Round:start_round()
     self:_set_game_mode()
     if self.active_game_mode then
+        logger:log("starting round")
         self.active_game_mode:start()
     end
 end
 
 function Round:end_round()
     if self.active_game_mode then
+        logger:log("ending round")
         self.active_game_mode:stop()
     end
 end

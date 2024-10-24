@@ -1,5 +1,6 @@
 local api = vim.api
 local globals = require("speedtyper.globals")
+
 local M = {}
 
 ---notify user of an error
@@ -7,8 +8,7 @@ local M = {}
 function M.error(msg)
     -- "\n" for nvim configs that don't use nvim-notify
     vim.notify("\n" .. msg, vim.log.levels.ERROR, { title = "Speedtyper" })
-    -- TODO: figure out if we should call error() here
-    -- error(msg)
+    require("speedtyper.logger"):log(msg)
 end
 
 ---@param msg string

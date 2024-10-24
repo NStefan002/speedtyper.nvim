@@ -1,6 +1,7 @@
 local M = {}
 local api = vim.api
 local settings = require("speedtyper.settings")
+local logger = require("speedtyper.logger")
 local grp = nil
 
 local function create_autocmds()
@@ -10,6 +11,7 @@ local function create_autocmds()
         pattern = "*",
         callback = function()
             vim.schedule(M.setup)
+            logger:log("Colorscheme")
         end,
     })
 end
@@ -20,7 +22,9 @@ function M.setup()
     end
 
     local active_theme = settings:get_selected("theme")
-    require("speedtyper.themes." .. active_theme).setup()
+    require(("speedtyper.themes.%s"):format(active_theme)).setup()
+
+    logger:log("theme:", active_theme)
 end
 
 return M

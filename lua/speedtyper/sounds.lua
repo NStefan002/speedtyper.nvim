@@ -1,6 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
+local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperSounds
 ---@field tool string selected tool for playing sound
@@ -64,6 +65,8 @@ function Sounds.new()
     self:_check_for_tools()
     if self.tool == nil then
         util.error("No tools for playing sound available, run :checkhealth for more information.")
+    else
+        logger:log(("selected sound tool: %s"):format(self.tool))
     end
     return self
 end

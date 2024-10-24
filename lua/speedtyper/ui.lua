@@ -3,6 +3,7 @@ local util = require("speedtyper.util")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
+local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperUI
 ---@field private active boolean
@@ -37,6 +38,7 @@ function UI:_create_autocmds()
         group = grp,
         callback = function(ev)
             if ev.match == tostring(globals.winnr) then
+                logger:log("WinClosed", ev)
                 schedule_close()
             end
         end,
@@ -46,6 +48,7 @@ function UI:_create_autocmds()
         group = grp,
         buffer = globals.bufnr,
         callback = function()
+            logger:log("BufDelete/BufWinLeave")
             schedule_close()
         end,
         desc = "Close the SpeedTyper window when leaving buffer (to update the ui internal state)",
@@ -53,6 +56,7 @@ function UI:_create_autocmds()
     autocmd("VimResized", {
         group = grp,
         callback = function()
+            logger:log("VimResized")
             self:redraw()
         end,
         desc = "Redraw the SpeedTyper window when the user resizes the editor.",
@@ -103,6 +107,7 @@ function UI:_open()
     if #nvim_uis > 0 then
         if nvim_uis[1].height <= constants.win_height or nvim_uis[1].width <= width then
             util.error("Increase the size of your Neovim instance.")
+            return
         end
     end
     local cols = vim.o.columns
@@ -129,6 +134,8 @@ function UI:_open()
         util.error("Failed to open window")
         self:_close()
     end
+
+    logger:log("winnr:", winnr, "bufnr:", bufnr)
 
     api.nvim_win_set_hl_ns(globals.winnr, globals.ns_id)
     require("speedtyper.highlights").setup()
@@ -196,14 +203,20 @@ function UI._set_options()
         vim.keymap.set("i", "<C-u>", "<Nop>", { buffer = globals.bufnr })
         vim.keymap.set("i", "<C-h>", "<Nop>", { buffer = globals.bufnr })
     end
+
+    logger:log("set options")
 end
 
 function UI:_save_options()
     self.vim_opt.guicursor = api.nvim_get_option_value("guicursor", { scope = "global" })
+
+    logger:log("saved options:", self.vim_opt)
 end
 
 function UI:_restore_options()
     api.nvim_set_option_value("guicursor", self.vim_opt.guicursor, { scope = "global" })
+
+    logger:log("restored options:", self.vim_opt)
 end
 
 -- NOTE: this will probably be removed and be asked of the user to do,
