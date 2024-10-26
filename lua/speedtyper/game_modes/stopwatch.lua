@@ -6,6 +6,7 @@ local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local sounds = require("speedtyper.sounds")
+local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperStopwatch
 ---@field timer uv_timer_t
@@ -73,6 +74,8 @@ function Stopwatch:start()
         end,
         desc = "Stopwatch game mode runner.",
     })
+
+    logger:log("stopwatch game mode started")
 end
 
 function Stopwatch:stop()
@@ -85,6 +88,8 @@ function Stopwatch:stop()
     pcall(util.unset_keymaps, settings.keymaps.start_game)
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperStopwatch")
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperStopwatchTimer")
+
+    logger:log("stopwatch game mode stopped")
 end
 
 function Stopwatch:_reset_values()
@@ -166,6 +171,8 @@ function Stopwatch:_update_extmarks()
             diff = 1
         end
         self.stats.text_info:pop_n(diff)
+
+        logger:log(("moved back by %d characters"):format(diff))
     end
     self:_update_live_progress()
 
@@ -184,6 +191,8 @@ function Stopwatch:_update_extmarks()
 
     if col == #self.text[line_idx] or col - 1 == #self.text[line_idx] then
         if line_idx < self.prev_cursor_pos.line or col == self.prev_cursor_pos.col then
+            logger:log("moved down...", "line:", line, "col:", col, "line_idx:", line_idx)
+
             vim.cmd.normal("o")
             vim.cmd.normal("k$")
             api.nvim_buf_set_extmark(
@@ -205,6 +214,8 @@ function Stopwatch:_update_extmarks()
             )
         else
             if line_idx + constants.text_first_line - 1 == constants.text_middle_line then
+                logger:log("moved up...", "line:", line, "col:", col, "line_idx:", line_idx)
+
                 self:_move_up()
                 self.pace_cursor:move_up(vim.iter(self.text)
                     :map(function(l)
