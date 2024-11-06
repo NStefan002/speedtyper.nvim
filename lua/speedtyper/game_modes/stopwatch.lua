@@ -327,7 +327,7 @@ end
 ---------------------------- timer stuff ------------------------------------------
 
 function Stopwatch:_create_timer()
-    self.timer = (vim.uv or vim.loop).new_timer()
+    self.timer = vim.uv.new_timer()
     local keys = type(settings.keymaps.start_game) == "table"
             ---@diagnostic disable-next-line: param-type-mismatch
             and table.concat(settings.keymaps.start_game, "/")

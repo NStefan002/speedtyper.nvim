@@ -28,7 +28,7 @@ function PaceCursor.new(line_lengths)
         line_lengths = line_lengths,
         total_len_before = 0,
         total_len_after = 0,
-        timer = (vim.uv or vim.loop).new_timer(),
+        timer = vim.uv.new_timer(),
         closing = false,
     }, PaceCursor)
 
