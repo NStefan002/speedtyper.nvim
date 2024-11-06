@@ -1,4 +1,3 @@
-local api = vim.api
 local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
@@ -58,9 +57,7 @@ function Sounds.new()
             }
         end,
     }
-    self.sounds_directory = ("%s/assets/sounds/"):format(
-        util.fuzzy_search(api.nvim_list_runtime_paths(), ".*speedtyper.nvim$")[1]
-    )
+    self.sounds_directory = ("%s/assets/sounds/"):format(util.get_plugin_path())
 
     self:_check_for_tools()
     if self.tool == nil then
