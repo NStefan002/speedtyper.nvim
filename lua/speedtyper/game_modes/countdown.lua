@@ -266,6 +266,10 @@ end
 
 ---@param text string
 function Countdown:_update_live_progress(text)
+    if not settings:get_selected("live_progress") then
+        return
+    end
+
     local timer_text = settings:get_selected("demojify") and "Time left: " or "󱑆 "
     self.info_extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
