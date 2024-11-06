@@ -85,7 +85,7 @@ function Stopwatch:stop()
         self.timer:close()
         self.timer = nil
     end
-    pcall(util.unset_keymaps, settings.keymaps.start_game)
+    pcall(util.unset_keymaps, settings.keymaps.start_game, globals.bufnr)
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperStopwatch")
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperStopwatchTimer")
 

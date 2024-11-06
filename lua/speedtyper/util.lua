@@ -1,5 +1,4 @@
 local api = vim.api
-local globals = require("speedtyper.globals")
 
 local M = {}
 
@@ -195,11 +194,13 @@ function M.set_keymaps(lhs, rhs, opts)
 end
 
 ---@param lhs string | string[]
-function M.unset_keymaps(lhs)
+---@param bufnr? integer
+function M.unset_keymaps(lhs, bufnr)
+    local opts = bufnr and { buffer = bufnr } or {}
     ---@type string[]
     local keys = type(lhs) == "table" and lhs or { lhs }
     for _, key in ipairs(keys) do
-        vim.keymap.del("n", key, { buffer = globals.bufnr })
+        vim.keymap.del("n", key, opts)
     end
 end
 
