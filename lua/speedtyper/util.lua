@@ -254,18 +254,16 @@ function M.center_text(text, buff_width)
     return string.format("%s%s%s", sep, text, sep)
 end
 
---- returns all of the elements from <tbl> that match <pattern>
----@param tbl string[]
----@param pattern string
----@return string[]
-function M.fuzzy_search(tbl, pattern)
-    local results = {}
-    for _, str in ipairs(tbl) do
-        if str:match(pattern) then
-            table.insert(results, str)
+---TODO: how to make this work in tests??
+---@return string
+function M.get_plugin_path()
+    local paths = api.nvim_list_runtime_paths()
+    for _, str in ipairs(paths) do
+        if str:match(".*speedtyper.nvim$") then
+            return str
         end
     end
-    return results
+    return ""
 end
 
 return M
