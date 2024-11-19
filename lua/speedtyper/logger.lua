@@ -1,5 +1,4 @@
 local api = vim.api
-local util = require("speedtyper.util")
 
 ---@class SpeedTyperLogger
 ---@field lines string[]
@@ -20,6 +19,8 @@ function Logger:log(...)
     if not require("speedtyper.settings"):get_selected("debug_mode") then
         return
     end
+
+    local util = require("speedtyper.util")
     local processed = {}
     for i = 1, select("#", ...) do
         local item = select(i, ...)

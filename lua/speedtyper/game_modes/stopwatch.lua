@@ -301,6 +301,8 @@ function Stopwatch:_move_up()
     self.stats:redraw_typos()
 end
 
+---FIX: update the logic for _current_word,
+---because it is not accurate when the _move_up happens
 function Stopwatch:_update_live_progress()
     if not settings:get_selected("live_progress") then
         return
