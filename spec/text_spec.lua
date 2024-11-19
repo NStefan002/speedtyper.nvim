@@ -5,6 +5,8 @@ describe("Text tests", function()
     local util = require("speedtyper.util")
 
     before_each(function()
+        local plugin_path = vim.uv.fs_realpath("./")
+        vim.cmd(("set rtp+=%s"):format(plugin_path))
         text:update_lang()
     end)
 
@@ -38,22 +40,24 @@ describe("Text tests", function()
     end)
 
     it("generate n words", function()
-        local n = 60
+        -- local n = 60
         local width = 80
         local mistake = false
-        for _ = 1, 10000 do
-            local paragraph = text:generate_n_words_text(width, n)
-            local total_words = 0
-            for _, line in ipairs(paragraph) do
-                if #line > width - 4 then
+        for n = 0, 100, 5 do
+            for _ = 1, 10000 do
+                local paragraph = text:generate_n_words_text(width, n)
+                local total_words = 0
+                for _, line in ipairs(paragraph) do
+                    if #line > width - 4 then
+                        mistake = true
+                        break
+                    end
+                    total_words = total_words + #util.split(line, " ")
+                end
+                if total_words ~= n then
                     mistake = true
                     break
                 end
-                total_words = total_words + #util.split(line, " ")
-            end
-            if total_words ~= n then
-                mistake = true
-                break
             end
         end
         eq(false, mistake)
