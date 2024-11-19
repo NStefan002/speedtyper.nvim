@@ -3,12 +3,15 @@
 - [ ] Rewrite plugin
 - [x] Add tests
 - [ ] more tests
+- [ ] change highlight groups
+- [x] move `lua/speedtyper/langs/` to `assets/languages`
 - [ ] Add vimdoc ci
 - [ ] Update README
 - [ ] create `health.lua` for dependencies
 - [ ] Make independent ui
   - [x] hover instructions
-  - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like in v1)
+  - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like
+    in v1)
   - [ ] dislpay requested info in the speedtyper ui
 - [x] punctuation game modifier
 - [x] numbers game modifier
@@ -24,11 +27,14 @@
   - [ ] save stats
   - [ ] detect AFK
 - [x] Instructions
-  - [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
+  - [x] show how each thing is calculated in a pop-up window on 'K' (like
+    lsp.hover)
   - [x] show each game mode details in a pop-up window (like lsp.hover)
 - [ ] Settings
-  - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
-  - [x] if no arguments are passed to `:SpeedTyperSettings <option>` then show the current value
+  - [x] fully (or almost fully) remove config and the 'standard' way of
+    configuring plugin
+  - [x] if no arguments are passed to `:SpeedTyperSettings <option>` then show
+    the current value
   - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere
   - [x] language
@@ -51,7 +57,8 @@
   - [ ] average_speed
   - [ ] average_accuracy
   - [x] demojify
-  - [ ] debug_mode
+  - [x] debug_mode
   - [x] reset settings
 - [ ] Other
   - [ ] get rid of magic constants (put them in `constants.lua`)
+  - [ ] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
