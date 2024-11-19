@@ -275,27 +275,18 @@ end
 function M.read_dir(dir, ext, remove_ext)
     ext = (ext or "") .. "$"
 
-    local dir_handle, err_name, err_msg = vim.uv.fs_opendir(dir)
+    local dir_handle, _, _ = vim.uv.fs_opendir(dir)
     if dir_handle == nil then
-        M.error(("%s: %s"):format(err_name, err_msg))
         return {}
     end
 
     local entries = {}
-    local entry
-    entry, err_name, err_msg = dir_handle:readdir()
+    local entry, _, _ = dir_handle:readdir()
     while entry ~= nil do
         table.insert(entries, entry[1])
-        entry, err_name, err_msg = dir_handle:readdir()
+        entry, _, _ = dir_handle:readdir()
     end
-    if entry == nil and err_name ~= nil and err_msg ~= nil then
-        M.error(("%s: %s"):format(err_name, err_msg))
-    end
-    local ok
-    ok, err_name, err_msg = dir_handle:closedir()
-    if not ok and err_name ~= nil and err_msg ~= nil then
-        M.error(("%s: %s"):format(err_name, err_msg))
-    end
+    dir_handle:closedir()
 
     local files_without_ext = vim.iter(entries)
         :filter(function(e)
