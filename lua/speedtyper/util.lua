@@ -255,7 +255,6 @@ function M.center_text(text, buff_width)
     return string.format("%s%s%s", sep, text, sep)
 end
 
----TODO: how to make this work in tests??
 ---@return string
 function M.get_plugin_path()
     local paths = api.nvim_list_runtime_paths()
@@ -265,6 +264,57 @@ function M.get_plugin_path()
         end
     end
     return ""
+end
+
+---Read files from a directory, optionally filtering by extension
+---and removing the extension from the file name
+---@param dir string Directory to read files from
+---@param ext? string If provided, only files with this extension will be returned
+---@param remove_ext? boolean If true, the extension will be removed from the file name
+---@return string[]
+function M.read_dir(dir, ext, remove_ext)
+    ext = (ext or "") .. "$"
+
+    local dir_handle, err_name, err_msg = vim.uv.fs_opendir(dir)
+    if dir_handle == nil then
+        M.error(("%s: %s"):format(err_name, err_msg))
+        return {}
+    end
+
+    local entries = {}
+    local entry
+    entry, err_name, err_msg = dir_handle:readdir()
+    while entry ~= nil do
+        table.insert(entries, entry[1])
+        entry, err_name, err_msg = dir_handle:readdir()
+    end
+    if entry == nil and err_name ~= nil and err_msg ~= nil then
+        M.error(("%s: %s"):format(err_name, err_msg))
+    end
+    local ok
+    ok, err_name, err_msg = dir_handle:closedir()
+    if not ok and err_name ~= nil and err_msg ~= nil then
+        M.error(("%s: %s"):format(err_name, err_msg))
+    end
+
+    local files_without_ext = vim.iter(entries)
+        :filter(function(e)
+            -- return only files
+            return e.type == "file"
+        end)
+        :map(function(e)
+            -- remove extension only if `remove_ext` is true
+            if not remove_ext then
+                return e.name
+            end
+            local str, _ = e.name:gsub(ext, "")
+            return str
+        end)
+        :totable()
+
+    table.sort(files_without_ext)
+
+    return files_without_ext
 end
 
 return M
