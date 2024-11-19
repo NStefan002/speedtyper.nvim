@@ -1,23 +1,50 @@
 local settings = require("speedtyper.settings")
+local util = require("speedtyper.util")
 
 ---@class SpeedTyperText
 ---@field selected_lang string
 ---@field words string[]
+---@field last_word_idx integer
+---@field randomize boolean
 local Text = {}
 Text.__index = Text
 
 function Text.new()
-    local self = setmetatable({}, Text)
-    self:update_lang()
+    local self = setmetatable({ words = {}, last_word_idx = 0, randomize = true }, Text)
     return self
 end
 
 function Text:update_lang()
     local lang = settings:get_selected("language")
-    if self.selected_lang ~= lang then
-        self.selected_lang = lang
-        self.words = require(("speedtyper.langs.%s"):format(lang))
+    if self.selected_lang == lang and #self.words > 0 then
+        return
     end
+    self.selected_lang = lang
+    local file = io.open(
+        ("%s/assets/languages/%s.json"):format(util.get_plugin_path(), self.selected_lang),
+        "r"
+    )
+    if file then
+        local json = file:read("*a")
+        self.words = vim.json.decode(json).words or {}
+        file:close()
+    else
+        self.words = {}
+        util.error(("Invalid language: %s"):format(self.selected_lang))
+    end
+end
+
+---@param words string[]
+function Text:use_custom_words(words)
+    self.words = words
+    self.randomize = false
+    self.last_word_idx = 0
+end
+
+function Text:reset()
+    self.words = {}
+    self.randomize = true
+    self.last_word_idx = 0
 end
 
 ---returns a string representation of a number from range [0, 10000)
@@ -34,6 +61,13 @@ end
 ---of some number from range [0, 10000)
 ---@return string
 function Text:get_word()
+    if not self.randomize then
+        self.last_word_idx = self.last_word_idx + 1
+        if self.last_word_idx > #self.words then
+            return ""
+        end
+        return self.words[self.last_word_idx]
+    end
     local number = settings.round.text_variant.numbers
     if number and math.random() < 0.1 then
         return self._get_number()
@@ -75,8 +109,8 @@ end
 ---@return string
 function Text:generate_sentence(max_len)
     local border_width = 2
-    local extra_space = 1 -- at the end of the sentence
-    local usable_width = max_len - 2 * border_width - extra_space -- 2 * border -> left and right border
+    local extra_space = " " -- at the end of the sentence
+    local usable_width = max_len - 2 * border_width - #extra_space -- 2 * border -> left and right border
     local sentence = self:get_word()
     local word = self:get_word()
     while #sentence + #word < usable_width do
@@ -87,18 +121,22 @@ function Text:generate_sentence(max_len)
     if settings.round.text_variant.punctuation then
         sentence = self._capitalize_word(sentence)
     end
-    return ("%s%s%s"):format(sentence, self._get_punctuation(true), string.rep(" ", extra_space))
+    return ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space)
 end
 
 ---@param win_width integer
 ---@param n integer
 ---@return string[]
 function Text:generate_n_words_text(win_width, n)
+    if n == 0 then
+        return {}
+    end
+
     local text = {}
 
     local border_width = 2
-    local extra_space = 1 -- at the end of the sentence
-    local usable_width = win_width - 2 * border_width - extra_space -- 2 * border -> left and right border
+    local extra_space = " " -- at the end of the sentence
+    local usable_width = win_width - 2 * border_width - #extra_space -- 2 * border -> left and right border
 
     local sentence = self:get_word()
     if settings.round.text_variant.punctuation then
@@ -111,28 +149,21 @@ function Text:generate_n_words_text(win_width, n)
         if #sentence + #word >= usable_width then
             table.insert(
                 text,
-                ("%s%s%s"):format(
-                    sentence,
-                    self._get_punctuation(true),
-                    string.rep(" ", extra_space)
-                )
+                ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space)
             )
-            sentence = self:get_word()
+            sentence = word
             if settings.round.text_variant.punctuation then
                 sentence = self._capitalize_word(sentence)
             end
         else
             sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
         end
-        n = n - 1
         word = self:get_word()
+        n = n - 1
     end
 
     -- finish the last sentence
-    table.insert(
-        text,
-        ("%s%s%s"):format(sentence, self._get_punctuation(true), string.rep(" ", extra_space))
-    )
+    table.insert(text, ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space))
 
     return text
 end
