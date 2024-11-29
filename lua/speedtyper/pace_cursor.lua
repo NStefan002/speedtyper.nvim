@@ -1,4 +1,5 @@
 local api = vim.api
+local util = require("speedtyper.util")
 local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
@@ -38,6 +39,10 @@ function PaceCursor.new(line_lengths)
         priority = 150,
     })
 
+    while #self.line_lengths > constants.text_num_lines do
+        util.remove_element(self.line_lengths, self.line_lengths[#self.line_lengths])
+    end
+
     return self
 end
 
@@ -50,6 +55,9 @@ function PaceCursor:move_up(line_lengths)
     end
 
     if self.total_len_after > 0 then
+        if #line_lengths < constants.text_num_lines then
+            return
+        end
         if self.total_len_after > line_lengths[#line_lengths] then
             self.total_len_after = self.total_len_after - #line_lengths[#line_lengths]
         else
