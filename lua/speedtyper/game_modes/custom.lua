@@ -8,31 +8,6 @@ local settings = require("speedtyper.settings")
 local sounds = require("speedtyper.sounds")
 local logger = require("speedtyper.logger")
 
----@class nvim_buf_attach_callbacks_args
----@field type string
----@field buf_handle integer
-
----@class on_lines_args : nvim_buf_attach_callbacks_args
----@field changetick integer value of b:changetick
----@field line_start integer first changed line (zero-indexed)
----@field line_end integer last line that was changed
----@field range_end integer last line in the updated range
----@field byte_count integer byte count of previous contents
----@field deleted_codepoints? integer if `utf_sizes` is true
----@field deleted_codeunits? integer if `utf_sizes` is true
-
----@class on_bytes_args: nvim_buf_attach_callbacks_args
----@field changetick integer value of b:changetick
----@field start_row integer start row of the changed text (zero-indexed)
----@field start_column integer start column of the changed text
----@field byte_offset integer byte offset of the changed text (from the start of the buffer)
----@field old_end_row integer old end row of the changed text (offset from start row)
----@field old_end_column integer old end column of the changed text (if old end row = 0, offset from start column)
----@field old_end_byte_len integer old end byte length of the changed text
----@field new_end_row integer new end row of the changed text (offset from start row)
----@field new_end_column integer new end column of the changed text (if new end row = 0, offset from start column)
----@field new_end_byte_len integer new end byte length of the changed text
-
 ---@class SpeedTyperCustom
 ---@field private closing boolean
 ---@field timer uv_timer_t
