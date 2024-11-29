@@ -33,6 +33,21 @@ function Stack:peek()
     return vim.deepcopy(self._stack[self._top])
 end
 
+---@param n integer
+function Stack:peek_n(n)
+    if self:is_empty() then
+        return {}
+    end
+    local result = {}
+    for i = 0, n - 1 do
+        if self._top - i < 1 then
+            break
+        end
+        table.insert(result, vim.deepcopy(self._stack[self._top - i]))
+    end
+    return result
+end
+
 function Stack:pop()
     if self:is_empty() then
         return
