@@ -113,9 +113,15 @@ function Text:generate_sentence(max_len)
     local usable_width = max_len - 2 * border_width - #extra_space -- 2 * border -> left and right border
     local sentence = self:get_word()
     local word = self:get_word()
+    if word == "" then
+        return ""
+    end
     while #sentence + #word < usable_width do
         sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
         word = self:get_word()
+        if word == "" then
+            break
+        end
     end
 
     if settings.round.text_variant.punctuation then
