@@ -1,13 +1,14 @@
 --- TODO: finish this when other game modes are implemented
 local countdown = require("speedtyper.game_modes.countdown")
 local stopwatch = require("speedtyper.game_modes.stopwatch")
+local custom = require("speedtyper.game_modes.custom")
 local rain = require("speedtyper.game_modes.rain")
 local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperRound
----@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain
+---@field active_game_mode SpeedTyperCountdown | SpeedTyperStopwatch | SpeedTyperRain | SpeedTyperCustom
 local Round = {}
 Round.__index = Round
 
@@ -31,6 +32,8 @@ function Round:_set_game_mode()
         self.active_game_mode = stopwatch
     elseif game_mode == "rain" then
         self.active_game_mode = rain
+    elseif game_mode == "custom" then
+        self.active_game_mode = custom
     else
         util.error(("Invalid game mode: %s"):format(game_mode))
     end
