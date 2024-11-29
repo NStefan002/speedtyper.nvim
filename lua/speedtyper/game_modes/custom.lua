@@ -491,6 +491,12 @@ function Custom:_move_up()
         end
     end
     self.stats:redraw_typos()
+
+    self.pace_cursor:move_up(vim.iter(self.text)
+        :map(function(l)
+            return #l
+        end)
+        :totable())
 end
 
 ---------------------------- timer stuff ------------------------------------------
