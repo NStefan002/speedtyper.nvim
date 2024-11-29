@@ -119,8 +119,8 @@ function Stats:check_curr_char(typed, should_be, line, col)
 
     self.text_info:push(new_char)
     if typed ~= should_be then
-        self._mark_typo(line, col)
         self.typos = self.typos + 1
+        self._mark_typo(line, col)
     end
 end
 
@@ -132,7 +132,10 @@ function Stats:get_typos()
 end
 
 function Stats:redraw_typos()
-    local typos = self:get_typos()
+    ---@param t SpeedTyperCharInfo
+    local typos = vim.tbl_filter(function(t)
+        return t.pos.line ~= -1 and t.pos.col ~= -1
+    end, self:get_typos())
     for _, info in ipairs(typos) do
         self._mark_typo(info.pos.line, info.pos.col)
     end
@@ -155,6 +158,7 @@ function Stats._mark_typo(line, col)
     )
 end
 
+-- FIX: checking the last word
 function Stats:_set_data()
     ---@type SpeedTyperCharInfo[]
     local text_info = self.text_info:get_table()
