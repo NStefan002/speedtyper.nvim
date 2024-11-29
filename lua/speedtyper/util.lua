@@ -79,8 +79,10 @@ function M.disable_buffer_modification(bufnr)
 end
 
 ---@param str string
+---@return string
 function M.trim(str)
-    return str:gsub("^%s+", ""):gsub("%s+$", "")
+    local result, _ = str:gsub("^%s+", ""):gsub("%s+$", "")
+    return result
 end
 
 ---@param str string
@@ -306,6 +308,20 @@ function M.read_dir(dir, ext, remove_ext)
     table.sort(files_without_ext)
 
     return files_without_ext
+end
+
+---Get the character at the given index in a utf-8 string
+---@param str string
+---@param idx integer if negative, index from the end of the string (-1 is the last character)
+function M.utf_char_at(str, idx)
+    local utf_indices = vim.str_utf_pos(str)
+    if idx == 0 or idx > #utf_indices then
+        return ""
+    end
+    if idx < 0 then
+        idx = #utf_indices + idx + 1
+    end
+    return str:sub(utf_indices[idx], idx < #utf_indices and utf_indices[idx + 1] - 1 or -1)
 end
 
 return M
