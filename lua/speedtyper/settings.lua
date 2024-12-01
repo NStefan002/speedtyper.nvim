@@ -23,8 +23,6 @@ local logger = require("speedtyper.logger")
 ---@field cursor_blinking boolean
 ---@field pace_cursor boolean
 ---@field pace_cursor_speed integer
----@field pace_cursor_style table<SpeedTyperCursorStyle, boolean>
----@field pace_cursor_blinking boolean
 ---@field strict_space boolean
 ---@field stop_on_error boolean
 ---@field confidence_mode boolean
@@ -94,12 +92,6 @@ function Settings.new()
                 cursor_blinking = false,
                 pace_cursor = false,
                 pace_cursor_speed = 100,
-                pace_cursor_style = {
-                    line = true,
-                    block = false,
-                    underline = false,
-                },
-                pace_cursor_blinking = false,
                 strict_space = false,
                 stop_on_error = false,
                 confidence_mode = false,
@@ -380,7 +372,6 @@ function Settings:create_user_commands()
         cursor_blinking = self:_create_subcmd_for_bool_option("cursor_blinking"),
         pace_cursor = self:_create_subcmd_for_bool_option("pace_cursor"),
         pace_cursor_speed = self:_create_subcmd_for_number_option("pace_cursor_speed", 1, 1000),
-        pace_cursor_style = self:_create_subcmd_for_map_option("pace_cursor_style"),
         strict_space = self:_create_subcmd_for_bool_option("strict_space"),
         stop_on_error = self:_create_subcmd_for_bool_option("stop_on_error"),
         confidence_mode = self:_create_subcmd_for_bool_option("confidence_mode"),

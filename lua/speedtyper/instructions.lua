@@ -15,8 +15,6 @@
 ---@field cursor_blinking string
 ---@field pace_cursor_speed string
 ---@field pace_cursor string
----@field pace_cursor_style string
----@field pace_cursor_blinking string
 ---@field strict_space string
 ---@field stop_on_error string
 ---@field confidence_mode string
@@ -105,12 +103,6 @@ at the given pace.
 ]],
         pace_cursor = [[
 Enable/disable pace cursor.
-]],
-        pace_cursor_style = [[
-Choose one of the predifined pace cursor styles.
-]],
-        pace_cursor_blinking = [[
-Enable/disable pace cursor blinking.
 ]],
         strict_space = [[
 When disabled, jump to the next word
