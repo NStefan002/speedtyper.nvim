@@ -55,9 +55,10 @@ function Custom:start()
     logger:log("waiting for the user to paste the text")
     local on_lines_detach = false
     api.nvim_buf_attach(globals.bufnr, false, {
-        on_lines = vim.schedule_wrap(function(...)
+        on_lines = function(...)
             -- if the game is closing/user changes to different game mode, then return true to detach from the buffer
             if self.closing or on_lines_detach then
+                logger:log("stop waiting for the user to paste the text")
                 return true
             end
             on_lines_detach = true
@@ -76,33 +77,36 @@ function Custom:start()
                 deleted_codeunits = ev[9],
             }
 
-            local line_start, line_end = args.line_start, args.range_end
-            ---text that user pasted
-            local text = table.concat(
-                api.nvim_buf_get_lines(globals.bufnr, line_start, line_end, false),
-                " "
-            )
-            local words = util.split(text, " ")
-            self.text_generator:use_custom_words(words)
-            local win_width = api.nvim_win_get_width(globals.winnr)
-            self.text = self.text_generator:generate_n_words_text(win_width, #words)
-            self.number_of_words = #words
+            vim.schedule(function()
+                local line_start, line_end = args.line_start, args.range_end
+                ---text that user pasted
+                local text = table.concat(
+                    api.nvim_buf_get_lines(globals.bufnr, line_start, line_end, false),
+                    " "
+                )
+                local words = util.split(text, " ")
+                self.text_generator:use_custom_words(words)
+                local win_width = api.nvim_win_get_width(globals.winnr)
+                self.text = self.text_generator:generate_n_words_text(win_width, #words)
+                self.number_of_words = #words
 
-            self.pace_cursor = pace_cursor.new(vim.iter(self.text)
-                :map(function(line)
-                    return #line
-                end)
-                :totable())
+                self.pace_cursor = pace_cursor.new(vim.iter(self.text)
+                    :map(function(line)
+                        return #line
+                    end)
+                    :totable())
 
-            util.clear_buffer_text(constants.win_height, globals.bufnr)
-            self:_set_extmarks()
-            util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
-            api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
-            self:_create_timer()
+                util.clear_buffer_text(constants.win_height, globals.bufnr)
+                self:_set_extmarks()
+                util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
+                api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
+                self:_create_timer()
+            end)
 
+            logger:log("text pasted")
             -- return true to detach from the buffer
             return true
-        end),
+        end,
     })
 
     logger:log("custom game mode started")
@@ -111,7 +115,7 @@ end
 function Custom:_attach_to_speedtyper_buffer()
     logger:log("attaching to the speedtyper buffer")
     api.nvim_buf_attach(globals.bufnr, false, {
-        on_bytes = vim.schedule_wrap(function(...)
+        on_bytes = function(...)
             if self.closing then
                 logger:log("custom mode on_bytes detached")
                 -- return true to detach from buffer
@@ -139,13 +143,16 @@ function Custom:_attach_to_speedtyper_buffer()
                 new_end_column = ev[11],
                 new_end_byte_len = ev[12],
             }
-            self:_handle_typing(args)
-            ---@type SpeedTyperCharInfo
-            local last_typed = self.stats.text_info:peek()
-            if last_typed ~= nil then
-                sounds:play_sound(last_typed:is_typo())
-            end
-        end),
+
+            vim.schedule(function()
+                self:_handle_typing(args)
+                ---@type SpeedTyperCharInfo
+                local last_typed = self.stats.text_info:peek()
+                if last_typed ~= nil then
+                    sounds:play_sound(last_typed:is_typo())
+                end
+            end)
+        end,
     })
 end
 
@@ -206,7 +213,7 @@ function Custom:_update_extmarks()
         local line = api.nvim_buf_get_lines(globals.bufnr, row, row + 1, false)[1]
         local col = api.nvim_strwidth(line)
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, row, col, {
-            virt_text = { { self.text[i]:sub(#line + 1), "SpeedTyperTextUntyped" } },
+            virt_text = { { util.utf_sub(self.text[i], col + 1), "SpeedTyperTextUntyped" } },
             virt_text_win_col = col,
             id = extm_id,
             priority = 50,
@@ -227,14 +234,16 @@ end
 ---[x] if we're on the last line of text, remove the unnecessary extmarks
 ---[x] display stats after stopping the game
 ---[x] update the live progress
+---[x] put more meaningful logs
 ---FIX:
 ---[x] jumping to the next line with `<space>` when `strict_space` is `off`
 ---[x] last line extmark is not removed when needed
 ---[x] last character of the last line is not colored correctly
+---[x] choose when to use `col` and when to use `last_typed_line_len`
 ---@param args on_bytes_args
 function Custom:_handle_typing(args)
-    -- NOTE: row, col, prev_row, prev_col are zero-indexed so we'll be adding 1 to them to make them one-indexed
-    -- because some of the functions we use require one-indexed values
+    -- NOTE: row, col, prev_row, prev_col are zero-indexed positions in the vim's grid (or whatever it's called)
+    -- so we'll be adding 1 to them to make them one-indexed because some of the functions we use require one-indexed values
 
     local row = args.start_row + args.new_end_row
     local col = args.new_end_row == 0 and (args.start_column + args.new_end_column)
@@ -260,8 +269,8 @@ function Custom:_handle_typing(args)
         -- unnecessarily waste time
         if #self.stats:get_typos() > 0 then
             util.set_cursor_pos(prev_row + 1, prev_col + 1, globals.winnr)
-            api.nvim_buf_set_text(globals.bufnr, prev_row, prev_col, row, col, {})
             self.ignore_next_change = true
+            api.nvim_buf_set_text(globals.bufnr, prev_row, prev_col, row, col, {})
 
             logger:log("typing blocked due to `get_typos`")
 
@@ -272,23 +281,29 @@ function Custom:_handle_typing(args)
     ---the last line of the typed text (could be the line currently being typed or the line above it)
     ---@type string
     local last_typed_line = api.nvim_buf_get_lines(globals.bufnr, prev_row, prev_row + 1, false)[1]
-    -- in case the user just finished typing the first line and cursor moved to the second line
+    -- in case the user just finished typing the line and cursor moved to the next line (or same line if we're on the middle line)
     -- or the user moved to the previous line via `<bspace>`, `<c-u>`, `<c-w>`, etc.
     if #last_typed_line == 0 then
-        last_typed_line = api.nvim_buf_get_lines(globals.bufnr, prev_row - 1, prev_row, false)[1]
+        last_typed_line = api.nvim_buf_get_lines(globals.bufnr, row, row + 1, false)[1]
     end
+    ---@type integer
+    local last_typed_line_len = api.nvim_strwidth(last_typed_line)
 
     -- check if the user has pressed some of the following keys: `<bspace>`, `<c-u>`, `<c-w>`, etc.
     if self._moved_back(row, col, prev_row, prev_col) then
+        ---@type SpeedTyperCharInfo
+        local deleted_char = self.stats.text_info:peek()
+        if deleted_char.should_be == " " then
+            self.word_count = self.word_count - 1
+        end
+        self.stats.text_info:pop()
+
+        logger:log("deleted character:", deleted_char.should_be, deleted_char.typed)
+
         -- moved back to previous line via `<bspace>`, `<c-u>`, `<c-w>`, etc.
         if prev_col == 0 then
             -- if we jumped from the beginning of the line to the previous line, then we only need to pop the last character of the previous line
             -- (since there is no key kombination that can delete further back)
-
-            if self.stats.text_info:peek().should_be == " " then
-                self.word_count = self.word_count - 1
-            end
-            self.stats.text_info:pop()
 
             self.ignore_next_change = true
             -- add empty line below cursor (because the user deleted it via `<bspace>`)
@@ -302,23 +317,12 @@ function Custom:_handle_typing(args)
                 row,
                 row + 1,
                 false,
-                { last_typed_line:sub(1, -2) }
+                { util.utf_sub(last_typed_line, 1, -2) }
             )
 
             self.stats:redraw_typos()
 
             logger:log("moved to previous line")
-        else
-            ---@type SpeedTyperCharInfo[]
-            local deleted_chars = self.stats.text_info:peek_n(math.abs(col - prev_col))
-            for _, info in ipairs(deleted_chars) do
-                if info.should_be == " " then
-                    self.word_count = self.word_count - 1
-                end
-            end
-            self.stats.text_info:pop_n(math.abs(col - prev_col))
-
-            logger:log(("moved back by %d characters"):format(math.abs(col - prev_col)))
         end
 
         self:_update_extmarks()
@@ -326,9 +330,8 @@ function Custom:_handle_typing(args)
     end
 
     -- check if the user typed the correct character
-    local typed = last_typed_line:sub(-1, -1)
-    local should_be = util.utf_char_at(self.text[idx], prev_col + 1)
-    -- print(typed, should_be)
+    local typed = util.utf_char_at(last_typed_line, -1)
+    local should_be = util.utf_char_at(self.text[idx], last_typed_line_len)
     self.stats:check_curr_char(typed, should_be, prev_row, prev_col + 1)
 
     -- check if the user typed `<space>`, and apply strict_space setting if needed
@@ -341,21 +344,22 @@ function Custom:_handle_typing(args)
         -- if the typed character is a space and it should not be a space, then jump to the
         -- next word (if possible) and fill the gaps with spaces
 
-        local next_space, _, _ = self.text[idx]:find(" ", col)
-        next_space = next_space or api.nvim_strwidth(self.text[idx])
+        local next_space = util.utf_find(self.text[idx], " ", last_typed_line_len)
+        next_space = next_space == -1 and api.nvim_strwidth(self.text[idx]) or next_space
 
         self.ignore_next_change = true
-        api.nvim_put({ (" "):rep(next_space - col, "") }, "c", true, true)
-        for i = col, next_space do
+        api.nvim_put({ (" "):rep(next_space - last_typed_line_len, "") }, "c", true, true)
+        for i = last_typed_line_len, next_space do
             local next_should_be = util.utf_char_at(self.text[idx], i)
             self.stats:check_curr_char(" ", next_should_be, row, i)
             if next_should_be == " " then
                 self.word_count = self.word_count + 1
             end
         end
-        col = next_space
 
-        logger:log(("insert %d spaces"):format(next_space - col))
+        last_typed_line_len = next_space
+
+        logger:log(("insert %d spaces"):format(next_space - last_typed_line_len))
     end
 
     -- update word count
@@ -364,7 +368,7 @@ function Custom:_handle_typing(args)
     end
 
     -- reached the end of the line
-    if col == api.nvim_strwidth(self.text[idx]) then
+    if last_typed_line_len == api.nvim_strwidth(self.text[idx]) then
         -- we have three cases:
         --   1) we reached the end of the typing test
         --   2) we reached the end of the middle line, and we have to jump to the beginning of the current line
@@ -390,11 +394,11 @@ function Custom:_handle_typing(args)
             self:_move_up()
             util.set_cursor_pos(cursor_row, 0, globals.winnr)
 
-            logger:log("moved up...", "row", row, "col", col, "pr", prev_row, "pc", prev_col)
+            logger:log("moved to the beginning of the middle line")
         else
             util.set_cursor_pos(cursor_row + 1, 0, globals.winnr)
 
-            logger:log("moved to the beginning of the middle line")
+            logger:log("moved to the beginning of the next line")
         end
         self:_update_extmarks()
         return
