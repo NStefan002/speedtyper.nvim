@@ -226,7 +226,8 @@ end
 
 ---@param text string
 function M.center_text(text, buff_width)
-    local sep = string.rep(" ", math.floor((buff_width - #text) / 2))
+    local text_len = api.nvim_strwidth(text)
+    local sep = string.rep(" ", math.floor((buff_width - text_len) / 2))
     return string.format("%s%s%s", sep, text, sep)
 end
 
