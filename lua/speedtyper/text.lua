@@ -1,3 +1,4 @@
+local api = vim.api
 local settings = require("speedtyper.settings")
 local util = require("speedtyper.util")
 
@@ -78,7 +79,7 @@ end
 ---@param word string
 ---@return string
 function Text._capitalize_word(word)
-    return ("%s%s"):format(word:sub(1, 1):upper(), word:sub(2, #word))
+    return ("%s%s"):format(util.utf_sub(word, 1, 1):upper(), util.utf_sub(word, 2))
 end
 
 ---if punctuation modifier is active then there is a 25% chance
@@ -116,7 +117,7 @@ function Text:generate_sentence(max_len)
     if word == "" then
         return ""
     end
-    while #sentence + #word < usable_width do
+    while api.nvim_strwidth(sentence) + api.nvim_strwidth(word) < usable_width do
         sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
         word = self:get_word()
         if word == "" then
@@ -152,7 +153,7 @@ function Text:generate_n_words_text(win_width, n)
     n = n - 1
 
     while n > 0 do
-        if #sentence + #word >= usable_width then
+        if api.nvim_strwidth(sentence) + api.nvim_strwidth(word) >= usable_width then
             table.insert(
                 text,
                 ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space)
@@ -169,7 +170,7 @@ function Text:generate_n_words_text(win_width, n)
     end
 
     -- finish the last sentence
-    table.insert(text, ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space))
+    table.insert(text, ("%s%s"):format(sentence, self._get_punctuation(true)))
 
     return text
 end
