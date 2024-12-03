@@ -1,5 +1,3 @@
--- TODO: move_up is different here than in the other 2 modes
-
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")

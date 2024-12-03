@@ -113,16 +113,16 @@ function Text:generate_sentence(max_len)
     local extra_space = " " -- at the end of the sentence
     local usable_width = max_len - 2 * border_width - #extra_space -- 2 * border -> left and right border
     local sentence = self:get_word()
-    local word = self:get_word()
-    if word == "" then
+    if sentence == "" then
         return ""
     end
+    local word = self:get_word()
     while api.nvim_strwidth(sentence) + api.nvim_strwidth(word) < usable_width do
-        sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
-        word = self:get_word()
         if word == "" then
             break
         end
+        sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
+        word = self:get_word()
     end
 
     if settings.round.text_variant.punctuation then

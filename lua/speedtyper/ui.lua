@@ -19,7 +19,6 @@ function UI.new()
         active = false,
         menu = require("speedtyper.menu"),
         hover = require("speedtyper.hover"),
-        -- TODO: is it ok like this??
         vim_opt = {},
     }
     return setmetatable(self, UI)
@@ -61,40 +60,6 @@ function UI:_create_autocmds()
         end,
         desc = "Redraw the SpeedTyper window when the user resizes the editor.",
     })
-    -- TODO: FIND OUT WHY THIS DOESN'T WORK FOR UNLISTED/SCRATCH BUFFERS EVEN THOUGH THEY GET HIDDEN
-    -- autocmd("BufHidden", {
-    --     group = grp,
-    --     -- buffer = globals.bufnr,
-    --     pattern = "*",
-    --     callback = function(ev)
-    --         print(ev.event, ev.buf)
-    --     end,
-    -- })
-    -- HACK: should do the same as the BufHidden autocmd, currently only opening netrw inside Speedtyper window creates problems
-    -- autocmd("FileType", {
-    --     group = grp,
-    --     pattern = "*",
-    --     callback = function(ev)
-    --         --[[
-    --             HACK: I guess what happens is the following: the FileType autocmd closes the window when the 'filetype' option for netrw
-    --             has been set but it doesn't leave enough time for netrw to load which causes the netrw text to get 'merged' with
-    --             the buffer that was active before ':SpeedTyper' (see https://github.com/NStefan002/speedtyper.nvim/issues/30).
-    --             It seems like this works. I understand it, but I don't.
-    --         ]]
-    --         vim.schedule(function()
-    --             local current_win = api.nvim_get_current_win()
-    --             local current_win_buf = api.nvim_win_get_buf(current_win)
-    --             if globals.winnr ~= current_win or ev.buf ~= current_win_buf then
-    --                 return
-    --             end
-    --             if ev.buf ~= globals.bufnr and self.active then
-    --                 require("speedtyper.settings"):save()
-    --                 self:_close()
-    --             end
-    --         end)
-    --     end,
-    --     desc = "Close the SpeedTyper window if the user opens up netrw inside of it.",
-    -- })
 end
 
 function UI:_open()
@@ -139,7 +104,6 @@ function UI:_open()
 
     api.nvim_win_set_hl_ns(globals.winnr, globals.ns_id)
     require("speedtyper.highlights").setup()
-    self._disable_cmp()
     self:_create_autocmds()
     self.menu:display_menu()
     self.hover:set_keymaps()
@@ -164,7 +128,6 @@ function UI:_close()
     globals.winnr = -1
     self.menu:exit_menu()
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperUI")
-    self._enable_cmp()
     self:_restore_options()
 
     require("speedtyper.settings"):save()
@@ -217,22 +180,6 @@ function UI:_restore_options()
     api.nvim_set_option_value("guicursor", self.vim_opt.guicursor, { scope = "global" })
 
     logger:log("restored options:", self.vim_opt)
-end
-
--- NOTE: this will probably be removed and be asked of the user to do,
--- but it'll stay for now for testing purposes
-function UI._disable_cmp()
-    if package.loaded["cmp"] then
-        -- disable cmp while playing the game
-        require("cmp").setup.buffer({ enabled = false })
-    end
-end
-
-function UI._enable_cmp()
-    if package.loaded["cmp"] then
-        -- disable cmp while playing the game
-        require("cmp").setup.buffer({ enabled = true })
-    end
 end
 
 return UI.new()
