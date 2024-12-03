@@ -1,7 +1,6 @@
 local countdown = require("speedtyper.game_modes.countdown")
 local stopwatch = require("speedtyper.game_modes.stopwatch")
 local custom = require("speedtyper.game_modes.custom")
-local rain = require("speedtyper.game_modes.rain")
 local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
