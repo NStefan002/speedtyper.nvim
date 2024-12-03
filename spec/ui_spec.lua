@@ -2,6 +2,9 @@ local api = vim.api
 local eq = assert.are.same
 
 describe("UI tests", function()
+    local plugin_path = vim.uv.fs_realpath("./")
+    vim.cmd(("set rtp+=%s"):format(plugin_path))
+
     local ui = require("speedtyper.ui")
     local globals = require("speedtyper.globals")
 
@@ -101,20 +104,12 @@ describe("UI tests", function()
         end)
     end)
 
-    -- it("user leaving the window with something like <C-w><C-w>", function()
-    --     local util = require("speedtyper.util")
-    --     ui:_open()
-    --
-    --     util.simulate_keypress("<C-w><C-w>")
-    --
-    --     eq(false, api.nvim_buf_is_valid(globals.bufnr))
-    --     eq(false, api.nvim_win_is_valid(globals.winnr))
-    --     eq(-1, globals.bufnr)
-    --     eq(-1, globals.winnr)
-    --
-    --     ui:toggle()
-    --
-    --     eq(true, api.nvim_buf_is_valid(globals.bufnr))
-    --     eq(true, api.nvim_win_is_valid(globals.winnr))
-    -- end)
+    it("restore vim.opt", function()
+        local gui_cursor = api.nvim_get_option_value("guicursor", { scope = "global" })
+
+        ui:_open()
+        ui:_close()
+
+        eq(gui_cursor, api.nvim_get_option_value("guicursor", { scope = "global" }))
+    end)
 end)

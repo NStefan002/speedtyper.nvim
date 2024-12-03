@@ -1,6 +1,9 @@
 local eq = assert.are.same
 
 describe("Logger tests", function()
+    local plugin_path = vim.uv.fs_realpath("./")
+    vim.cmd(("set rtp+=%s"):format(plugin_path))
+
     local logger = require("speedtyper.logger")
     local settings = require("speedtyper.settings")
     settings.general.debug_mode = true

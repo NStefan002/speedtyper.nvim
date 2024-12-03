@@ -1,12 +1,13 @@
 local eq = assert.are.same
 
 describe("Text tests", function()
+    local plugin_path = vim.uv.fs_realpath("./")
+    vim.cmd(("set rtp+=%s"):format(plugin_path))
+
     local text = require("speedtyper.text")
     local util = require("speedtyper.util")
 
     before_each(function()
-        local plugin_path = vim.uv.fs_realpath("./")
-        vim.cmd(("set rtp+=%s"):format(plugin_path))
         text:update_lang()
     end)
 
