@@ -2,7 +2,6 @@
 
 local api = vim.api
 local util = require("speedtyper.util")
-local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 
@@ -26,12 +25,12 @@ function Menu.new()
 end
 
 function Menu:display_menu()
-    util.clear_buffer_text(constants.win_height, globals.bufnr)
+    util.clear_buffer_text(globals.win_height, globals.bufnr)
     self.settings_menu_active = false
     api.nvim_buf_set_lines(
         globals.bufnr,
-        constants.menu_first_line,
-        constants.menu_first_line + 1,
+        globals.menu_first_line,
+        globals.menu_first_line + 1,
         false,
         {
             self.round_settings_text,
@@ -45,7 +44,7 @@ function Menu:display_menu()
         globals.bufnr,
         globals.ns_id,
         "SpeedTyperInfo",
-        constants.win_height - 1,
+        globals.win_height - 1,
         0,
         #settings_info
     )
@@ -107,8 +106,8 @@ function Menu:_highlight_buttons()
     api.nvim_buf_clear_namespace(
         globals.bufnr,
         globals.ns_id,
-        constants.menu_first_line,
-        constants.menu_first_line + 1
+        globals.menu_first_line,
+        globals.menu_first_line + 1
     )
 
     for _, values in pairs(settings.round) do
@@ -121,7 +120,7 @@ function Menu:_highlight_buttons()
                     globals.bufnr,
                     globals.ns_id,
                     "SpeedTyperButtonActive",
-                    constants.menu_first_line,
+                    globals.menu_first_line,
                     button_begin,
                     button_end
                 )
@@ -130,7 +129,7 @@ function Menu:_highlight_buttons()
                     globals.bufnr,
                     globals.ns_id,
                     "SpeedTyperButtonInactive",
-                    constants.menu_first_line,
+                    globals.menu_first_line,
                     button_begin,
                     button_end
                 )

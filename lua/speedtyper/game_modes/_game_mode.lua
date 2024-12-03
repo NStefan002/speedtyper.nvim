@@ -1,6 +1,5 @@
 local api = vim.api
 local util = require("speedtyper.util")
-local constants = require("speedtyper.constants")
 local position = require("speedtyper.position")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
@@ -46,7 +45,7 @@ function GM:start()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
     end)
     self:set_extmarks()
-    util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
+    util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
     vim.keymap.set("i", "<cr>", "<nop>", { buffer = globals.bufnr })
 
     self:after_start()
@@ -132,9 +131,9 @@ function GM:reset_values() end
 ---@protected
 function GM:set_extmarks()
     self.extm_ids = {}
-    local n = math.min(constants.text_num_lines, #self.text)
+    local n = math.min(globals.text_num_lines, #self.text)
     for i = 1, n do
-        local line = constants.text_first_line + i - 1
+        local line = globals.text_first_line + i - 1
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
@@ -150,7 +149,7 @@ function GM:update_extmarks()
         return
     end
     for i, extm_id in ipairs(self.extm_ids) do
-        local row = constants.text_first_line + i - 1
+        local row = globals.text_first_line + i - 1
         local line = api.nvim_buf_get_lines(globals.bufnr, row, row + 1, false)[1]
         local col = api.nvim_strwidth(line)
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, row, col, {
@@ -197,7 +196,7 @@ function GM:handle_typing(args)
         or args.old_end_column
 
     ---index of the current line in the text table
-    local idx = row - constants.text_first_line + 1
+    local idx = row - globals.text_first_line + 1
     if idx < 1 or idx > #self.text then
         return
     end
@@ -331,7 +330,7 @@ function GM:handle_typing(args)
             return
         end
 
-        if row == constants.text_middle_line then
+        if row == globals.text_middle_line then
             self.ignore_next_change = true
             self:move_up()
             util.set_cursor_pos(cursor_row, 0, globals.winnr)
@@ -366,11 +365,11 @@ function GM:move_up()
     api.nvim_buf_clear_namespace(
         globals.bufnr,
         globals.ns_id,
-        constants.text_first_line,
-        constants.text_first_line + constants.text_num_lines
+        globals.text_first_line,
+        globals.text_first_line + globals.text_num_lines
     )
     util.remove_element(self.text, self.text[1])
-    if #self.text < constants.text_num_lines then
+    if #self.text < globals.text_num_lines then
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, self.extm_ids[#self.extm_ids])
         util.remove_element(self.extm_ids, self.extm_ids[#self.extm_ids])
         if self.number_of_words == -1 then
@@ -383,16 +382,16 @@ function GM:move_up()
 
     local written_lines = api.nvim_buf_get_lines(
         globals.bufnr,
-        constants.text_first_line,
-        constants.text_middle_line + 1,
+        globals.text_first_line,
+        globals.text_middle_line + 1,
         false
     )
     util.remove_element(written_lines, written_lines[1])
     table.insert(written_lines, "")
     api.nvim_buf_set_lines(
         globals.bufnr,
-        constants.text_first_line,
-        constants.text_middle_line + 1,
+        globals.text_first_line,
+        globals.text_middle_line + 1,
         false,
         written_lines
     )
@@ -404,7 +403,7 @@ function GM:move_up()
     ---@type SpeedTyperCharInfo[]
     local text_info = self.stats.text_info:get_table()
     for _, info in ipairs(text_info) do
-        if info.pos.line == constants.text_first_line then
+        if info.pos.line == globals.text_first_line then
             info.pos = position.new(-1, -1)
         end
     end
@@ -441,7 +440,7 @@ function GM:update_live_progress()
     end
 
     self.info_extm_id =
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
+        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
             virt_text = {
                 {
                     self:live_progress_text(),
@@ -470,7 +469,7 @@ function GM:create_timer()
             ---@diagnostic disable-next-line: param-type-mismatch
             and table.concat(settings.keymaps.start_game, "/")
         or settings.keymaps.start_game
-    local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
+    local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
         virt_text = {
             {
                 ("Press %s to start the game."):format(keys),
@@ -483,10 +482,10 @@ function GM:create_timer()
         self:attach_to_speedtyper_buffer()
         api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
         vim.cmd.startinsert()
-        util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
+        util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
         vim.schedule(function()
-            util.clear_buffer_text(constants.win_height, globals.bufnr)
+            util.clear_buffer_text(globals.win_height, globals.bufnr)
             self:set_extmarks()
         end)
         self:start_timer()

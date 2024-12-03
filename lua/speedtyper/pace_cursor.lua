@@ -1,6 +1,5 @@
 local api = vim.api
 local util = require("speedtyper.util")
-local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 
@@ -21,11 +20,11 @@ PaceCursor.__index = PaceCursor
 ---@return SpeedTyperPaceCursor
 function PaceCursor.new(line_lengths)
     local self = setmetatable({
-        line = constants.text_first_line,
+        line = globals.text_first_line,
         col = 0,
-        interval = constants.min_to_sec
-            / (settings:get_selected("pace_cursor_speed") * constants.word_length)
-            * constants.sec_to_ms,
+        interval = globals.min_to_sec
+            / (settings:get_selected("pace_cursor_speed") * globals.word_length)
+            * globals.sec_to_ms,
         line_lengths = line_lengths,
         total_len_before = 0,
         total_len_after = 0,
@@ -39,7 +38,7 @@ function PaceCursor.new(line_lengths)
         priority = 150,
     })
 
-    while #self.line_lengths > constants.text_num_lines do
+    while #self.line_lengths > globals.text_num_lines do
         util.remove_element(self.line_lengths, self.line_lengths[#self.line_lengths])
     end
 
@@ -48,21 +47,21 @@ end
 
 ---@param line_lengths integer[]
 function PaceCursor:move_up(line_lengths)
-    if self.line == constants.text_first_line then
+    if self.line == globals.text_first_line then
         self.total_len_before = self.total_len_before + self.line_lengths[1] - self.col
     else
         self.line = self.line - 1
     end
 
     if self.total_len_after > 0 then
-        if #line_lengths < constants.text_num_lines then
+        if #line_lengths < globals.text_num_lines then
             return
         end
         if self.total_len_after > line_lengths[#line_lengths] then
             self.total_len_after = self.total_len_after - #line_lengths[#line_lengths]
         else
             self.col = self.total_len_after
-            self.line = constants.text_first_line + #line_lengths - 1
+            self.line = globals.text_first_line + #line_lengths - 1
             self.total_len_after = 0
         end
     end
@@ -99,10 +98,10 @@ function PaceCursor:run()
             self:_show_cursor(true)
 
             self.col = self.col + 1
-            if self.col == self.line_lengths[self.line - constants.text_first_line + 1] then
+            if self.col == self.line_lengths[self.line - globals.text_first_line + 1] then
                 self.col = 0
                 self.line = self.line + 1
-                if self.line == constants.text_first_line + #self.line_lengths then
+                if self.line == globals.text_first_line + #self.line_lengths then
                     self.total_len_after = 1
                     self.line = self.line - 1
                 end

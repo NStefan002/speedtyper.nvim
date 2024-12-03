@@ -1,7 +1,6 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")
-local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
@@ -23,8 +22,8 @@ function Countdown:reset_values()
         api.nvim_buf_clear_namespace,
         globals.bufnr,
         globals.ns_id,
-        constants.info_line,
-        constants.text_first_line + constants.text_num_lines + 1
+        globals.info_line,
+        globals.text_first_line + globals.text_num_lines + 1
     )
     for len, active in pairs(settings.round.length) do
         if active then
@@ -37,7 +36,7 @@ function Countdown:reset_values()
     self.text_generator:reset()
     self.text_generator:update_lang()
     local win_width = api.nvim_win_get_width(globals.winnr)
-    self.text = self.text_generator:generate_n_lines_text(constants.text_num_lines, win_width)
+    self.text = self.text_generator:generate_n_lines_text(globals.text_num_lines, win_width)
     self.word_count = 0
     self.number_of_words = -1
     -- map lines to the length of each line
@@ -72,7 +71,7 @@ function Countdown:start_timer()
             if self.time_sec <= 0 or self.closing then
                 self:stop()
                 self.info_extm_id =
-                    api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, constants.info_line, 0, {
+                    api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
                         virt_text = {
                             { "Time's up!", "SpeedTyperCountWarning" },
                         },

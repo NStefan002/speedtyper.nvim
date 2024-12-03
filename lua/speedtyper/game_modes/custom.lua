@@ -1,7 +1,6 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")
-local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
@@ -56,9 +55,9 @@ function Custom:after_start()
                     end)
                     :totable())
 
-                util.clear_buffer_text(constants.win_height, globals.bufnr)
+                util.clear_buffer_text(globals.win_height, globals.bufnr)
                 self:set_extmarks()
-                util.set_cursor_pos(constants.text_first_line + 1, 0, globals.winnr)
+                util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
                 api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
                 self:create_timer()
             end)
@@ -78,8 +77,8 @@ function Custom:reset_values()
         api.nvim_buf_clear_namespace,
         globals.bufnr,
         globals.ns_id,
-        constants.info_line,
-        constants.text_first_line + constants.text_num_lines + 1
+        globals.info_line,
+        globals.text_first_line + globals.text_num_lines + 1
     )
     self.closing = false
     self.extm_ids = {}

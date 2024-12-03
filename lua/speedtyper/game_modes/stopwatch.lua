@@ -1,7 +1,6 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")
-local constants = require("speedtyper.constants")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
@@ -23,8 +22,8 @@ function Stopwatch:reset_values()
         api.nvim_buf_clear_namespace,
         globals.bufnr,
         globals.ns_id,
-        constants.info_line,
-        constants.text_first_line + constants.text_num_lines + 1
+        globals.info_line,
+        globals.text_first_line + globals.text_num_lines + 1
     )
     for len, active in pairs(settings.round.length) do
         if active then

@@ -4,7 +4,6 @@ local util = require("speedtyper.util")
 local stack = require("speedtyper.stack")
 local char_info = require("speedtyper.char_info")
 local globals = require("speedtyper.globals")
-local constants = require("speedtyper.constants")
 
 ---@class SpeedTyperStats
 ---@field wpm number
@@ -47,7 +46,7 @@ function Stats:display_stats()
     self:_calculate_raw_wpm()
     self:_calculate_acc()
 
-    -- util.clear_buffer_text(constants.win_height, globals.bufnr)
+    -- util.clear_buffer_text(globals.win_height, globals.bufnr)
     local wpm_text = ("WPM %.2f"):format(self.wpm)
     local raw_wpm_text = ("Raw_WPM %.2f"):format(self.raw_wpm)
     local acc_text = ("Accuracy %.2f%%"):format(self.acc)
@@ -57,8 +56,8 @@ function Stats:display_stats()
     )
     api.nvim_buf_set_lines(
         globals.bufnr,
-        constants.stats_line,
-        constants.stats_line + 1,
+        globals.stats_line,
+        globals.stats_line + 1,
         false,
         { text }
     )
@@ -79,7 +78,7 @@ function Stats:display_stats()
             globals.bufnr,
             globals.ns_id,
             "SpeedTyperInfo",
-            constants.stats_line,
+            globals.stats_line,
             col_start - 1,
             col_start + len
         )
@@ -191,13 +190,13 @@ function Stats:_set_data()
 end
 
 function Stats:_calculate_wpm()
-    local words = self.correct_chars / constants.word_length
-    self.wpm = words / (self.time / constants.min_to_sec)
+    local words = self.correct_chars / globals.word_length
+    self.wpm = words / (self.time / globals.min_to_sec)
 end
 
 function Stats:_calculate_raw_wpm()
-    local words = self.typed_chars / constants.word_length
-    self.raw_wpm = words / (self.time / constants.min_to_sec)
+    local words = self.typed_chars / globals.word_length
+    self.raw_wpm = words / (self.time / globals.min_to_sec)
 end
 
 function Stats:_calculate_acc()
