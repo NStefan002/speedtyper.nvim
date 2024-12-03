@@ -17,3 +17,9 @@ jobs:
 
       - name: Type Check Code Base
         uses: mrcjkb/lua-typecheck-action@v0
+        with:
+          configpath: .github/workflows/.luarc.json
+          directories: |
+            lua
+            plugin
+            spec
