@@ -373,8 +373,10 @@ function GM:move_up()
     if #self.text < constants.text_num_lines then
         api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, self.extm_ids[#self.extm_ids])
         util.remove_element(self.extm_ids, self.extm_ids[#self.extm_ids])
-        -- we don't want space at the end of the last line
-        self.text[#self.text] = util.trim(self.text[#self.text])
+        if self.number_of_words == -1 then
+            local win_width = api.nvim_win_get_width(globals.winnr)
+            table.insert(self.text, self.text_generator:generate_sentence(win_width))
+        end
     end
 
     self:set_extmarks()

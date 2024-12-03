@@ -41,6 +41,7 @@ function Countdown:reset_values()
     local win_width = api.nvim_win_get_width(globals.winnr)
     self.text = self.text_generator:generate_n_lines_text(constants.text_num_lines, win_width)
     self.word_count = 0
+    self.number_of_words = -1
     -- map lines to the length of each line
     self.pace_cursor = pace_cursor.new(vim.iter(self.text)
         :map(function(line)
