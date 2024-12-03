@@ -1,3 +1,5 @@
+---@diagnostic disable: invisible
+
 local api = vim.api
 local eq = assert.are.same
 
@@ -9,7 +11,7 @@ describe("UI tests", function()
     local globals = require("speedtyper.globals")
 
     before_each(function()
-        ui:_close() -- make sure ui is closed before each test
+        ui:close() -- make sure ui is closed before each test
     end)
 
     it("toggle ui", function()
@@ -39,24 +41,24 @@ describe("UI tests", function()
     end)
 
     it("ui _open _close", function()
-        ui:_open()
+        ui:open()
 
         eq(true, api.nvim_buf_is_valid(globals.bufnr))
         eq(true, api.nvim_win_is_valid(globals.winnr))
 
-        ui:_close()
+        ui:close()
 
         eq(false, api.nvim_buf_is_valid(globals.bufnr))
         eq(false, api.nvim_win_is_valid(globals.winnr))
         eq(-1, globals.bufnr)
         eq(-1, globals.winnr)
 
-        ui:_open()
+        ui:open()
 
         eq(true, api.nvim_buf_is_valid(globals.bufnr))
         eq(true, api.nvim_win_is_valid(globals.winnr))
 
-        ui:_close()
+        ui:close()
 
         eq(false, api.nvim_buf_is_valid(globals.bufnr))
         eq(false, api.nvim_win_is_valid(globals.winnr))
@@ -65,7 +67,7 @@ describe("UI tests", function()
     end)
 
     it("user exiting via :q", function()
-        ui:_open()
+        ui:open()
 
         vim.cmd("q")
 
@@ -77,7 +79,7 @@ describe("UI tests", function()
             eq(-1, globals.bufnr)
             eq(-1, globals.winnr)
 
-            ui:_open()
+            ui:open()
 
             eq(true, api.nvim_buf_is_valid(globals.bufnr))
             eq(true, api.nvim_win_is_valid(globals.winnr))
@@ -85,7 +87,7 @@ describe("UI tests", function()
     end)
 
     it("leaving the buffer with something like :bprev / :bnext / :e file", function()
-        ui:_open()
+        ui:open()
 
         vim.cmd.edit("some_random_file")
 
@@ -97,7 +99,7 @@ describe("UI tests", function()
             eq(-1, globals.bufnr)
             eq(-1, globals.winnr)
 
-            ui:_open()
+            ui:open()
 
             eq(true, api.nvim_buf_is_valid(globals.bufnr))
             eq(true, api.nvim_win_is_valid(globals.winnr))
@@ -107,8 +109,8 @@ describe("UI tests", function()
     it("restore vim.opt", function()
         local gui_cursor = api.nvim_get_option_value("guicursor", { scope = "global" })
 
-        ui:_open()
-        ui:_close()
+        ui:open()
+        ui:close()
 
         eq(gui_cursor, api.nvim_get_option_value("guicursor", { scope = "global" }))
     end)

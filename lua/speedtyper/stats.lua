@@ -41,10 +41,10 @@ function Stats.new()
 end
 
 function Stats:display_stats()
-    self:_set_data()
-    self:_calculate_wpm()
-    self:_calculate_raw_wpm()
-    self:_calculate_acc()
+    self:set_data()
+    self:calculate_wpm()
+    self:calculate_raw_wpm()
+    self:calculate_acc()
 
     -- util.clear_buffer_text(globals.win_height, globals.bufnr)
     local wpm_text = ("WPM %.2f"):format(self.wpm)
@@ -157,8 +157,9 @@ function Stats._mark_typo(line, col)
     )
 end
 
+---@private
 -- FIX: checking the last word
-function Stats:_set_data()
+function Stats:set_data()
     ---@type SpeedTyperCharInfo[]
     local text_info = self.text_info:get_table()
     self.typed_chars = #text_info
@@ -189,17 +190,20 @@ function Stats:_set_data()
     self.correct_chars = self.length_of_correct_words + self.correct_spaces
 end
 
-function Stats:_calculate_wpm()
+---@private
+function Stats:calculate_wpm()
     local words = self.correct_chars / globals.word_length
     self.wpm = words / (self.time / globals.min_to_sec)
 end
 
-function Stats:_calculate_raw_wpm()
+---@private
+function Stats:calculate_raw_wpm()
     local words = self.typed_chars / globals.word_length
     self.raw_wpm = words / (self.time / globals.min_to_sec)
 end
 
-function Stats:_calculate_acc()
+---@private
+function Stats:calculate_acc()
     self.acc = (self.correct_chars / (self.correct_chars + self.typos)) * 100
 end
 

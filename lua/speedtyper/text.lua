@@ -48,64 +48,6 @@ function Text:reset()
     self.last_word_idx = 0
 end
 
----returns a string representation of a number from range [0, 10000)
----with equal probability for 1-digit number, 2-digit number,
----3-digit number and 4-digit number
----@return string
-function Text._get_number()
-    local n_digits = math.random(1, 4)
-    return tostring(math.random(0, 10 ^ n_digits - 1))
-end
-
----if number modifier is active then there is 10% chance
----for this function to return the string representation
----of some number from range [0, 10000)
----@return string
-function Text:get_word()
-    if not self.randomize then
-        self.last_word_idx = self.last_word_idx + 1
-        if self.last_word_idx > #self.words then
-            return ""
-        end
-        return self.words[self.last_word_idx]
-    end
-    local number = settings.round.text_variant.numbers
-    if number and math.random() < 0.1 then
-        return self._get_number()
-    end
-    return self.words[math.random(#self.words)]
-end
-
----@param word string
----@return string
-function Text._capitalize_word(word)
-    return ("%s%s"):format(util.utf_sub(word, 1, 1):upper(), util.utf_sub(word, 2))
-end
-
----if punctuation modifier is active then there is a 25% chance
----for this function to return the word+punctuation string
----@param ending boolean if true function must return an ending character
----@return string
-function Text._get_punctuation(ending)
-    if not settings.round.text_variant.punctuation then
-        return ""
-    end
-
-    -- TODO: fine tune this (e.g. ',' should have a much bigger probability than ':' and ';')
-    local ending_punct = { ".", "!", "?", "!?", "..." }
-    local other_punct = { ",", ":", ";" }
-    -- TODO: implement logic for surrounding_punct, for example if there is '(' then there should be ")" as well
-    -- local surrounding_punct = { "'", '"', "(", ")" }
-
-    if ending then
-        return ending_punct[math.random(1, #ending_punct)]
-    elseif math.random() < 0.25 then
-        return other_punct[math.random(1, #other_punct)]
-    else
-        return ""
-    end
-end
-
 ---@param max_len integer
 ---@return string
 function Text:generate_sentence(max_len)
@@ -121,14 +63,14 @@ function Text:generate_sentence(max_len)
         if word == "" then
             break
         end
-        sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
+        sentence = ("%s%s %s"):format(sentence, self.get_punctuation(false), word)
         word = self:get_word()
     end
 
     if settings.round.text_variant.punctuation then
-        sentence = self._capitalize_word(sentence)
+        sentence = self.capitalize_word(sentence)
     end
-    return ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space)
+    return ("%s%s%s"):format(sentence, self.get_punctuation(true), extra_space)
 end
 
 ---@param win_width integer
@@ -147,30 +89,27 @@ function Text:generate_n_words_text(win_width, n)
 
     local sentence = self:get_word()
     if settings.round.text_variant.punctuation then
-        sentence = self._capitalize_word(sentence)
+        sentence = self.capitalize_word(sentence)
     end
     local word = self:get_word()
     n = n - 1
 
     while n > 0 do
         if api.nvim_strwidth(sentence) + api.nvim_strwidth(word) >= usable_width then
-            table.insert(
-                text,
-                ("%s%s%s"):format(sentence, self._get_punctuation(true), extra_space)
-            )
+            table.insert(text, ("%s%s%s"):format(sentence, self.get_punctuation(true), extra_space))
             sentence = word
             if settings.round.text_variant.punctuation then
-                sentence = self._capitalize_word(sentence)
+                sentence = self.capitalize_word(sentence)
             end
         else
-            sentence = ("%s%s %s"):format(sentence, self._get_punctuation(false), word)
+            sentence = ("%s%s %s"):format(sentence, self.get_punctuation(false), word)
         end
         word = self:get_word()
         n = n - 1
     end
 
     -- finish the last sentence
-    table.insert(text, ("%s%s"):format(sentence, self._get_punctuation(true)))
+    table.insert(text, ("%s%s"):format(sentence, self.get_punctuation(true)))
 
     return text
 end
@@ -184,6 +123,67 @@ function Text:generate_n_lines_text(n_lines, max_len)
         table.insert(text, self:generate_sentence(max_len))
     end
     return text
+end
+
+---@private
+---returns a string representation of a number from range [0, 10000)
+---with equal probability for 1-digit number, 2-digit number,
+---3-digit number and 4-digit number
+---@return string
+function Text.get_number()
+    local n_digits = math.random(1, 4)
+    return tostring(math.random(0, 10 ^ n_digits - 1))
+end
+
+---if number modifier is active then there is 10% chance
+---for this function to return the string representation
+---of some number from range [0, 10000)
+---@return string
+function Text:get_word()
+    if not self.randomize then
+        self.last_word_idx = self.last_word_idx + 1
+        if self.last_word_idx > #self.words then
+            return ""
+        end
+        return self.words[self.last_word_idx]
+    end
+    local number = settings.round.text_variant.numbers
+    if number and math.random() < 0.1 then
+        return self.get_number()
+    end
+    return self.words[math.random(#self.words)]
+end
+
+---@private
+---@param word string
+---@return string
+function Text.capitalize_word(word)
+    return ("%s%s"):format(util.utf_sub(word, 1, 1):upper(), util.utf_sub(word, 2))
+end
+
+---@private
+---if punctuation modifier is active then there is a 25% chance
+---for this function to return the word+punctuation string
+---@param ending boolean if true function must return an ending character
+---@return string
+function Text.get_punctuation(ending)
+    if not settings.round.text_variant.punctuation then
+        return ""
+    end
+
+    -- TODO: fine tune this (e.g. ',' should have a much bigger probability than ':' and ';')
+    local ending_punct = { ".", "!", "?", "!?", "..." }
+    local other_punct = { ",", ":", ";" }
+    -- TODO: implement logic for surrounding_punct, for example if there is '(' then there should be ")" as well
+    -- local surrounding_punct = { "'", '"', "(", ")" }
+
+    if ending then
+        return ending_punct[math.random(1, #ending_punct)]
+    elseif math.random() < 0.25 then
+        return other_punct[math.random(1, #other_punct)]
+    else
+        return ""
+    end
 end
 
 return Text.new()

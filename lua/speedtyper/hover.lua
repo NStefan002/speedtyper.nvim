@@ -24,9 +24,9 @@ end
 function Hover:set_keymaps()
     local function display_current_word_info()
         local item = vim.fn.expand("<cWORD>")
-        self:_set_instruction(item)
+        self:set_instruction(item)
         if #self.instruction > 0 then
-            self:_open()
+            self:open()
         end
     end
     util.set_keymaps(settings.keymaps.hover, display_current_word_info, {
@@ -35,12 +35,14 @@ function Hover:set_keymaps()
     })
 end
 
+---@private
 ---@param item string
-function Hover:_set_instruction(item)
+function Hover:set_instruction(item)
     self.instruction = util.split(instructions:get(item), "\n")
 end
 
-function Hover:_open()
+---@private
+function Hover:open()
     if self.bufnr ~= nil and self.winnr ~= nil then
         return
     end
@@ -77,11 +79,12 @@ function Hover:_open()
             line,
         })
     end
-    self:_create_autocmds()
+    self:create_autocmds()
     -- TODO: add treesitter markdown (and maybe markdown-inline) parser
     api.nvim_set_option_value("filetype", "markdown", { buf = self.bufnr })
 end
 
+---@private
 function Hover:_close()
     if self.bufnr ~= nil and api.nvim_buf_is_valid(self.bufnr) then
         api.nvim_buf_delete(self.bufnr, { force = true })
@@ -94,7 +97,8 @@ function Hover:_close()
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperHover")
 end
 
-function Hover:_create_autocmds()
+---@private
+function Hover:create_autocmds()
     local autocmd = api.nvim_create_autocmd
     local augroup = api.nvim_create_augroup
     local grp = augroup("SpeedTyperHover", {})

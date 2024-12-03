@@ -48,8 +48,8 @@ function Menu:display_menu()
         0,
         #settings_info
     )
-    self:_set_keymaps()
-    self:_highlight_buttons()
+    self:set_keymaps()
+    self:highlight_buttons()
     self.round:start_round()
 end
 
@@ -64,8 +64,9 @@ function Menu:get_width()
     return #self.round_settings_text
 end
 
+---@private
 ---@param button string
-function Menu:_activate_button(button)
+function Menu:activate_button(button)
     -- find out in which group the button belongs
     if settings.round.text_variant[button] ~= nil then
         -- both can be active at the same time
@@ -83,17 +84,18 @@ function Menu:_activate_button(button)
         end
         settings.round.length[button] = true
     end
-    self:_highlight_buttons()
+    self:highlight_buttons()
 
     self.round:end_round()
     self.round:start_round()
 end
 
-function Menu:_set_keymaps()
+---@private
+function Menu:set_keymaps()
     local function get_cword()
         local button = vim.fn.expand("<cword>")
         button = util.trim(button)
-        self:_activate_button(button)
+        self:activate_button(button)
     end
     util.set_keymaps(
         settings.keymaps.press_button,
@@ -102,7 +104,8 @@ function Menu:_set_keymaps()
     )
 end
 
-function Menu:_highlight_buttons()
+---@private
+function Menu:highlight_buttons()
     api.nvim_buf_clear_namespace(
         globals.bufnr,
         globals.ns_id,

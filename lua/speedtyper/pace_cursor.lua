@@ -83,19 +83,19 @@ function PaceCursor:run()
 
             if self.total_len_before > 0 then
                 self.total_len_before = self.total_len_before - 1
-                self:_show_cursor(false)
+                self:show_cursor(false)
                 self.col = 0
                 return
             end
 
             if self.total_len_after > 0 then
                 self.total_len_after = self.total_len_after + 1
-                self:_show_cursor(false)
+                self:show_cursor(false)
                 self.col = 0
                 return
             end
 
-            self:_show_cursor(true)
+            self:show_cursor(true)
 
             self.col = self.col + 1
             if self.col == self.line_lengths[self.line - globals.text_first_line + 1] then
@@ -123,8 +123,9 @@ function PaceCursor:stop()
     end
 end
 
+---@private
 ---@param visible boolean
-function PaceCursor:_show_cursor(visible)
+function PaceCursor:show_cursor(visible)
     if not self.extm_id then
         return
     end

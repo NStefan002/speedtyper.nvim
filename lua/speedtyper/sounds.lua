@@ -59,7 +59,7 @@ function Sounds.new()
     }
     self.sounds_directory = ("%s/assets/sounds/"):format(util.get_plugin_path())
 
-    self:_check_for_tools()
+    self:select_tool()
     if self.tool == nil then
         util.error("No tools for playing sound available, run :checkhealth for more information.")
     else
@@ -83,37 +83,40 @@ function Sounds:play_sound(typo)
         return
     end
     sound = ("%s%s.ogg"):format(self.sounds_directory, sound)
-    local volume = self:_get_volume_for_tool(self.tool, settings:get_selected("sound_volume"))
+    local volume = self:get_volume_for_tool(self.tool, settings:get_selected("sound_volume"))
 
     local cmd = self.tools[self.tool](sound, volume)
     vim.system(cmd, {})
 end
 
---- scale the volume to the range the tool provides
+---@private
+---scale the volume to the range the tool provides
 ---@param volume number between 0 and 100
 ---@param min number
 ---@param max number
 ---@return number
-function Sounds._scale_volume(volume, min, max)
+function Sounds.scale_volume(volume, min, max)
     return (volume / 100) * (max - min) + min
 end
 
+---@private
 ---@param tool string
 ---@param volume number
 ---@return number
-function Sounds:_get_volume_for_tool(tool, volume)
+function Sounds:get_volume_for_tool(tool, volume)
     if tool == "paplay" then
-        return self._scale_volume(settings:get_selected("sound_volume"), 0, 65536)
+        return self.scale_volume(settings:get_selected("sound_volume"), 0, 65536)
     elseif tool == "cvlc" then
-        return self._scale_volume(settings:get_selected("sound_volume"), 0, 8)
+        return self.scale_volume(settings:get_selected("sound_volume"), 0, 8)
     elseif util.tbl_contains({ "mpv", "ffplay", "mplayer" }, tool) then
         return volume
     end
     return 0
 end
 
----finds which tools are available in $PATH
-function Sounds:_check_for_tools()
+---@private
+---selects the first tool available in the PATH
+function Sounds:select_tool()
     for tool, _ in pairs(self.tools) do
         if vim.fn.executable(tool) == 1 then
             self.tool = tool

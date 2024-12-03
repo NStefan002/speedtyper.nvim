@@ -23,13 +23,31 @@ function UI.new()
     return setmetatable(self, UI)
 end
 
-function UI:_create_autocmds()
+function UI:toggle()
+    if self.active then
+        self:close()
+    else
+        self:open()
+    end
+end
+
+function UI:redraw()
+    if self.active then
+        self:toggle()
+        vim.schedule(function()
+            self:toggle()
+        end)
+    end
+end
+
+---@private
+function UI:create_autocmds()
     local autocmd = api.nvim_create_autocmd
     local augroup = api.nvim_create_augroup
     local grp = augroup("SpeedTyperUI", {})
 
     local schedule_close = vim.schedule_wrap(function()
-        self:_close()
+        self:close()
     end)
 
     autocmd("WinClosed", {
@@ -61,7 +79,8 @@ function UI:_create_autocmds()
     })
 end
 
-function UI:_open()
+---@private
+function UI:open()
     if self.active then
         return
     end
@@ -96,21 +115,22 @@ function UI:_open()
 
     if winnr == 0 then
         util.error("Failed to open window")
-        self:_close()
+        self:close()
     end
 
     logger:log("winnr:", winnr, "bufnr:", bufnr)
 
     api.nvim_win_set_hl_ns(globals.winnr, globals.ns_id)
     require("speedtyper.highlights").setup()
-    self:_create_autocmds()
+    self:create_autocmds()
     self.menu:display_menu()
     self.hover:set_keymaps()
-    self:_save_options()
-    self:_set_options()
+    self:save_options()
+    self:set_options()
 end
 
-function UI:_close()
+---@private
+function UI:close()
     if not self.active then
         return
     end
@@ -127,29 +147,13 @@ function UI:_close()
     globals.winnr = -1
     self.menu:exit_menu()
     pcall(api.nvim_del_augroup_by_name, "SpeedTyperUI")
-    self:_restore_options()
+    self:restore_options()
 
     require("speedtyper.settings"):save()
 end
 
-function UI:toggle()
-    if self.active then
-        self:_close()
-    else
-        self:_open()
-    end
-end
-
-function UI:redraw()
-    if self.active then
-        self:toggle()
-        vim.schedule(function()
-            self:toggle()
-        end)
-    end
-end
-
-function UI._set_options()
+---@private
+function UI.set_options()
     api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
     api.nvim_set_option_value("filetype", "speedtyper", { buf = globals.bufnr })
     api.nvim_set_option_value("wrap", false, { win = globals.winnr })
@@ -169,13 +173,15 @@ function UI._set_options()
     logger:log("set options")
 end
 
-function UI:_save_options()
+---@private
+function UI:save_options()
     self.vim_opt.guicursor = api.nvim_get_option_value("guicursor", { scope = "global" })
 
     logger:log("saved options:", self.vim_opt)
 end
 
-function UI:_restore_options()
+---@private
+function UI:restore_options()
     api.nvim_set_option_value("guicursor", self.vim_opt.guicursor, { scope = "global" })
 
     logger:log("restored options:", self.vim_opt)

@@ -1,3 +1,5 @@
+---@diagnostic disable: invisible
+
 local eq = assert.are.same
 
 describe("Text tests", function()
@@ -12,8 +14,8 @@ describe("Text tests", function()
     end)
 
     it("capitalize word", function()
-        eq(text._capitalize_word("word"), "Word")
-        eq(text._capitalize_word("Word"), "Word")
+        eq(text.capitalize_word("word"), "Word")
+        eq(text.capitalize_word("Word"), "Word")
     end)
 
     it("high width generate sentence", function()

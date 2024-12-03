@@ -15,7 +15,23 @@ function Round.new()
     return self
 end
 
-function Round:_set_game_mode()
+function Round:start_round()
+    self:set_game_mode()
+    if self.active_game_mode then
+        logger:log("starting round")
+        self.active_game_mode:start()
+    end
+end
+
+function Round:end_round()
+    if self.active_game_mode then
+        logger:log("ending round")
+        self.active_game_mode:stop()
+    end
+end
+
+---@private
+function Round:set_game_mode()
     local game_mode = "time" -- default game mode
     for mode, active in pairs(settings.round.game_mode) do
         if active then
@@ -35,21 +51,6 @@ function Round:_set_game_mode()
         util.error(("Invalid game mode: %s"):format(game_mode))
     end
     logger:log(("game mode set to: %s"):format(game_mode))
-end
-
-function Round:start_round()
-    self:_set_game_mode()
-    if self.active_game_mode then
-        logger:log("starting round")
-        self.active_game_mode:start()
-    end
-end
-
-function Round:end_round()
-    if self.active_game_mode then
-        logger:log("ending round")
-        self.active_game_mode:stop()
-    end
 end
 
 return Round.new()

@@ -33,6 +33,7 @@ function Stack:peek()
     return vim.deepcopy(self._stack[self._top])
 end
 
+---currently unused, but could be useful in the future
 ---@param n integer
 function Stack:peek_n(n)
     if self:is_empty() then

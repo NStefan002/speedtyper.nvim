@@ -1,8 +1,9 @@
-local M = {}
 local api = vim.api
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 local grp = nil
+
+local M = {}
 
 local function create_autocmds()
     grp = api.nvim_create_augroup("SpeedTyperHighlight", {})

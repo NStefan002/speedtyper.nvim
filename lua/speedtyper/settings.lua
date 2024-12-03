@@ -179,175 +179,6 @@ function Settings:reset_settings()
 end
 
 ---@param option string
----@return SpeedTyperSettingsSubcmd
-function Settings:_create_subcmd_for_map_option(option)
-    return {
-        impl = function(args, _)
-            -- if no arguments are given, display the current value
-            if #args == 0 then
-                util.info(
-                    ("Option '%s' is currently set to '%s'."):format(
-                        option,
-                        self:get_selected(option)
-                    )
-                )
-                return
-            elseif #args > 1 then
-                util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
-                )
-                return
-            end
-            if
-                not util.tbl_contains(
-                    util.get_map_option_completion("", self.general[option]),
-                    args[1]
-                )
-            then
-                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
-                return
-            end
-            for opt, _ in pairs(self.general[option]) do
-                self.general[option][opt] = false
-            end
-            self.general[option][args[1]] = true
-            self:save()
-            require("speedtyper.ui"):redraw()
-        end,
-        complete = function(subcmd_arg_lead)
-            return util.get_map_option_completion(subcmd_arg_lead, self.general[option])
-        end,
-    }
-end
-
----@param option string
----@return SpeedTyperSettingsSubcmd
-function Settings:_create_subcmd_for_bool_option(option)
-    return {
-        impl = function(args, _)
-            if #args == 0 then
-                util.info(
-                    ("Option '%s' is currently %s."):format(
-                        option,
-                        self:get_selected(option) and "ON" or "OFF"
-                    )
-                )
-                return
-            elseif #args ~= 1 then
-                util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
-                )
-                return
-            end
-            if not util.tbl_contains(util.get_bool_option_completion(""), args[1]) then
-                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
-                return
-            end
-            ---@type boolean
-            local new_val = args[1] == "on"
-            self.general[option] = new_val
-            self:save()
-            require("speedtyper.ui"):redraw()
-        end,
-        complete = function(subcmd_arg_lead)
-            return util.get_bool_option_completion(subcmd_arg_lead)
-        end,
-    }
-end
-
----@param option string
----@param min number
----@param max number
----@return SpeedTyperSettingsSubcmd
-function Settings:_create_subcmd_for_number_option(option, min, max)
-    return {
-        impl = function(args, _)
-            if #args == 0 then
-                util.info(
-                    ("Option '%s' is currently set to %d."):format(
-                        option,
-                        self:get_selected(option)
-                    )
-                )
-                return
-            elseif #args ~= 1 then
-                util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
-                )
-                return
-            end
-            local new_val = tonumber(args[1])
-            if new_val == nil or new_val < min or new_val > max then
-                util.error(
-                    ("SpeedTyperSettings %s: value must be between %d and %d"):format(
-                        option,
-                        min,
-                        max
-                    )
-                )
-                return
-            end
-            self.general[option] = new_val
-            self:save()
-            require("speedtyper.ui"):redraw()
-        end,
-    }
-end
-
-function Settings:_create_info_subcmd()
-    local all_options = {}
-    for option, _ in pairs(self.general) do
-        table.insert(all_options, option)
-    end
-    return {
-        impl = function(args, data)
-            if #args ~= 1 then
-                util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
-                        data.fargs[1]
-                    )
-                )
-                return
-            end
-            if not util.tbl_contains(all_options, args[1]) then
-                util.error(
-                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
-                )
-                return
-            end
-            util.info(require("speedtyper.instructions"):get(args[1]))
-        end,
-        complete = function(subcmd_arg_lead)
-            return vim.iter(all_options)
-                :filter(function(arg)
-                    return arg:find(subcmd_arg_lead) ~= nil
-                end)
-                :totable()
-        end,
-    }
-end
-
-function Settings:_create_reset_subcmd()
-    return {
-        impl = function(args, _)
-            if #args ~= 0 then
-                util.error("SpeedTyperSettings reset_settings: no arguments expected")
-                return
-            end
-            local prompt = require("speedtyper.instructions"):get("reset_settings")
-            vim.ui.select({ "No", "Yes" }, { prompt = prompt }, function(selected, _)
-                if selected == "Yes" then
-                    self:reset_settings()
-                    self:save()
-                    require("speedtyper.ui"):redraw()
-                    util.info("Settings have been reset.")
-                end
-            end)
-        end,
-    }
-end
-
----@param option string
 ---@return any
 function Settings:get_selected(option)
     if type(self.general[option]) == "table" then
@@ -364,26 +195,26 @@ end
 function Settings:create_user_commands()
     ---@type table<string, SpeedTyperSettingsSubcmd>
     local subcmds = {
-        info = self:_create_info_subcmd(),
-        reset_settings = self:_create_reset_subcmd(),
-        language = self:_create_subcmd_for_map_option("language"),
-        theme = self:_create_subcmd_for_map_option("theme"),
-        cursor_style = self:_create_subcmd_for_map_option("cursor_style"),
-        cursor_blinking = self:_create_subcmd_for_bool_option("cursor_blinking"),
-        pace_cursor = self:_create_subcmd_for_bool_option("pace_cursor"),
-        pace_cursor_speed = self:_create_subcmd_for_number_option("pace_cursor_speed", 1, 1000),
-        strict_space = self:_create_subcmd_for_bool_option("strict_space"),
-        stop_on_error = self:_create_subcmd_for_bool_option("stop_on_error"),
-        confidence_mode = self:_create_subcmd_for_bool_option("confidence_mode"),
-        indicate_typos = self:_create_subcmd_for_bool_option("indicate_typos"),
-        sound_volume = self:_create_subcmd_for_number_option("sound_volume", 0, 100),
-        sound_on_keypress = self:_create_subcmd_for_map_option("sound_on_keypress"),
-        sound_on_typo = self:_create_subcmd_for_map_option("sound_on_typo"),
-        live_progress = self:_create_subcmd_for_bool_option("live_progress"),
-        average_speed = self:_create_subcmd_for_bool_option("average_speed"),
-        average_accuracy = self:_create_subcmd_for_bool_option("average_accuracy"),
-        demojify = self:_create_subcmd_for_bool_option("demojify"),
-        debug_mode = self:_create_subcmd_for_bool_option("debug_mode"),
+        info = self:create_info_subcmd(),
+        reset_settings = self:create_reset_subcmd(),
+        language = self:create_subcmd_for_map_option("language"),
+        theme = self:create_subcmd_for_map_option("theme"),
+        cursor_style = self:create_subcmd_for_map_option("cursor_style"),
+        cursor_blinking = self:create_subcmd_for_bool_option("cursor_blinking"),
+        pace_cursor = self:create_subcmd_for_bool_option("pace_cursor"),
+        pace_cursor_speed = self:create_subcmd_for_number_option("pace_cursor_speed", 1, 1000),
+        strict_space = self:create_subcmd_for_bool_option("strict_space"),
+        stop_on_error = self:create_subcmd_for_bool_option("stop_on_error"),
+        confidence_mode = self:create_subcmd_for_bool_option("confidence_mode"),
+        indicate_typos = self:create_subcmd_for_bool_option("indicate_typos"),
+        sound_volume = self:create_subcmd_for_number_option("sound_volume", 0, 100),
+        sound_on_keypress = self:create_subcmd_for_map_option("sound_on_keypress"),
+        sound_on_typo = self:create_subcmd_for_map_option("sound_on_typo"),
+        live_progress = self:create_subcmd_for_bool_option("live_progress"),
+        average_speed = self:create_subcmd_for_bool_option("average_speed"),
+        average_accuracy = self:create_subcmd_for_bool_option("average_accuracy"),
+        demojify = self:create_subcmd_for_bool_option("demojify"),
+        debug_mode = self:create_subcmd_for_bool_option("debug_mode"),
     }
 
     local function cmd(data)
@@ -433,6 +264,180 @@ function Settings:create_user_commands()
         complete = cmd_completion,
         nargs = "*",
     })
+end
+
+---@private
+---@param option string
+---@return SpeedTyperSettingsSubcmd
+function Settings:create_subcmd_for_map_option(option)
+    return {
+        impl = function(args, _)
+            -- if no arguments are given, display the current value
+            if #args == 0 then
+                util.info(
+                    ("Option '%s' is currently set to '%s'."):format(
+                        option,
+                        self:get_selected(option)
+                    )
+                )
+                return
+            elseif #args > 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                )
+                return
+            end
+            if
+                not util.tbl_contains(
+                    util.get_map_option_completion("", self.general[option]),
+                    args[1]
+                )
+            then
+                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
+                return
+            end
+            for opt, _ in pairs(self.general[option]) do
+                self.general[option][opt] = false
+            end
+            self.general[option][args[1]] = true
+            self:save()
+            require("speedtyper.ui"):redraw()
+        end,
+        complete = function(subcmd_arg_lead)
+            return util.get_map_option_completion(subcmd_arg_lead, self.general[option])
+        end,
+    }
+end
+
+---@private
+---@param option string
+---@return SpeedTyperSettingsSubcmd
+function Settings:create_subcmd_for_bool_option(option)
+    return {
+        impl = function(args, _)
+            if #args == 0 then
+                util.info(
+                    ("Option '%s' is currently %s."):format(
+                        option,
+                        self:get_selected(option) and "ON" or "OFF"
+                    )
+                )
+                return
+            elseif #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                )
+                return
+            end
+            if not util.tbl_contains(util.get_bool_option_completion(""), args[1]) then
+                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
+                return
+            end
+            ---@type boolean
+            local new_val = args[1] == "on"
+            self.general[option] = new_val
+            self:save()
+            require("speedtyper.ui"):redraw()
+        end,
+        complete = function(subcmd_arg_lead)
+            return util.get_bool_option_completion(subcmd_arg_lead)
+        end,
+    }
+end
+
+---@private
+---@param option string
+---@param min number
+---@param max number
+---@return SpeedTyperSettingsSubcmd
+function Settings:create_subcmd_for_number_option(option, min, max)
+    return {
+        impl = function(args, _)
+            if #args == 0 then
+                util.info(
+                    ("Option '%s' is currently set to %d."):format(
+                        option,
+                        self:get_selected(option)
+                    )
+                )
+                return
+            elseif #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                )
+                return
+            end
+            local new_val = tonumber(args[1])
+            if new_val == nil or new_val < min or new_val > max then
+                util.error(
+                    ("SpeedTyperSettings %s: value must be between %d and %d"):format(
+                        option,
+                        min,
+                        max
+                    )
+                )
+                return
+            end
+            self.general[option] = new_val
+            self:save()
+            require("speedtyper.ui"):redraw()
+        end,
+    }
+end
+
+---@private
+function Settings:create_info_subcmd()
+    local all_options = {}
+    for option, _ in pairs(self.general) do
+        table.insert(all_options, option)
+    end
+    return {
+        impl = function(args, data)
+            if #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
+                        data.fargs[1]
+                    )
+                )
+                return
+            end
+            if not util.tbl_contains(all_options, args[1]) then
+                util.error(
+                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
+                )
+                return
+            end
+            util.info(require("speedtyper.instructions"):get(args[1]))
+        end,
+        complete = function(subcmd_arg_lead)
+            return vim.iter(all_options)
+                :filter(function(arg)
+                    return arg:find(subcmd_arg_lead) ~= nil
+                end)
+                :totable()
+        end,
+    }
+end
+
+---@private
+function Settings:create_reset_subcmd()
+    return {
+        impl = function(args, _)
+            if #args ~= 0 then
+                util.error("SpeedTyperSettings reset_settings: no arguments expected")
+                return
+            end
+            local prompt = require("speedtyper.instructions"):get("reset_settings")
+            vim.ui.select({ "No", "Yes" }, { prompt = prompt }, function(selected, _)
+                if selected == "Yes" then
+                    self:reset_settings()
+                    self:save()
+                    require("speedtyper.ui"):redraw()
+                    util.info("Settings have been reset.")
+                end
+            end)
+        end,
+    }
 end
 
 return Settings.new()
