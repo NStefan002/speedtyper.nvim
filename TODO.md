@@ -1,18 +1,18 @@
 # ✅☑️ TODO (v2 branch)
 
-- [ ] Rewrite plugin
+- [x] Rewrite plugin
 - [x] Add tests
 - [ ] more tests
 - [ ] change highlight groups
 - [x] move `lua/speedtyper/langs/` to `assets/languages`
-- [ ] Add vimdoc ci
+- [x] Add vimdoc ci
 - [ ] Update README
 - [ ] create `health.lua` for dependencies
 - [ ] Make independent ui
   - [x] hover instructions
   - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like
     in v1)
-  - [ ] dislpay requested info in the speedtyper ui
+  - [ ] display requested info in the speedtyper ui
 - [x] punctuation game modifier
 - [x] numbers game modifier
 - [ ] Possibly make ui similar to monkeytype's (+ rain mode)
@@ -47,7 +47,7 @@
   - [ ] pace_cursor_style
   - [ ] pace_cursor_blinking
   - [x] strict_space
-  - [ ] stop_on_error
+  - [x] stop_on_error
   - [x] confidence_mode
   - [x] indicate_typos
   - [x] sound_volume (pplay, mpv, ffmpeg->ffplay, cvlc, mplayer, sox->play)
@@ -59,6 +59,7 @@
   - [x] demojify
   - [x] debug_mode
   - [x] reset settings
+  - [ ] stop_on_error and confidence_mode can collide, fix it
 - [ ] Other
-  - [ ] get rid of magic constants (put them in `constants.lua`)
-  - [ ] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
+  - [ ] get rid of magic constants
+  - [x] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
