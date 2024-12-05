@@ -61,5 +61,5 @@
   - [x] reset settings
   - [x] stop_on_error and confidence_mode can collide, fix it
 - [ ] Other
-  - [ ] get rid of magic constants
+  - [x] get rid of magic constants
   - [x] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
