@@ -137,7 +137,7 @@ function GM:set_extmarks()
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
             virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
-            priority = 50,
+            priority = globals.extmark_priority,
         })
         table.insert(self.extm_ids, extm_id)
     end
@@ -156,7 +156,7 @@ function GM:update_extmarks()
             virt_text = { { util.utf_sub(self.text[i], col + 1), "SpeedTyperTextUntyped" } },
             virt_text_win_col = col,
             id = extm_id,
-            priority = 50,
+            priority = globals.extmark_priority,
         })
     end
 end
@@ -449,7 +449,7 @@ function GM:update_live_progress()
                 },
             },
             id = self.info_extm_id,
-            priority = 50,
+            priority = globals.extmark_priority,
         })
 end
 
@@ -477,7 +477,7 @@ function GM:create_timer()
                 "SpeedTyperTextOk",
             },
         },
-        priority = 50,
+        priority = globals.extmark_priority,
     })
     util.set_keymaps(settings.keymaps.start_game, function()
         self:attach_to_speedtyper_buffer()

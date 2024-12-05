@@ -76,7 +76,7 @@ function Countdown:start_timer()
                             { "Time's up!", "SpeedTyperCountWarning" },
                         },
                         id = self.info_extm_id,
-                        priority = 50,
+                        priority = globals.extmark_priority,
                     })
                 self.stats:display_stats()
                 return

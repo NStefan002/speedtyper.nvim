@@ -30,7 +30,7 @@ function Rain:start()
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, i + 1, 0, {
             virt_text = { { line, "SpeedTyperTextUntyped" } },
             virt_text_win_col = 0,
-            priority = 50,
+            priority = globals.extmark_priority,
         })
     end
 end

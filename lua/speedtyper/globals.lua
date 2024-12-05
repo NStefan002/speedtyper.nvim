@@ -46,4 +46,10 @@ M.sec_to_ms = 1000
 ---@type integer
 M.word_length = 5
 
+---@type integer
+M.extmark_priority = 50
+
+---@type integer
+M.pace_cursor_extmark_priority = 150
+
 return M
