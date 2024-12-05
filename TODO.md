@@ -59,7 +59,7 @@
   - [x] demojify
   - [x] debug_mode
   - [x] reset settings
-  - [ ] stop_on_error and confidence_mode can collide, fix it
+  - [x] stop_on_error and confidence_mode can collide, fix it
 - [ ] Other
   - [ ] get rid of magic constants
   - [x] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
