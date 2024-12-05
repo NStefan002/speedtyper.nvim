@@ -110,7 +110,8 @@ when pressing <space>.
 ]],
         stop_on_error = [[
 You can not continue typing until
-you correct your mistake.
+you correct your mistake. Has no
+effect if the confidence mode is enabled.
 ]],
         confidence_mode = [[
 No <bspace> allowed when enabled.

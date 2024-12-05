@@ -205,6 +205,7 @@ function GM:handle_typing(args)
 
     if
         settings:get_selected("stop_on_error")
+        and not settings:get_selected("confidence_mode") -- if confidence_mode is on, ignore stop_on_error
         and not self.moved_back(row, col, prev_row, prev_col)
     then
         -- only call get_typos when we're sure that we need to, so we don't
