@@ -47,7 +47,6 @@ function GM:start()
     self:set_extmarks()
     util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
     vim.keymap.set("i", "<cr>", "<nop>", { buffer = globals.bufnr })
-
     self:after_start()
 end
 
@@ -64,7 +63,7 @@ function GM:stop()
     end
     pcall(util.unset_keymaps, settings.keymaps.start_game, globals.bufnr)
 
-    logger:log("countdown game mode stopped")
+    logger:log("game mode stopped")
 end
 
 -- luacheck: push ignore self
@@ -320,7 +319,7 @@ function GM:handle_typing(args)
         local cursor_row = row + 1
 
         if idx == #self.text then
-            self:update_live_progress()
+            self:update_info_line(self:live_progress_text())
             self:update_extmarks()
             self:stop()
             self.stats.time = self.time_sec
@@ -435,16 +434,13 @@ function GM:live_progress_text() end
 -- luacheck: pop
 
 ---@protected
-function GM:update_live_progress()
-    if not settings:get_selected("live_progress") then
-        return
-    end
-
+---@param text string text to display in the info line
+function GM:update_info_line(text)
     self.info_extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
             virt_text = {
                 {
-                    self:live_progress_text(),
+                    text,
                     "SpeedTyperCountNormal",
                 },
             },
@@ -453,7 +449,48 @@ function GM:update_live_progress()
         })
 end
 
----------------------------- timer stuff ------------------------------------------
+---@protected
+function GM:set_keymaps()
+    self:update_info_line(self.keymaps_info())
+
+    util.set_keymaps(settings.keymaps.start_game, function()
+        self:attach_to_speedtyper_buffer()
+        api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
+        vim.cmd.startinsert()
+        util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
+        api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, self.info_extm_id)
+        self.info_extm_id = nil
+        vim.schedule(function()
+            util.clear_buffer_text(globals.win_height, globals.bufnr)
+            self:set_extmarks()
+        end)
+        self:start_timer()
+        self.pace_cursor:run()
+    end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
+
+    util.set_keymaps(settings.keymaps.new_game, function()
+        self:stop()
+        self:start()
+    end, { buffer = globals.bufnr, desc = "SpeedTyper: New game." })
+end
+
+---@return string
+function GM.keymaps_info()
+    local start_game = type(settings.keymaps.start_game) == "table"
+            ---@diagnostic disable-next-line: param-type-mismatch
+            and table.concat(settings.keymaps.start_game, "/")
+        or settings.keymaps.start_game
+
+    local new_game = type(settings.keymaps.new_game) == "table"
+            ---@diagnostic disable-next-line: param-type-mismatch
+            and table.concat(settings.keymaps.new_game, "/")
+        or settings.keymaps.new_game
+
+    return util.center_text(
+        ("Start game: %s    New game: %s"):format(start_game, new_game),
+        api.nvim_win_get_width(globals.winnr)
+    )
+end
 
 -- luacheck: push ignore self
 
@@ -462,36 +499,5 @@ end
 function GM:start_timer() end
 
 -- luacheck: pop
-
----@protected
-function GM:create_timer()
-    self.timer = vim.uv.new_timer()
-    local keys = type(settings.keymaps.start_game) == "table"
-            ---@diagnostic disable-next-line: param-type-mismatch
-            and table.concat(settings.keymaps.start_game, "/")
-        or settings.keymaps.start_game
-    local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
-        virt_text = {
-            {
-                ("Press %s to start the game."):format(keys),
-                "SpeedTyperTextOk",
-            },
-        },
-        priority = globals.extmark_priority,
-    })
-    util.set_keymaps(settings.keymaps.start_game, function()
-        self:attach_to_speedtyper_buffer()
-        api.nvim_set_option_value("modifiable", true, { buf = globals.bufnr })
-        vim.cmd.startinsert()
-        util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
-        api.nvim_buf_del_extmark(globals.bufnr, globals.ns_id, extm_id)
-        vim.schedule(function()
-            util.clear_buffer_text(globals.win_height, globals.bufnr)
-            self:set_extmarks()
-        end)
-        self:start_timer()
-        self.pace_cursor:run()
-    end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
-end
 
 return GM

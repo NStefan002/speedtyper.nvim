@@ -38,6 +38,7 @@ local logger = require("speedtyper.logger")
 
 ---@class SpeedTyperKeymapSettings
 ---@field start_game string | string[]
+---@field new_game string | string[]
 ---@field hover string | string[]
 ---@field press_button string | string[]
 ---TODO: add more
@@ -108,7 +109,8 @@ function Settings.new()
 
             -- TODO: figure out how to set these (commandline or via `setup`)
             keymaps = {
-                start_game = "i",
+                start_game = { "I", "i" },
+                new_game = "N",
                 hover = "K",
                 press_button = { "<CR>", "<2-LeftMouse>" },
             },

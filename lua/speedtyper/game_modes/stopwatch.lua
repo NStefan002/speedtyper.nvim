@@ -11,7 +11,7 @@ Stopwatch.__index = Stopwatch
 
 ---@private
 function Stopwatch:after_start()
-    self:create_timer()
+    self:set_keymaps()
 
     logger:log("words game mode started")
 end
@@ -53,6 +53,10 @@ end
 ---@private
 ---@return string
 function Stopwatch:live_progress_text()
+    if not settings:get_selected("live_progress") then
+        return ""
+    end
+
     local word_count_text = settings:get_selected("demojify") and "Word count: " or "󱀽 "
     local timer_text = settings:get_selected("demojify") and "Time: " or "󱑆 "
     return util.center_text(
@@ -69,12 +73,15 @@ end
 
 ---@private
 function Stopwatch:start_timer()
+    if not self.timer then
+        self.timer = vim.uv.new_timer()
+    end
     self.timer:start(
         0,
         100,
         vim.schedule_wrap(function()
             self.time_sec = self.time_sec + 0.1
-            self:update_live_progress()
+            self:update_info_line(self:live_progress_text())
         end)
     )
 end
