@@ -133,10 +133,10 @@ end
 function Stats:redraw_typos()
     ---@param t SpeedTyperCharInfo
     local typos = vim.tbl_filter(function(t)
-        return t.pos.line ~= -1 and t.pos.col ~= -1
+        return t.row ~= -1 and t.col ~= -1
     end, self:get_typos())
     for _, info in ipairs(typos) do
-        self._mark_typo(info.pos.line, info.pos.col)
+        self._mark_typo(info.row, info.col)
     end
 end
 

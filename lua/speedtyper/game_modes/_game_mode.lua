@@ -1,6 +1,5 @@
 local api = vim.api
 local util = require("speedtyper.util")
-local position = require("speedtyper.position")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local sounds = require("speedtyper.sounds")
@@ -403,14 +402,15 @@ function GM:move_up()
     ---@type SpeedTyperCharInfo[]
     local text_info = self.stats.text_info:get_table()
     for _, info in ipairs(text_info) do
-        if info.pos.line == globals.text_first_line then
-            info.pos = position.new(-1, -1)
+        if info.row == globals.text_first_line then
+            info.row = -1
+            info.col = -1
         end
     end
     self.stats.text_info:clear()
     for _, info in ipairs(text_info) do
-        if info.pos.line ~= -1 then
-            info.pos:update(info.pos.line - 1, info.pos.col)
+        if info.row ~= -1 then
+            info.row = info.row - 1
             self.stats.text_info:push(info)
         end
     end

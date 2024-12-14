@@ -6,7 +6,6 @@ local globals = require("speedtyper.globals")
 ---@field extm_ids integer[]
 ---@field text string[]
 ---@field text_generator SpeedTyperText
----@field prev_cursor_pos Position
 local Rain = {}
 Rain.__index = Rain
 
@@ -20,7 +19,6 @@ function Rain.new()
             "Please select another game mode.",
         },
         text_generator = nil,
-        prev_cursor_pos = nil,
     }, Rain)
     return self
 end
