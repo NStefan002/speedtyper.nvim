@@ -4,15 +4,15 @@ local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperUI
+---@class speedtyper.ui
 ---@field private active boolean
----@field menu SpeedTyperMenu
----@field hover SpeedTyperHover
+---@field menu speedtyper.menu
+---@field hover speedtyper.hover
 ---@field private vim_opt table vim options to restore after closing Speedtyper
 local UI = {}
 UI.__index = UI
 
----@return SpeedTyperUI
+---@return speedtyper.ui
 function UI.new()
     local self = {
         active = false,

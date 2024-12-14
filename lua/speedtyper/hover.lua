@@ -4,14 +4,14 @@ local util = require("speedtyper.util")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 
----@class SpeedTyperHover
+---@class speedtyper.hover
 ---@field bufnr integer
 ---@field winnr integer
 ---@field instruction string[]
 local Hover = {}
 Hover.__index = Hover
 
----@return SpeedTyperHover
+---@return speedtyper.hover
 function Hover.new()
     local self = setmetatable({
         bufnr = nil,

@@ -2,7 +2,7 @@ local api = vim.api
 local settings = require("speedtyper.settings")
 local util = require("speedtyper.util")
 
----@class SpeedTyperText
+---@class speedtyper.text_generator
 ---@field selected_lang string
 ---@field words string[]
 ---@field last_word_idx integer

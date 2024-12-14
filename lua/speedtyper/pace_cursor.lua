@@ -3,7 +3,7 @@ local util = require("speedtyper.util")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 
----@class SpeedTyperPaceCursor
+---@class speedtyper.pace_cursor
 ---@field private line integer
 ---@field private col integer
 ---@field private line_lengths integer[]
@@ -17,7 +17,7 @@ local PaceCursor = {}
 PaceCursor.__index = PaceCursor
 
 ---@param line_lengths integer[]
----@return SpeedTyperPaceCursor
+---@return speedtyper.pace_cursor
 function PaceCursor.new(line_lengths)
     local self = setmetatable({
         line = globals.text_first_line,

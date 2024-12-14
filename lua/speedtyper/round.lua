@@ -5,8 +5,8 @@ local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperRound
----@field active_game_mode SpeedTyperGameMode
+---@class speedtyper.round
+---@field active_game_mode speedtyper.game_mode
 local Round = {}
 Round.__index = Round
 

@@ -2,14 +2,14 @@ local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperSounds
+---@class speedtyper.sound
 ---@field tool string selected tool for playing sound
 ---@field tools table<string, fun(sound: string, volume: number): string[]>
 ---@field sounds_directory string
 local Sounds = {}
 Sounds.__index = Sounds
 
----@return SpeedTyperSounds
+---@return speedtyper.sound
 function Sounds.new()
     local self = setmetatable({}, Sounds)
     self.tools = {

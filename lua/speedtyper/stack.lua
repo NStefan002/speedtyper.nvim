@@ -1,4 +1,4 @@
----@class SpeedTyperStack
+---@class speedtyper.stack
 ---@field private _stack table
 ---@field private _top integer
 local Stack = {}

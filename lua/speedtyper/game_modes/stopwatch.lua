@@ -5,7 +5,7 @@ local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperStopwatch : SpeedTyperGameMode
+---@class speedtyper.game_mode.stopwatch : speedtyper.game_mode
 local Stopwatch = require("speedtyper.game_modes._game_mode"):new()
 Stopwatch.__index = Stopwatch
 

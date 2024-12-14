@@ -3,7 +3,7 @@ local util = require("speedtyper.util")
 local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("data"))
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperSettingsSubcmd
+---@class speedtyper.settings_subcmd
 ---@field impl fun(args: string[], data: table) The command implementation
 ---@field complete? fun(subcmd_arg_lead: string): string[] Command completions callback, taking the lead of the subcommand's arguments
 
@@ -11,12 +11,12 @@ local logger = require("speedtyper.logger")
 
 ---@alias SpeedTyperCursorStyle "block" | "line" | "underline"
 
----@class SpeedTyperRoundSettings
+---@class speedtyper.settings.round
 ---@field text_variant table<"punctuation" | "numbers", boolean>
 ---@field game_mode table<"time" | "word" | "rain", boolean>
 ---@field length table<"15" | "30" | "60" | "120", boolean>
 
----@class SpeedTyperGeneralSettings
+---@class speedtyper.settings.general
 ---@field language table<string, boolean>
 ---@field theme table<string, boolean>
 ---@field cursor_style table<SpeedTyperCursorStyle, boolean>
@@ -36,27 +36,28 @@ local logger = require("speedtyper.logger")
 ---@field demojify boolean
 ---@field debug_mode boolean
 
----@class SpeedTyperKeymapSettings
+---@class speedtyper.settings.keymap
 ---@field start_game string | string[]
 ---@field new_game string | string[]
+---@field restart_game string | string[]
 ---@field hover string | string[]
 ---@field press_button string | string[]
 ---TODO: add more
 
----@class SpeedTyperDefaultSettings
----@field round SpeedTyperRoundSettings
----@field general SpeedTyperGeneralSettings
----@field keymaps SpeedTyperKeymapSettings
+---@class speedtyper.default_settings
+---@field round speedtyper.settings.round
+---@field general speedtyper.settings.general
+---@field keymaps speedtyper.settings.keymap
 
----@class SpeedTyperSettings
----@field default SpeedTyperDefaultSettings
----@field round SpeedTyperRoundSettings
----@field general SpeedTyperGeneralSettings
----@field keymaps SpeedTyperKeymapSettings
+---@class speedtyper.settings
+---@field default speedtyper.default_settings
+---@field round speedtyper.settings.round
+---@field general speedtyper.settings.general
+---@field keymaps speedtyper.settings.keymap
 local Settings = {}
 Settings.__index = Settings
 
----@return SpeedTyperSettings
+---@return speedtyper.settings
 function Settings.new()
     local self = setmetatable({
         default = {
@@ -111,6 +112,7 @@ function Settings.new()
             keymaps = {
                 start_game = { "I", "i" },
                 new_game = "N",
+                restart_game = "R",
                 hover = "K",
                 press_button = { "<CR>", "<2-LeftMouse>" },
             },
@@ -195,10 +197,11 @@ function Settings:get_selected(option)
 end
 
 function Settings:create_user_commands()
-    ---@type table<string, SpeedTyperSettingsSubcmd>
+    ---@type table<string, speedtyper.settings_subcmd >
     local subcmds = {
         info = self:create_info_subcmd(),
         reset_settings = self:create_reset_subcmd(),
+        keymaps = self:create_keymap_subcmd(),
         language = self:create_subcmd_for_map_option("language"),
         theme = self:create_subcmd_for_map_option("theme"),
         cursor_style = self:create_subcmd_for_map_option("cursor_style"),
@@ -270,7 +273,7 @@ end
 
 ---@private
 ---@param option string
----@return SpeedTyperSettingsSubcmd
+---@return speedtyper.settings_subcmd
 function Settings:create_subcmd_for_map_option(option)
     return {
         impl = function(args, _)
@@ -313,7 +316,7 @@ end
 
 ---@private
 ---@param option string
----@return SpeedTyperSettingsSubcmd
+---@return speedtyper.settings_subcmd
 function Settings:create_subcmd_for_bool_option(option)
     return {
         impl = function(args, _)
@@ -351,7 +354,7 @@ end
 ---@param option string
 ---@param min number
 ---@param max number
----@return SpeedTyperSettingsSubcmd
+---@return speedtyper.settings_subcmd
 function Settings:create_subcmd_for_number_option(option, min, max)
     return {
         impl = function(args, _)
@@ -388,6 +391,7 @@ function Settings:create_subcmd_for_number_option(option, min, max)
 end
 
 ---@private
+---@return speedtyper.settings_subcmd
 function Settings:create_info_subcmd()
     local all_options = {}
     for option, _ in pairs(self.general) do
@@ -422,6 +426,7 @@ function Settings:create_info_subcmd()
 end
 
 ---@private
+---@return speedtyper.settings_subcmd
 function Settings:create_reset_subcmd()
     return {
         impl = function(args, _)
@@ -438,6 +443,44 @@ function Settings:create_reset_subcmd()
                     util.info("Settings have been reset.")
                 end
             end)
+        end,
+    }
+end
+
+---@private
+---@return speedtyper.settings_subcmd
+function Settings:create_keymap_subcmd()
+    local all_keymaps = {}
+    for key, _ in pairs(self.keymaps) do
+        table.insert(all_keymaps, key)
+    end
+    return {
+        impl = function(args, data)
+            if #args ~= 1 then
+                util.error(
+                    ("SpeedTyperSettings %s: command expects at least one argument"):format(
+                        data.fargs[1]
+                    )
+                )
+                return
+            end
+            if not util.tbl_contains(all_keymaps, args[1]) then
+                util.error(
+                    ("SpeedTyperSettings %s: unknown keymap option '%s'"):format(
+                        data.fargs[1],
+                        args[1]
+                    )
+                )
+                return
+            end
+            -- TODO: parse args and set keymaps
+        end,
+        complete = function(subcmd_arg_lead)
+            return vim.iter(all_keymaps)
+                :filter(function(arg)
+                    return arg:find(subcmd_arg_lead) ~= nil
+                end)
+                :totable()
         end,
     }
 end

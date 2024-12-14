@@ -1,4 +1,4 @@
----@class SpeedTyperInstructions
+---@class speedtyper.instructions
 ---@field time string
 ---@field words string
 ---@field rain string
@@ -29,7 +29,7 @@
 local Instructions = {}
 Instructions.__index = Instructions
 
----@return SpeedTyperInstructions
+---@return speedtyper.instructions
 function Instructions.new()
     local self = setmetatable({
         time = [[

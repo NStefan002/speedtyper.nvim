@@ -5,7 +5,7 @@ local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperCustom : SpeedTyperGameMode
+---@class speedtyper.game_mode.custom : speedtyper.game_mode
 local Custom = require("speedtyper.game_modes._game_mode"):new()
 Custom.__index = Custom
 

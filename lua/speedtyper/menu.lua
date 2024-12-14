@@ -5,14 +5,14 @@ local util = require("speedtyper.util")
 local globals = require("speedtyper.globals")
 local settings = require("speedtyper.settings")
 
----@class SpeedTyperMenu
+---@class speedtyper.menu
 ---@field end_of_game_text string TODO: implement later
----@field round SpeedTyperRound
+---@field round speedtyper.round
 ---@field round_settings_text string
 local Menu = {}
 Menu.__index = Menu
 
----@return SpeedTyperMenu
+---@return speedtyper.menu
 function Menu.new()
     local self = setmetatable({
         round = require("speedtyper.round"),

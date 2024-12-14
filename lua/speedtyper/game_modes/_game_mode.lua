@@ -5,7 +5,7 @@ local settings = require("speedtyper.settings")
 local sounds = require("speedtyper.sounds")
 local logger = require("speedtyper.logger")
 
----@class SpeedTyperGameMode
+---@class speedtyper.game_mode
 ---@field protected closing boolean
 ---@field protected timer uv_timer_t
 ---@field protected extm_ids integer[]
@@ -14,13 +14,13 @@ local logger = require("speedtyper.logger")
 ---@field protected time_sec number
 ---@field protected word_count integer
 ---@field protected number_of_words integer
----@field protected text_generator SpeedTyperText
----@field protected stats SpeedTyperStats
----@field protected pace_cursor SpeedTyperPaceCursor
+---@field protected text_generator speedtyper.text_generator
+---@field protected stats speedtyper.stats
+---@field protected pace_cursor speedtyper.pace_cursor
 ---@field protected ignore_next_change  boolean
 local GM = {}
 
----@return SpeedTyperGameMode
+---@return speedtyper.game_mode
 function GM:new()
     local o = {
         closing = false,
@@ -29,7 +29,7 @@ function GM:new()
         info_extm_id = nil,
         time_sec = 0,
         word_count = 0,
-        text_generator = require("speedtyper.text"),
+        text_generator = require("speedtyper.text_generator"),
         stats = require("speedtyper.stats"),
         ignore_next_change = true,
     }
@@ -108,7 +108,7 @@ function GM:attach_to_speedtyper_buffer()
 
             vim.schedule(function()
                 self:handle_typing(args)
-                ---@type SpeedTyperCharInfo
+                ---@type speedtyper.char_info
                 local last_typed = self.stats.text_info:peek()
                 if last_typed ~= nil then
                     sounds:play_sound(last_typed:is_typo())
@@ -232,7 +232,7 @@ function GM:handle_typing(args)
 
     -- check if the user has pressed some of the following keys: `<bspace>`, `<c-u>`, `<c-w>`, etc.
     if self.moved_back(row, col, prev_row, prev_col) then
-        ---@type SpeedTyperCharInfo
+        ---@type speedtyper.char_info
         local deleted_char = self.stats.text_info:peek()
         if deleted_char.should_be == " " then
             self.word_count = self.word_count - 1
@@ -399,7 +399,7 @@ function GM:move_up()
     -- so redraw_typos don't draw them, but stats can still count them
     -- and move typos from the second line to the first line
 
-    ---@type SpeedTyperCharInfo[]
+    ---@type speedtyper.char_info[]
     local text_info = self.stats.text_info:get_table()
     for _, info in ipairs(text_info) do
         if info.row == globals.text_first_line then

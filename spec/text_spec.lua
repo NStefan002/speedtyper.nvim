@@ -6,7 +6,7 @@ describe("Text tests", function()
     local plugin_path = vim.uv.fs_realpath("./")
     vim.cmd(("set rtp+=%s"):format(plugin_path))
 
-    local text = require("speedtyper.text")
+    local text = require("speedtyper.text_generator")
     local util = require("speedtyper.util")
 
     before_each(function()

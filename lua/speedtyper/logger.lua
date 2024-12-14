@@ -1,6 +1,6 @@
 local api = vim.api
 
----@class SpeedTyperLogger
+---@class speedtyper.logger
 ---@field lines string[]
 ---@field max_lines integer
 local Logger = {}

@@ -5,7 +5,7 @@ local stack = require("speedtyper.stack")
 local char_info = require("speedtyper.char_info")
 local globals = require("speedtyper.globals")
 
----@class SpeedTyperStats
+---@class speedtyper.stats
 ---@field wpm number
 ---@field raw_wpm number
 ---@field time number
@@ -15,7 +15,7 @@ local globals = require("speedtyper.globals")
 ---@field correct_spaces integer number of correctly typed spaces
 ---@field typed_chars integer number of characters typed
 ---@field typos integer
----@field text_info SpeedTyperStack stack contains elements of type SpeedTyperCharInfo
+---@field text_info speedtyper.stack  stack contains elements of type SpeedTyperCharInfo
 local Stats = {}
 Stats.__index = Stats
 
@@ -23,7 +23,7 @@ Stats.__index = Stats
 -- typos is the total number of characters that were typed
 -- incorrectly regardless of whether they were corrected or not
 
----@return SpeedTyperStats
+---@return speedtyper.stats
 function Stats.new()
     local self = setmetatable({
         wpm = 0,
@@ -123,7 +123,7 @@ function Stats:check_curr_char(typed, should_be, line, col)
     end
 end
 
----@return SpeedTyperCharInfo[]
+---@return speedtyper.char_info[]
 function Stats:get_typos()
     return vim.tbl_filter(function(char)
         return char:is_typo()
@@ -131,7 +131,7 @@ function Stats:get_typos()
 end
 
 function Stats:redraw_typos()
-    ---@param t SpeedTyperCharInfo
+    ---@param t speedtyper.char_info
     local typos = vim.tbl_filter(function(t)
         return t.row ~= -1 and t.col ~= -1
     end, self:get_typos())
@@ -160,7 +160,7 @@ end
 ---@private
 -- FIX: checking the last word
 function Stats:set_data()
-    ---@type SpeedTyperCharInfo[]
+    ---@type speedtyper.char_info[]
     local text_info = self.text_info:get_table()
     self.typed_chars = #text_info
     local word_len = 0

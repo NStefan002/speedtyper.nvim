@@ -1,15 +1,15 @@
 local api = vim.api
 local globals = require("speedtyper.globals")
 
----@class SpeedTyperRain
+---@class speedtyper.game_mode.rain
 ---@field timer uv_timer_t
 ---@field extm_ids integer[]
 ---@field text string[]
----@field text_generator SpeedTyperText
+---@field text_generator speedtyper.text_generator
 local Rain = {}
 Rain.__index = Rain
 
----@return SpeedTyperRain
+---@return speedtyper.game_mode.rain
 function Rain.new()
     local self = setmetatable({
         timer = nil,
