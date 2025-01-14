@@ -131,6 +131,7 @@ function UI:open()
     self.hover:set_keymaps()
     self:save_options()
     self:set_options()
+    self:disable_completion()
 end
 
 ---@private
@@ -189,6 +190,21 @@ function UI:restore_options()
     api.nvim_set_option_value("guicursor", self.vim_opt.guicursor, { scope = "global" })
 
     logger:log("restored options:", self.vim_opt)
+end
+
+function UI:disable_completion()
+    if not self.active then
+        return
+    end
+
+    -- NOTE: mention this in the readme (useful link as of blink.cmp 0.10.0: https://cmp.saghen.dev/recipes.html#disable-per-filetype)
+    -- disable blink.cmp
+    vim.b.completion = false
+
+    -- disable nvim-cmp
+    if package.loaded["cmp"] ~= nil then
+        require("cmp").setup.buffer({ enabled = false })
+    end
 end
 
 return UI.new()
