@@ -3,6 +3,16 @@ local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
+---@alias speedtyper.hl_group_name
+---| "speedtyper.hl.bg"
+---| "speedtyper.hl.cursor"
+---| "speedtyper.hl.error"
+---| "speedtyper.hl.main"
+---| "speedtyper.hl.sub"
+---| "speedtyper.hl.text"
+
+---@alias speedtyper.hl_group table<speedtyper.hl_group_name, vim.api.keyset.highlight>
+
 ---@class speedtyper.highlight
 ---@field private active_theme string
 ---@field private augrp integer
@@ -29,12 +39,12 @@ function Hl:setup()
         active_theme = all_themes[math.random(1, #all_themes)]
     end
 
-    local ok, theme = pcall(require, ("speedtyper.themes.%s"):format(active_theme))
+    local ok, get_hl_groups = pcall(require, ("speedtyper.themes.%s"):format(active_theme))
     if not ok then
         util.error(("Theme not found: %s"):format(active_theme))
         return
     end
-    theme.setup()
+    self.set_highlights(get_hl_groups())
     self.active_theme = active_theme
 
     logger:log("theme:", active_theme)
@@ -57,6 +67,13 @@ function Hl:create_autocmds()
             logger:log("Colorscheme")
         end,
     })
+end
+
+---@param hl_groups speedtyper.hl_group
+function Hl.set_highlights(hl_groups)
+    for name, val in pairs(hl_groups) do
+        util.hl(name, val)
+    end
 end
 
 return Hl.new()
