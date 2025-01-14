@@ -116,7 +116,7 @@ function Menu:highlight_buttons()
     for _, values in pairs(settings.round) do
         for button, active in pairs(values) do
             local button_begin, button_end = string.find(self.round_settings_text, button)
-            button_begin = math.max((button_begin or 2) - 2, 0)
+            button_begin = math.max((button_begin or 1) - 1, 0)
             button_end = button_end or 0
             if active then
                 api.nvim_buf_add_highlight(
