@@ -52,12 +52,14 @@ function M.clear_buffer_text(n, bufnr)
     api.nvim_buf_set_lines(bufnr or 0, 0, n, false, repl)
 end
 
+---NOTE: currently unused, but might be useful when we add stories and other text features
 ---@param file_path string
-function M.read_file(file_path)
+---@return string[]
+function M.read_words_from_file(file_path)
     local reader = io.open(file_path, "r")
     if reader == nil then
         M.error("Failed to read from the file: " .. file_path)
-        return
+        return {}
     end
 
     local words = {}
@@ -67,7 +69,7 @@ function M.read_file(file_path)
         end
     end
 
-    io.close(reader)
+    reader:close()
     return words
 end
 
@@ -348,6 +350,20 @@ function M.utf_sub(str, start, stop)
     return str:sub(start_idx, stop_idx)
 end
 
+---reads the json file and returns the lua table
+---@param file_path string
+---@return table
+function M.read_json(file_path)
+    local reader = io.open(file_path, "r")
+    if reader then
+        local content = reader:read("*a")
+        reader:close()
+        return vim.json.decode(content) or {}
+    else
+        M.error(("Failed to read from file: %s"):format(file_path))
+    end
+    return {}
+end
 
 ---@param name string
 ---@param val vim.api.keyset.highlight
