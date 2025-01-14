@@ -99,7 +99,11 @@ function UI:open()
     local winnr = api.nvim_open_win(bufnr, true, {
         relative = "editor",
         anchor = "NW",
-        title = "SpeedTyper",
+        title = {
+            settings:get_selected("demojify") and { " ", "" } or { "  ", "speedtyper.hl.main" },
+            { "Speed", "speedtyper.hl.text" },
+            { "Typer ", "speedtyper.hl.main" },
+        },
         row = math.floor((lines - globals.win_height) / 2),
         col = math.floor((cols - width) / 2),
         width = width,
@@ -121,7 +125,7 @@ function UI:open()
     logger:log("winnr:", winnr, "bufnr:", bufnr)
 
     api.nvim_win_set_hl_ns(globals.winnr, globals.ns_id)
-    require("speedtyper.highlights").setup()
+    require("speedtyper.highlights"):setup()
     self:create_autocmds()
     self.menu:display_menu()
     self.hover:set_keymaps()

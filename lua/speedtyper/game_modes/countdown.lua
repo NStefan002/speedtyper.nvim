@@ -80,7 +80,7 @@ function Countdown:start_timer()
                 self.info_extm_id =
                     api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
                         virt_text = {
-                            { "Time's up!", "SpeedTyperCountWarning" },
+                            { "Time's up!", "speedtyper.hl.main" },
                         },
                         id = self.info_extm_id,
                         priority = globals.extmark_priority,

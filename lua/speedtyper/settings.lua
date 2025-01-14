@@ -31,8 +31,8 @@ local logger = require("speedtyper.logger")
 ---@field sound_on_keypress table<string, boolean>
 ---@field sound_on_typo table<string, boolean>
 ---@field live_progress boolean
----@field average_speed boolean
----@field average_accuracy boolean
+-- -@field average_speed boolean
+-- -@field average_accuracy boolean
 ---@field demojify boolean
 ---@field debug_mode boolean
 
@@ -82,10 +82,7 @@ function Settings.new()
 
             general = {
                 language = {},
-                theme = {
-                    default = true,
-                    random = false,
-                },
+                theme = {},
                 cursor_style = {
                     line = true,
                     block = false,
@@ -102,8 +99,8 @@ function Settings.new()
                 sound_on_keypress = {},
                 sound_on_typo = {},
                 live_progress = true,
-                average_speed = false,
-                average_accuracy = false,
+                -- average_speed = false,
+                -- average_accuracy = false,
                 demojify = false,
                 debug_mode = false,
             },
@@ -134,6 +131,14 @@ function Settings.new()
         self.default.general.language[lang] = false
     end
     self.default.general.language["english"] = true
+
+    -- read all themes from the themes directory
+    local themes = util.read_dir(util.get_plugin_path() .. "/lua/speedtyper/themes", ".lua", true)
+    for _, theme in ipairs(themes) do
+        self.default.general.theme[theme] = false
+    end
+    self.default.general.theme["random"] = false
+    self.default.general.theme["default"] = true
 
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
@@ -196,6 +201,15 @@ function Settings:get_selected(option)
     return self.general[option]
 end
 
+---@param option string
+---@return string[]
+function Settings:get_options(option)
+    if type(self.general[option]) ~= "table" then
+        return {}
+    end
+    return vim.tbl_keys(self.general[option])
+end
+
 function Settings:create_user_commands()
     ---@type table<string, speedtyper.settings_subcmd >
     local subcmds = {
@@ -216,8 +230,8 @@ function Settings:create_user_commands()
         sound_on_keypress = self:create_subcmd_for_map_option("sound_on_keypress"),
         sound_on_typo = self:create_subcmd_for_map_option("sound_on_typo"),
         live_progress = self:create_subcmd_for_bool_option("live_progress"),
-        average_speed = self:create_subcmd_for_bool_option("average_speed"),
-        average_accuracy = self:create_subcmd_for_bool_option("average_accuracy"),
+        -- average_speed = self:create_subcmd_for_bool_option("average_speed"),
+        -- average_accuracy = self:create_subcmd_for_bool_option("average_accuracy"),
         demojify = self:create_subcmd_for_bool_option("demojify"),
         debug_mode = self:create_subcmd_for_bool_option("debug_mode"),
     }

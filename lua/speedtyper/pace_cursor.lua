@@ -33,7 +33,7 @@ function PaceCursor.new(line_lengths)
     }, PaceCursor)
 
     self.extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, self.line, 0, {
-        virt_text = { { "", "SpeedTyperPaceCursor" } },
+        virt_text = { { "", "speedtyper.hl.cursor" } },
         virt_text_win_col = self.col,
         priority = globals.pace_cursor_extmark_priority,
     })
@@ -130,7 +130,7 @@ function PaceCursor:show_cursor(visible)
         return
     end
     api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, self.line, 0, {
-        virt_text = { { visible and " " or "", "SpeedTyperPaceCursor" } },
+        virt_text = { { visible and " " or "", "speedtyper.hl.cursor" } },
         virt_text_win_col = self.col,
         id = self.extm_id,
         priority = globals.pace_cursor_extmark_priority,

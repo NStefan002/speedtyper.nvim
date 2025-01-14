@@ -16,7 +16,7 @@ api.nvim_create_user_command("SpeedTyper", function(event)
     settings:create_user_commands()
 
     -- set up highlights
-    require("speedtyper.highlights").setup()
+    require("speedtyper.highlights"):setup()
 
     -- open up speedtyper window
     require("speedtyper.ui"):toggle()

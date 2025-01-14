@@ -348,4 +348,12 @@ function M.utf_sub(str, start, stop)
     return str:sub(start_idx, stop_idx)
 end
 
+
+---@param name string
+---@param val vim.api.keyset.highlight
+function M.hl(name, val)
+    val.cterm = val.cterm or {}
+    api.nvim_set_hl(require("speedtyper.globals").ns_id, name, val)
+end
+
 return M

@@ -43,7 +43,7 @@ function Menu:display_menu()
     api.nvim_buf_add_highlight(
         globals.bufnr,
         globals.ns_id,
-        "SpeedTyperInfo",
+        "speedtyper.hl.main",
         globals.win_height - 1,
         0,
         #settings_info
@@ -122,7 +122,7 @@ function Menu:highlight_buttons()
                 api.nvim_buf_add_highlight(
                     globals.bufnr,
                     globals.ns_id,
-                    "SpeedTyperButtonActive",
+                    "speedtyper.hl.main",
                     globals.menu_first_line,
                     button_begin,
                     button_end
@@ -131,7 +131,7 @@ function Menu:highlight_buttons()
                 api.nvim_buf_add_highlight(
                     globals.bufnr,
                     globals.ns_id,
-                    "SpeedTyperButtonInactive",
+                    "speedtyper.hl.sub",
                     globals.menu_first_line,
                     button_begin,
                     button_end

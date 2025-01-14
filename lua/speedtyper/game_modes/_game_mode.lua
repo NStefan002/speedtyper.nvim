@@ -133,7 +133,7 @@ function GM:set_extmarks()
     for i = 1, n do
         local line = globals.text_first_line + i - 1
         local extm_id = api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, line, 0, {
-            virt_text = { { self.text[i], "SpeedTyperTextUntyped" } },
+            virt_text = { { self.text[i], "speedtyper.hl.sub" } },
             virt_text_win_col = 0,
             priority = globals.extmark_priority,
         })
@@ -151,7 +151,7 @@ function GM:update_extmarks()
         local line = api.nvim_buf_get_lines(globals.bufnr, row, row + 1, false)[1]
         local col = api.nvim_strwidth(line)
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, row, col, {
-            virt_text = { { util.utf_sub(self.text[i], col + 1), "SpeedTyperTextUntyped" } },
+            virt_text = { { util.utf_sub(self.text[i], col + 1), "speedtyper.hl.sub" } },
             virt_text_win_col = col,
             id = extm_id,
             priority = globals.extmark_priority,
@@ -441,7 +441,7 @@ function GM:update_info_line(text)
             virt_text = {
                 {
                     text,
-                    "SpeedTyperCountNormal",
+                    "speedtyper.hl.main",
                 },
             },
             id = self.info_extm_id,

@@ -77,7 +77,7 @@ function Stats:display_stats()
         api.nvim_buf_add_highlight(
             globals.bufnr,
             globals.ns_id,
-            "SpeedTyperInfo",
+            "speedtyper.hl.main",
             globals.stats_line,
             col_start - 1,
             col_start + len
@@ -150,7 +150,7 @@ function Stats._mark_typo(line, col)
     api.nvim_buf_add_highlight(
         globals.bufnr,
         globals.ns_id,
-        "SpeedTyperTextError",
+        "speedtyper.hl.error",
         line,
         col - 1,
         col
