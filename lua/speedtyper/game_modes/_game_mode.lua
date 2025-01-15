@@ -318,6 +318,7 @@ function GM:handle_typing(args)
         local cursor_row = row + 1
 
         if idx == #self.text then
+            self.word_count = self.number_of_words
             self:update_info_line(self:live_progress_text())
             self:update_extmarks()
             self:stop()
