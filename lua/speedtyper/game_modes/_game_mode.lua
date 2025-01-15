@@ -436,6 +436,10 @@ function GM:live_progress_text() end
 ---@protected
 ---@param text string text to display in the info line
 function GM:update_info_line(text)
+    if self.closing then
+        return
+    end
+
     self.info_extm_id =
         api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
             virt_text = {
