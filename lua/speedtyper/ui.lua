@@ -132,6 +132,7 @@ function UI:open()
     self:save_options()
     self:set_options()
     self:disable_completion()
+    util.hl("NormalFloat", { link = "speedtyper.hl.bg" })
 end
 
 ---@private

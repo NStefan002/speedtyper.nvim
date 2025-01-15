@@ -119,7 +119,9 @@ function Stats:check_curr_char(typed, should_be, line, col)
     self.text_info:push(new_char)
     if typed ~= should_be then
         self.typos = self.typos + 1
-        self._mark_typo(line, col)
+        self.mark_typo(line, col)
+    else
+        self.mark_char(line, col)
     end
 end
 
@@ -136,13 +138,14 @@ function Stats:redraw_typos()
         return t.row ~= -1 and t.col ~= -1
     end, self:get_typos())
     for _, info in ipairs(typos) do
-        self._mark_typo(info.row, info.col)
+        self.mark_typo(info.row, info.col)
     end
 end
 
+---@private
 ---@param line integer
 ---@param col integer
-function Stats._mark_typo(line, col)
+function Stats.mark_typo(line, col)
     if not settings:get_selected("indicate_typos") then
         return
     end
@@ -151,6 +154,20 @@ function Stats._mark_typo(line, col)
         globals.bufnr,
         globals.ns_id,
         "speedtyper.hl.error",
+        line,
+        col - 1,
+        col
+    )
+end
+
+---@private
+---@param line integer
+---@param col integer
+function Stats.mark_char(line, col)
+    api.nvim_buf_add_highlight(
+        globals.bufnr,
+        globals.ns_id,
+        "speedtyper.hl.text",
         line,
         col - 1,
         col
