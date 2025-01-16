@@ -146,7 +146,7 @@ end
 ---@param line integer
 ---@param col integer
 function Stats.mark_typo(line, col)
-    if not settings:get_selected("indicate_typos") then
+    if globals.bufnr == -1 or not settings:get_selected("indicate_typos") then
         return
     end
 
@@ -164,6 +164,10 @@ end
 ---@param line integer
 ---@param col integer
 function Stats.mark_char(line, col)
+    if globals.bufnr == -1 then
+        return
+    end
+
     api.nvim_buf_add_highlight(
         globals.bufnr,
         globals.ns_id,
