@@ -182,7 +182,7 @@ function M.unset_keymaps(lhs, bufnr)
 end
 
 ---See :help 'guicursor'
----@param type SpeedTyperCursorStyle
+---@param type speedtyper.cursor_style
 ---@param blinking boolean
 ---@return string
 function M.create_cursor(type, blinking)

@@ -9,7 +9,7 @@ local logger = require("speedtyper.logger")
 
 -- NOTE: see each field info in instructions.lua
 
----@alias SpeedTyperCursorStyle "block" | "line" | "underline"
+---@alias speedtyper.cursor_style "block" | "line" | "underline"
 
 ---@class speedtyper.settings.round
 ---@field text_variant table<"punctuation" | "numbers", boolean>
@@ -19,7 +19,7 @@ local logger = require("speedtyper.logger")
 ---@class speedtyper.settings.general
 ---@field language table<string, boolean>
 ---@field theme table<string, boolean>
----@field cursor_style table<SpeedTyperCursorStyle, boolean>
+---@field cursor_style table<speedtyper.cursor_style, boolean>
 ---@field cursor_blinking boolean
 ---@field pace_cursor boolean
 ---@field pace_cursor_speed integer
