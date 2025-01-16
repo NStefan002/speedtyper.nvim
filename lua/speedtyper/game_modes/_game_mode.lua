@@ -65,6 +65,21 @@ function GM:stop()
     logger:log("game mode stopped")
 end
 
+---@protected
+function GM:disable_completion()
+    if self.closing then
+        return
+    end
+
+    -- NOTE: mention this in the readme (useful link as of blink.cmp 0.10.0: https://cmp.saghen.dev/recipes.html#disable-per-filetype)
+    -- disable blink.cmp
+    vim.b.completion = false
+
+    -- disable nvim-cmp
+    if package.loaded["cmp"] ~= nil then
+        require("cmp").setup.buffer({ enabled = false })
+    end
+end
 -- luacheck: push ignore self
 
 ---@protected
@@ -471,6 +486,7 @@ function GM:set_keymaps()
         end)
         self:start_timer()
         self.pace_cursor:run()
+        self:disable_completion()
     end, { buffer = globals.bufnr, desc = "SpeedTyper: Start the game." })
 
     util.set_keymaps(settings.keymaps.new_game, function()
