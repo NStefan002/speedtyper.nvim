@@ -36,18 +36,6 @@ function Menu:display_menu()
             self.round_settings_text,
         }
     )
-    local settings_info = " :SpeedTyperSettings <option> <value>"
-    api.nvim_buf_set_lines(globals.bufnr, -2, -1, false, {
-        settings_info,
-    })
-    api.nvim_buf_add_highlight(
-        globals.bufnr,
-        globals.ns_id,
-        "speedtyper.hl.main",
-        globals.win_height - 1,
-        0,
-        #settings_info
-    )
     self:set_keymaps()
     self:highlight_buttons()
     self.round:start_round()

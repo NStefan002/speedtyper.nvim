@@ -100,10 +100,22 @@ function UI:open()
         relative = "editor",
         anchor = "NW",
         title = {
-            settings:get_selected("demojify") and { " ", "" } or { "  ", "speedtyper.hl.main" },
+            { " ", "" },
+            settings:get_selected("demojify") and { "", "" } or { " ", "speedtyper.hl.main" },
             { "Speed", "speedtyper.hl.text" },
-            { "Typer ", "speedtyper.hl.main" },
+            { "Typer", "speedtyper.hl.main" },
+            { " ", "" },
         },
+        footer = {
+            { " :", "speedtyper.hl.text" },
+            { "SpeedTyperSettings", "speedtyper.hl.main" },
+            { " ", "" },
+            { "<option>", "speedtyper.hl.sub" },
+            { " ", "" },
+            { "<value>", "speedtyper.hl.sub" },
+            { " ", "" },
+        },
+        footer_pos = "center",
         row = math.floor((lines - globals.win_height) / 2),
         col = math.floor((cols - width) / 2),
         width = width,
@@ -132,6 +144,7 @@ function UI:open()
     self:save_options()
     self:set_options()
     util.hl("NormalFloat", { link = "speedtyper.hl.bg" })
+    util.hl("FloatBorder", { link = "speedtyper.hl.main" })
 end
 
 ---@private
