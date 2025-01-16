@@ -176,7 +176,7 @@ end
 
 ---TODO: refactor this function, should be easier to do it now that we found nvim_buf_attach
 ---Edge cases:
----[ ] prevent user from going above the first line via `<bspace>`, `<c-u>`, `<c-w>`, etc. (less important)
+---[x] prevent user from going above the first line via `<bspace>`, `<c-u>`, `<c-w>`, etc. (less important)
 ---[x] jump to next line without user pressing `<cr>`
 ---[x] jump to prev line when user presses `<bspace>` at the beginning of the line
 ---[x] when finishing the middle line, move text up and move the cursor to the beginning of the middle line
@@ -207,6 +207,21 @@ function GM:handle_typing(args)
     local prev_row = args.start_row + args.old_end_row
     local prev_col = args.old_end_row == 0 and (args.start_column + args.old_end_column)
         or args.old_end_column
+
+    if self.moved_back(row, col, prev_row, prev_col) and row < globals.text_first_line then
+        self.ignore_next_change = true
+        -- restore first line
+        api.nvim_buf_set_lines(
+            globals.bufnr,
+            globals.text_first_line,
+            globals.text_first_line,
+            false,
+            { "" }
+        )
+        util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
+        self:update_extmarks()
+        return
+    end
 
     ---index of the current line in the text table
     local idx = row - globals.text_first_line + 1
