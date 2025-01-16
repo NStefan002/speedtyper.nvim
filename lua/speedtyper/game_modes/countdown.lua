@@ -59,8 +59,16 @@ function Countdown:live_progress_text()
 
     local word_count_text = settings:get_selected("demojify") and "Word count: " or "󱀽 "
     local timer_text = settings:get_selected("demojify") and "Time left: " or "󱑆 "
+    local remaining_time_text = self.time_sec <= 0 and "Time's up!"
+        or ("%4.2fs"):format(self.time_sec)
+
     return util.center_text(
-        ("%s%4d        %s%4.2f"):format(word_count_text, self.word_count, timer_text, self.time_sec),
+        ("%s%4d        %s%s"):format(
+            word_count_text,
+            self.word_count,
+            timer_text,
+            remaining_time_text
+        ),
         api.nvim_win_get_width(globals.winnr)
     )
 end
@@ -76,15 +84,8 @@ function Countdown:start_timer()
         100,
         vim.schedule_wrap(function()
             if self.time_sec <= 0 or self.closing then
+                self:update_info_line(self:live_progress_text())
                 self:stop()
-                self.info_extm_id =
-                    api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, globals.info_line, 0, {
-                        virt_text = {
-                            { "Time's up!", "speedtyper.hl.main" },
-                        },
-                        id = self.info_extm_id,
-                        priority = globals.extmark_priority,
-                    })
                 self.stats:display_stats()
                 return
             end
