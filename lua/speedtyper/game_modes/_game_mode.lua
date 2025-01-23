@@ -50,6 +50,7 @@ function GM:start()
 end
 
 function GM:stop()
+    self:enable_completion()
     self.closing = true
     if self.pace_cursor then
         self.pace_cursor:stop()
@@ -78,6 +79,21 @@ function GM:disable_completion()
     -- disable nvim-cmp
     if package.loaded["cmp"] ~= nil then
         require("cmp").setup.buffer({ enabled = false })
+    end
+end
+
+---@protected
+function GM:enable_completion()
+    if self.closing then
+        return
+    end
+
+    -- enable blink.cmp
+    vim.b.completion = true
+
+    -- enable nvim-cmp
+    if package.loaded["cmp"] ~= nil then
+        require("cmp").setup.buffer({ enabled = true })
     end
 end
 -- luacheck: push ignore self
