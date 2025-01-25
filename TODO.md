@@ -64,3 +64,5 @@
   - [x] get rid of magic constants
   - [x] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
   - [ ] avoid `closing` and `active` and just check if the buf/win is valid
+  - [ ] use `vim.g` instead of `speedtyper.globals`
+  - [ ] avoid using `nil` for integer values (see hover and pace_cursor)
