@@ -27,10 +27,12 @@ end
 
 ---@param line integer
 ---@param col integer
----@param winnr integer
-function M.set_cursor_pos(line, col, winnr)
+function M.set_cursor_pos(line, col)
     vim.schedule(function()
-        api.nvim_win_set_cursor(winnr, { line, col })
+        if not M.speedtyper_is_active() then
+            return
+        end
+        api.nvim_win_set_cursor(vim.g.speedtyper_winnr, { line, col })
     end)
 end
 
@@ -364,7 +366,14 @@ end
 ---@param val vim.api.keyset.highlight
 function M.hl(name, val)
     val.cterm = val.cterm or {}
-    api.nvim_set_hl(require("speedtyper.globals").ns_id, name, val)
+    api.nvim_set_hl(vim.g.speedtyper_ns_id, name, val)
+end
+
+---Checks if the speedtyper window is active
+---@return boolean
+function M.speedtyper_is_active()
+    return api.nvim_win_is_valid(vim.g.speedtyper_winnr)
+        and api.nvim_buf_is_valid(vim.g.speedtyper_bufnr)
 end
 
 return M

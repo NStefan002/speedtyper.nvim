@@ -1,7 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
@@ -13,10 +13,12 @@ Custom.__index = Custom
 function Custom:after_start()
     logger:log("waiting for the user to paste the text")
     local on_lines_detach = false
-    api.nvim_buf_attach(globals.bufnr, false, {
+    api.nvim_buf_attach(vim.g.speedtyper_bufnr, false, {
         on_lines = function(...)
+            -- TODO: how to listen to game mode change?
+
             -- if the game is closing/user changes to different game mode, then return true to detach from the buffer
-            if self.closing or on_lines_detach then
+            if not util.speedtyper_is_active() or on_lines_detach then
                 logger:log("stop waiting for the user to paste the text")
                 return true
             end
@@ -40,12 +42,12 @@ function Custom:after_start()
                 local line_start, line_end = args.line_start, args.range_end
                 ---text that user pasted
                 local text = table.concat(
-                    api.nvim_buf_get_lines(globals.bufnr, line_start, line_end, false),
+                    api.nvim_buf_get_lines(vim.g.speedtyper_bufnr, line_start, line_end, false),
                     " "
                 )
                 local words = util.split(text, " ")
                 self.text_generator:use_custom_words(words)
-                local win_width = api.nvim_win_get_width(globals.winnr)
+                local win_width = api.nvim_win_get_width(vim.g.speedtyper_winnr)
                 self.text = self.text_generator:generate_n_words_text(win_width, #words)
                 self.number_of_words = #words
 
@@ -55,10 +57,10 @@ function Custom:after_start()
                     end)
                     :totable())
 
-                util.clear_buffer_text(globals.win_height, globals.bufnr)
+                util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
                 self:set_extmarks()
-                util.set_cursor_pos(globals.text_first_line + 1, 0, globals.winnr)
-                api.nvim_set_option_value("modifiable", false, { buf = globals.bufnr })
+                util.set_cursor_pos(constants.text_first_line + 1, 0)
+                api.nvim_set_option_value("modifiable", false, { buf = vim.g.speedtyper_bufnr })
                 self:set_keymaps()
             end)
 
@@ -75,12 +77,11 @@ end
 function Custom:reset_values()
     pcall(
         api.nvim_buf_clear_namespace,
-        globals.bufnr,
-        globals.ns_id,
-        globals.info_line,
-        globals.text_first_line + globals.text_num_lines + 1
+        vim.g.speedtyper_bufnr,
+        vim.g.speedtyper_ns_id,
+        constants.info_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
-    self.closing = false
     self.extm_ids = {}
     self.text = { "Paste your text here." }
     self.time_sec = 0
@@ -106,7 +107,7 @@ function Custom:live_progress_text()
             timer_text,
             self.time_sec
         ),
-        api.nvim_win_get_width(globals.winnr)
+        api.nvim_win_get_width(vim.g.speedtyper_winnr)
     )
 end
 

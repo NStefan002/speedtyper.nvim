@@ -1,7 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
@@ -20,10 +20,10 @@ end
 function Stopwatch:reset_values()
     pcall(
         api.nvim_buf_clear_namespace,
-        globals.bufnr,
-        globals.ns_id,
-        globals.info_line,
-        globals.text_first_line + globals.text_num_lines + 1
+        vim.g.speedtyper_bufnr,
+        vim.g.speedtyper_ns_id,
+        constants.info_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
     for len, active in pairs(settings.round.length) do
         if active then
@@ -31,11 +31,10 @@ function Stopwatch:reset_values()
             self.number_of_words = tonumber(len)
         end
     end
-    self.closing = false
     self.extm_ids = {}
     self.text_generator:reset()
     self.text_generator:update_lang()
-    local win_width = api.nvim_win_get_width(globals.winnr)
+    local win_width = api.nvim_win_get_width(vim.g.speedtyper_winnr)
     self.text = self.text_generator:generate_n_words_text(win_width, self.number_of_words)
     self.time_sec = 0.0
     self.word_count = 0
@@ -67,7 +66,7 @@ function Stopwatch:live_progress_text()
             timer_text,
             self.time_sec
         ),
-        api.nvim_win_get_width(globals.winnr)
+        api.nvim_win_get_width(vim.g.speedtyper_winnr)
     )
 end
 

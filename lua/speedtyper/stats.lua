@@ -3,7 +3,7 @@ local settings = require("speedtyper.settings")
 local util = require("speedtyper.util")
 local stack = require("speedtyper.stack")
 local char_info = require("speedtyper.char_info")
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 
 ---@class speedtyper.stats
 ---@field wpm number
@@ -41,29 +41,33 @@ function Stats.new()
 end
 
 function Stats:display_stats()
+    if not util.speedtyper_is_active() then
+        return
+    end
+
     self:set_data()
     self:calculate_wpm()
     self:calculate_raw_wpm()
     self:calculate_acc()
 
-    -- util.clear_buffer_text(globals.win_height, globals.bufnr)
+    -- util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
     local wpm_text = ("WPM %.2f"):format(self.wpm)
     local raw_wpm_text = ("Raw_WPM %.2f"):format(self.raw_wpm)
     local acc_text = ("Accuracy %.2f%%"):format(self.acc)
     local text = util.center_text(
         ("%s        %s        %s"):format(wpm_text, raw_wpm_text, acc_text),
-        api.nvim_win_get_width(globals.winnr)
+        api.nvim_win_get_width(vim.g.speedtyper_winnr)
     )
     api.nvim_buf_set_lines(
-        globals.bufnr,
-        globals.stats_line,
-        globals.stats_line + 1,
+        vim.g.speedtyper_bufnr,
+        constants.stats_line,
+        constants.stats_line + 1,
         false,
         { text }
     )
 
     vim.schedule(function()
-        util.disable_buffer_modification(globals.bufnr)
+        util.disable_buffer_modification(vim.g.speedtyper_bufnr)
     end)
 
     local wpm_idx = text:find("WPM") or 0
@@ -75,10 +79,10 @@ function Stats:display_stats()
     ---@param len integer
     local function hl_stats(col_start, len)
         api.nvim_buf_add_highlight(
-            globals.bufnr,
-            globals.ns_id,
+            vim.g.speedtyper_bufnr,
+            vim.g.speedtyper_ns_id,
             "speedtyper.hl.main",
-            globals.stats_line,
+            constants.stats_line,
             col_start - 1,
             col_start + len
         )
@@ -150,13 +154,13 @@ end
 ---@param line integer
 ---@param col integer
 function Stats.mark_typo(line, col)
-    if globals.bufnr == -1 or not settings:get_selected("indicate_typos") then
+    if vim.g.speedtyper_bufnr == -1 or not settings:get_selected("indicate_typos") then
         return
     end
 
     api.nvim_buf_add_highlight(
-        globals.bufnr,
-        globals.ns_id,
+        vim.g.speedtyper_bufnr,
+        vim.g.speedtyper_ns_id,
         "speedtyper.hl.error",
         line,
         col - 1,
@@ -168,13 +172,13 @@ end
 ---@param line integer
 ---@param col integer
 function Stats.mark_char(line, col)
-    if globals.bufnr == -1 then
+    if vim.g.speedtyper_bufnr == -1 then
         return
     end
 
     api.nvim_buf_add_highlight(
-        globals.bufnr,
-        globals.ns_id,
+        vim.g.speedtyper_bufnr,
+        vim.g.speedtyper_ns_id,
         "speedtyper.hl.text",
         line,
         col - 1,
@@ -217,14 +221,14 @@ end
 
 ---@private
 function Stats:calculate_wpm()
-    local words = self.correct_chars / globals.word_length
-    self.wpm = words / (self.time / globals.min_to_sec)
+    local words = self.correct_chars / constants.word_length
+    self.wpm = words / (self.time / constants.min_to_sec)
 end
 
 ---@private
 function Stats:calculate_raw_wpm()
-    local words = self.typed_chars / globals.word_length
-    self.raw_wpm = words / (self.time / globals.min_to_sec)
+    local words = self.typed_chars / constants.word_length
+    self.raw_wpm = words / (self.time / constants.min_to_sec)
 end
 
 ---@private

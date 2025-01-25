@@ -1,15 +1,4 @@
-local api = vim.api
-
 local M = {}
-
----@type integer
-M.ns_id = api.nvim_create_namespace("SpeedTyper")
-
----@type integer
-M.bufnr = -1
-
----@type integer
-M.winnr = -1
 
 -- constants used for positioning and sizing of elements,
 -- 0-indexed, because most of the buf/win api's use 0-indexing

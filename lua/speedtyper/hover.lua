@@ -1,7 +1,7 @@
 local api = vim.api
 local instructions = require("speedtyper.instructions")
 local util = require("speedtyper.util")
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 
 ---@class speedtyper.hover
@@ -30,7 +30,7 @@ function Hover:set_keymaps()
         end
     end
     util.set_keymaps(settings.keymaps.hover, display_current_word_info, {
-        buffer = globals.bufnr,
+        buffer = vim.g.speedtyper_bufnr,
         desc = "SpeedTyper: Display the info of the item under the cursor",
     })
 end

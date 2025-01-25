@@ -1,5 +1,5 @@
 local api = vim.api
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 
 ---@class speedtyper.game_mode.rain
 ---@field timer uv_timer_t
@@ -25,10 +25,10 @@ end
 
 function Rain:start()
     for i, line in ipairs(self.text) do
-        api.nvim_buf_set_extmark(globals.bufnr, globals.ns_id, i + 1, 0, {
+        api.nvim_buf_set_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, i + 1, 0, {
             virt_text = { { line, "speedtyper.hl.sub" } },
             virt_text_win_col = 0,
-            priority = globals.extmark_priority,
+            priority = constants.extmark_priority,
         })
     end
 end

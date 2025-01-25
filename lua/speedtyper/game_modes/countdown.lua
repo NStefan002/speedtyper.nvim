@@ -1,7 +1,7 @@
 local api = vim.api
 local util = require("speedtyper.util")
 local pace_cursor = require("speedtyper.pace_cursor")
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
 
@@ -20,10 +20,10 @@ end
 function Countdown:reset_values()
     pcall(
         api.nvim_buf_clear_namespace,
-        globals.bufnr,
-        globals.ns_id,
-        globals.info_line,
-        globals.text_first_line + globals.text_num_lines + 1
+        vim.g.speedtyper_bufnr,
+        vim.g.speedtyper_ns_id,
+        constants.info_line,
+        constants.text_first_line + constants.text_num_lines + 1
     )
     for len, active in pairs(settings.round.length) do
         if active then
@@ -31,12 +31,11 @@ function Countdown:reset_values()
             self.time_sec = tonumber(len)
         end
     end
-    self.closing = false
     self.extm_ids = {}
     self.text_generator:reset()
     self.text_generator:update_lang()
-    local win_width = api.nvim_win_get_width(globals.winnr)
-    self.text = self.text_generator:generate_n_lines_text(globals.text_num_lines, win_width)
+    local win_width = api.nvim_win_get_width(vim.g.speedtyper_winnr)
+    self.text = self.text_generator:generate_n_lines_text(constants.text_num_lines, win_width)
     self.word_count = 0
     self.number_of_words = -1
     -- map lines to the length of each line
@@ -69,7 +68,7 @@ function Countdown:live_progress_text()
             timer_text,
             remaining_time_text
         ),
-        api.nvim_win_get_width(globals.winnr)
+        api.nvim_win_get_width(vim.g.speedtyper_winnr)
     )
 end
 
@@ -83,14 +82,13 @@ function Countdown:start_timer()
         0,
         100,
         vim.schedule_wrap(function()
-            if self.time_sec <= 0 or self.closing then
-                self:update_info_line(self:live_progress_text())
+            if self.time_sec <= 0 or not util.speedtyper_is_active() then
                 self:stop()
                 self.stats:display_stats()
                 return
             end
-            self:update_info_line(self:live_progress_text())
             self.time_sec = self.time_sec - 0.1
+            self:update_info_line(self:live_progress_text())
         end)
     )
 end

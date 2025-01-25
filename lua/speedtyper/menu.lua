@@ -2,7 +2,7 @@
 
 local api = vim.api
 local util = require("speedtyper.util")
-local globals = require("speedtyper.globals")
+local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 
 ---@class speedtyper.menu
@@ -25,12 +25,12 @@ function Menu.new()
 end
 
 function Menu:display_menu()
-    util.clear_buffer_text(globals.win_height, globals.bufnr)
+    util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
     self.settings_menu_active = false
     api.nvim_buf_set_lines(
-        globals.bufnr,
-        globals.menu_first_line,
-        globals.menu_first_line + 1,
+        vim.g.speedtyper_bufnr,
+        constants.menu_first_line,
+        constants.menu_first_line + 1,
         false,
         {
             self.round_settings_text,
@@ -88,17 +88,17 @@ function Menu:set_keymaps()
     util.set_keymaps(
         settings.keymaps.press_button,
         get_cword,
-        { buffer = globals.bufnr, desc = "SpeedTyper: press button" }
+        { buffer = vim.g.speedtyper_bufnr, desc = "SpeedTyper: press button" }
     )
 end
 
 ---@private
 function Menu:highlight_buttons()
     api.nvim_buf_clear_namespace(
-        globals.bufnr,
-        globals.ns_id,
-        globals.menu_first_line,
-        globals.menu_first_line + 1
+        vim.g.speedtyper_bufnr,
+        vim.g.speedtyper_ns_id,
+        constants.menu_first_line,
+        constants.menu_first_line + 1
     )
 
     for _, values in pairs(settings.round) do
@@ -108,19 +108,19 @@ function Menu:highlight_buttons()
             button_end = button_end or 0
             if active then
                 api.nvim_buf_add_highlight(
-                    globals.bufnr,
-                    globals.ns_id,
+                    vim.g.speedtyper_bufnr,
+                    vim.g.speedtyper_ns_id,
                     "speedtyper.hl.main",
-                    globals.menu_first_line,
+                    constants.menu_first_line,
                     button_begin,
                     button_end
                 )
             else
                 api.nvim_buf_add_highlight(
-                    globals.bufnr,
-                    globals.ns_id,
+                    vim.g.speedtyper_bufnr,
+                    vim.g.speedtyper_ns_id,
                     "speedtyper.hl.sub",
-                    globals.menu_first_line,
+                    constants.menu_first_line,
                     button_begin,
                     button_end
                 )
