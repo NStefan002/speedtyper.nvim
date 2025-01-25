@@ -1,9 +1,6 @@
 local eq = assert.are.same
 
 describe("Settings tests", function()
-    local plugin_path = vim.uv.fs_realpath("./")
-    vim.cmd(("set rtp+=%s"):format(plugin_path))
-
     local settings = require("speedtyper.settings")
     settings:load()
     local backup = {}
