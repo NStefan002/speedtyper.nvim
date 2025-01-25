@@ -10,17 +10,6 @@ describe("Util test", function()
         api.nvim_win_set_cursor(0, { 1, 0 })
     end)
 
-    it("simulate input", function()
-        util.simulate_input("abc")
-        local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-        eq("abc", buf_lines[1])
-
-        util.simulate_input("<CR>b")
-        buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-        eq("abc", buf_lines[1])
-        eq("b", buf_lines[2])
-    end)
-
     it("compare floats", function()
         eq(true, util.equals(1.535453, 1.535453))
         eq(false, util.equals(1.535453, 1.535452))

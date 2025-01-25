@@ -138,11 +138,6 @@ function M.remove_element(tbl, el, cmp)
     end
 end
 
----@param key string
-function M.simulate_keypress(key)
-    api.nvim_feedkeys(api.nvim_replace_termcodes(key, true, false, true), "x", true)
-end
-
 ---@param text string
 function M.simulate_input(text)
     M.simulate_keypress("a" .. text)
