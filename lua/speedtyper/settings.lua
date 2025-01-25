@@ -13,7 +13,7 @@ local logger = require("speedtyper.logger")
 
 ---@class speedtyper.settings.round
 ---@field text_variant table<"punctuation" | "numbers", boolean>
----@field game_mode table<"time" | "word" | "rain", boolean>
+---@field game_mode table<"time" | "word" | "rain" | "custom", boolean>
 ---@field length table<"15" | "30" | "60" | "120", boolean>
 
 ---@class speedtyper.settings.general

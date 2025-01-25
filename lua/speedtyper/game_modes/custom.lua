@@ -15,10 +15,12 @@ function Custom:after_start()
     local on_lines_detach = false
     api.nvim_buf_attach(vim.g.speedtyper_bufnr, false, {
         on_lines = function(...)
-            -- TODO: how to listen to game mode change?
-
             -- if the game is closing/user changes to different game mode, then return true to detach from the buffer
-            if not util.speedtyper_is_active() or on_lines_detach then
+            if
+                not util.speedtyper_is_active()
+                or on_lines_detach
+                or not settings.round.game_mode["custom"]
+            then
                 logger:log("stop waiting for the user to paste the text")
                 return true
             end
