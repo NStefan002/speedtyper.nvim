@@ -1,5 +1,19 @@
 local api = vim.api
 
+-- initialize global variables (only once)
+
+if vim.g.speedtyper_ns_id then
+    -- already initialized
+    return
+end
+
+---@type integer
+vim.g.speedtyper_ns_id = api.nvim_create_namespace("SpeedTyper")
+---@type integer
+vim.g.speedtyper_bufnr = -1
+---@type integer
+vim.g.speedtyper_winnr = -1
+
 api.nvim_create_user_command("SpeedTyper", function(event)
     local util = require("speedtyper.util")
     if #event.fargs > 0 then
@@ -9,15 +23,6 @@ api.nvim_create_user_command("SpeedTyper", function(event)
 
     -- set random seed for the random number generator (used in some of the modules)
     math.randomseed(os.time())
-
-    -- initialize global variables
-
-    ---@type integer
-    vim.g.speedtyper_ns_id = api.nvim_create_namespace("SpeedTyper")
-    ---@type integer
-    vim.g.speedtyper_bufnr = -1
-    ---@type integer
-    vim.g.speedtyper_winnr = -1
 
     -- load settings (will be visible to all of the modules)
     local settings = require("speedtyper.settings")
