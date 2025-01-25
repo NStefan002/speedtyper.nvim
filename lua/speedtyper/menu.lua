@@ -16,17 +16,13 @@ Menu.__index = Menu
 function Menu.new()
     local self = setmetatable({
         round = require("speedtyper.round"),
+        round_settings_text = " punctuation   numbers | time   words   rain   custom | 15   30   60   120 ",
     }, Menu)
-
-    self.round_settings_text =
-        " punctuation   numbers | time   words   rain   custom | 15   30   60   120 "
-
     return self
 end
 
 function Menu:display_menu()
     util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
-    self.settings_menu_active = false
     api.nvim_buf_set_lines(
         vim.g.speedtyper_bufnr,
         constants.menu_first_line,
