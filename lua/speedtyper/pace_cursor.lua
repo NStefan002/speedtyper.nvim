@@ -30,11 +30,12 @@ function PaceCursor.new(line_lengths)
         timer = vim.uv.new_timer(),
     }, PaceCursor)
 
-    self.extm_id = api.nvim_buf_set_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.line, 0, {
-        virt_text = { { "", "speedtyper.hl.cursor" } },
-        virt_text_win_col = self.col,
-        priority = constants.pace_cursor_extmark_priority,
-    })
+    self.extm_id =
+        api.nvim_buf_set_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.line, 0, {
+            virt_text = { { "", "speedtyper.hl.cursor" } },
+            virt_text_win_col = self.col,
+            priority = constants.pace_cursor_extmark_priority,
+        })
 
     while #self.line_lengths > constants.text_num_lines do
         util.remove_element(self.line_lengths, self.line_lengths[#self.line_lengths])
@@ -115,7 +116,12 @@ function PaceCursor:stop()
         self.timer = nil
     end
     if self.extm_id then
-        pcall(api.nvim_buf_del_extmark, vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.extm_id)
+        pcall(
+            api.nvim_buf_del_extmark,
+            vim.g.speedtyper_bufnr,
+            vim.g.speedtyper_ns_id,
+            self.extm_id
+        )
         self.extm_id = nil
     end
 end

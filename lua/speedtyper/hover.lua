@@ -1,7 +1,6 @@
 local api = vim.api
 local instructions = require("speedtyper.instructions")
 local util = require("speedtyper.util")
-local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 
 ---@class speedtyper.hover
