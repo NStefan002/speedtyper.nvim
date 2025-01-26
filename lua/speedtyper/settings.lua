@@ -470,7 +470,7 @@ function Settings:create_keymap_subcmd()
     end
     return {
         impl = function(args, data)
-            if #args ~= 1 then
+            if #args <= 1 then
                 util.error(
                     ("SpeedTyperSettings %s: command expects at least one argument"):format(
                         data.fargs[1]
@@ -487,7 +487,12 @@ function Settings:create_keymap_subcmd()
                 )
                 return
             end
-            -- TODO: parse args and set keymaps
+            local keymap = args[1]
+            table.remove(args, 1)
+            self.keymaps[keymap] = args
+
+            self:save()
+            require("speedtyper.ui"):redraw()
         end,
         complete = function(subcmd_arg_lead)
             return vim.iter(all_keymaps)
