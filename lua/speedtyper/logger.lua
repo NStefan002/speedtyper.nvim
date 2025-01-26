@@ -52,6 +52,9 @@ end
 
 function Logger:display()
     if not require("speedtyper.settings"):get_selected("debug_mode") then
+        require("speedtyper.util").info(
+            "Debug mode is turned OFF! Turn it ON to be able to see logs."
+        )
         return
     end
     local bufnr = api.nvim_create_buf(false, true)

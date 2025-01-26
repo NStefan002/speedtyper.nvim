@@ -46,7 +46,6 @@ Type the falling words
 before they reach the bottom.
 ]],
         custom = [[
-    [ Coming soon! ]
 Provide your own text to type.
 ]],
         punctuation = [[
@@ -146,8 +145,6 @@ Show the average accuracy of the last
 ]],
         demojify = [[
 If enabled, emojis will not be displayed.
-]],
-        show_instructions = [[
 ]],
         debug_mode = [[
 Enable this if you want to debug

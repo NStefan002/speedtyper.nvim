@@ -205,26 +205,6 @@ function GM:update_extmarks()
     end
 end
 
----TODO: refactor this function, should be easier to do it now that we found nvim_buf_attach
----Edge cases:
----[x] prevent user from going above the first line via `<bspace>`, `<c-u>`, `<c-w>`, etc. (less important)
----[x] jump to next line without user pressing `<cr>`
----[x] jump to prev line when user presses `<bspace>` at the beginning of the line
----[x] when finishing the middle line, move text up and move the cursor to the beginning of the middle line
----[x] check if we reached the end of the text
----[x] respect stop_on_error
----[x] respect strict_space
----[x] use api.nvim_strwidth(str) instead of #str
----[x] if we're on the last line of text, remove the unnecessary extmarks
----[x] display stats after stopping the game
----[x] update the live progress
----[x] put more meaningful logs
----FIX:
----[x] jumping to the next line with `<space>` when `strict_space` is `off`
----[x] last line extmark is not removed when needed
----[x] last character of the last line is not colored correctly
----[x] choose when to use `col` and when to use `last_typed_line_len`
-
 ---@protected
 ---@param args on_bytes_args
 function GM:handle_typing(args)
@@ -578,7 +558,7 @@ function GM.keymaps_info()
     -- )
 
     return util.center_text(
-        ("Start game: %s    New game: %s"):format(start_game, new_game),
+        ("Start Game: %s    New Game: %s"):format(start_game, new_game),
         api.nvim_win_get_width(vim.g.speedtyper_winnr)
     )
 end
