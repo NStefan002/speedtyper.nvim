@@ -523,12 +523,12 @@ function GM:set_keymaps()
         self:start_timer()
         self.pace_cursor:run()
         self.disable_completion()
-    end, { buffer = vim.g.speedtyper_bufnr, desc = "SpeedTyper: Start the game." })
+    end, { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: start the game" })
 
     util.set_keymaps(settings.keymaps.new_game, function()
         self:stop()
         self:start()
-    end, { buffer = vim.g.speedtyper_bufnr, desc = "SpeedTyper: New game." })
+    end, { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: new game" })
 end
 
 ---@return string

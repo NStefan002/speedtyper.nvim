@@ -30,7 +30,7 @@ function Hover:set_keymaps()
     end
     util.set_keymaps(settings.keymaps.hover, display_current_word_info, {
         buffer = vim.g.speedtyper_bufnr,
-        desc = "SpeedTyper: Display the info of the item under the cursor",
+        desc = "speedtyper: display the info of the item under the cursor",
     })
 end
 
@@ -93,21 +93,21 @@ function Hover:_close()
     end
     self.bufnr = nil
     self.winnr = nil
-    pcall(api.nvim_del_augroup_by_name, "SpeedTyperHover")
+    pcall(api.nvim_del_augroup_by_name, "SpeedtyperHover")
 end
 
 ---@private
 function Hover:create_autocmds()
     local autocmd = api.nvim_create_autocmd
     local augroup = api.nvim_create_augroup
-    local grp = augroup("SpeedTyperHover", {})
+    local grp = augroup("SpeedtyperHover", {})
 
     autocmd({ "CursorMoved", "CursorMovedI" }, {
         group = grp,
         callback = function()
             self:_close()
         end,
-        desc = "Close the hover window.",
+        desc = "speedtyper.hover: close the hover window",
     })
 end
 

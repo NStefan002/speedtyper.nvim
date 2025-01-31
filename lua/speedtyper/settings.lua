@@ -239,7 +239,7 @@ function Settings:create_user_commands()
     local function cmd(data)
         local fargs = data.fargs
         if #fargs == 0 then
-            util.error("SpeedTyperSettings: command expects at least one argument")
+            util.error("SpeedtyperSettings: command expects at least one argument")
             return
         end
         local subcommand_key = fargs[1]
@@ -247,7 +247,7 @@ function Settings:create_user_commands()
         local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
         local subcmd = subcmds[subcommand_key]
         if not subcmd then
-            util.error(("SpeedTyperSettings: unknown command '%s'"):format(subcommand_key))
+            util.error(("SpeedtyperSettings: unknown command '%s'"):format(subcommand_key))
             return
         end
         -- invoke the subcommand
@@ -256,7 +256,7 @@ function Settings:create_user_commands()
 
     local function cmd_completion(arg_lead, cmdline, _)
         -- get the subcommand
-        local subcmd_key, subcmd_arg_lead = cmdline:match("^SpeedTyperSettings%s(%S+)%s(.*)$")
+        local subcmd_key, subcmd_arg_lead = cmdline:match("^SpeedtyperSettings%s(%S+)%s(.*)$")
         if
             subcmd_key
             and subcmd_arg_lead
@@ -267,7 +267,7 @@ function Settings:create_user_commands()
             return subcmds[subcmd_key].complete(subcmd_arg_lead)
         end
         -- check if cmdline is a subcommand
-        if cmdline:match("^SpeedTyperSettings%s+%w*$") then
+        if cmdline:match("^SpeedtyperSettings%s+%w*$") then
             -- filter subcommands that match
             local subcommand_keys = vim.tbl_keys(subcmds)
             return vim.iter(subcommand_keys)
@@ -278,8 +278,8 @@ function Settings:create_user_commands()
         end
     end
 
-    api.nvim_create_user_command("SpeedTyperSettings", cmd, {
-        desc = "Change SpeedTyper settings.",
+    api.nvim_create_user_command("SpeedtyperSettings", cmd, {
+        desc = "change speedtyper settings",
         complete = cmd_completion,
         nargs = "*",
     })
@@ -302,7 +302,7 @@ function Settings:create_subcmd_for_map_option(option)
                 return
             elseif #args > 1 then
                 util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                    ("SpeedtyperSettings %s: command expects exactly one argument"):format(option)
                 )
                 return
             end
@@ -312,7 +312,7 @@ function Settings:create_subcmd_for_map_option(option)
                     args[1]
                 )
             then
-                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
+                util.error(("SpeedtyperSettings %s: unknown argument '%s'"):format(option, args[1]))
                 return
             end
             for opt, _ in pairs(self.general[option]) do
@@ -344,12 +344,12 @@ function Settings:create_subcmd_for_bool_option(option)
                 return
             elseif #args ~= 1 then
                 util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                    ("SpeedtyperSettings %s: command expects exactly one argument"):format(option)
                 )
                 return
             end
             if not util.tbl_contains(util.get_bool_option_completion(""), args[1]) then
-                util.error(("SpeedTyperSettings %s: unknown argument '%s'"):format(option, args[1]))
+                util.error(("SpeedtyperSettings %s: unknown argument '%s'"):format(option, args[1]))
                 return
             end
             ---@type boolean
@@ -382,14 +382,14 @@ function Settings:create_subcmd_for_number_option(option, min, max)
                 return
             elseif #args ~= 1 then
                 util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(option)
+                    ("SpeedtyperSettings %s: command expects exactly one argument"):format(option)
                 )
                 return
             end
             local new_val = tonumber(args[1])
             if new_val == nil or new_val < min or new_val > max then
                 util.error(
-                    ("SpeedTyperSettings %s: value must be between %d and %d"):format(
+                    ("SpeedtyperSettings %s: value must be between %d and %d"):format(
                         option,
                         min,
                         max
@@ -415,7 +415,7 @@ function Settings:create_info_subcmd()
         impl = function(args, data)
             if #args ~= 1 then
                 util.error(
-                    ("SpeedTyperSettings %s: command expects exactly one argument"):format(
+                    ("SpeedtyperSettings %s: command expects exactly one argument"):format(
                         data.fargs[1]
                     )
                 )
@@ -423,7 +423,7 @@ function Settings:create_info_subcmd()
             end
             if not util.tbl_contains(all_options, args[1]) then
                 util.error(
-                    ("SpeedTyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
+                    ("SpeedtyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1])
                 )
                 return
             end
@@ -445,7 +445,7 @@ function Settings:create_reset_subcmd()
     return {
         impl = function(args, _)
             if #args ~= 0 then
-                util.error("SpeedTyperSettings reset_settings: no arguments expected")
+                util.error("SpeedtyperSettings reset_settings: no arguments expected")
                 return
             end
             local prompt = require("speedtyper.instructions"):get("reset_settings")
@@ -472,7 +472,7 @@ function Settings:create_keymap_subcmd()
         impl = function(args, data)
             if #args <= 1 then
                 util.error(
-                    ("SpeedTyperSettings %s: command expects at least one argument"):format(
+                    ("SpeedtyperSettings %s: command expects at least one argument"):format(
                         data.fargs[1]
                     )
                 )
@@ -480,7 +480,7 @@ function Settings:create_keymap_subcmd()
             end
             if not util.tbl_contains(all_keymaps, args[1]) then
                 util.error(
-                    ("SpeedTyperSettings %s: unknown keymap option '%s'"):format(
+                    ("SpeedtyperSettings %s: unknown keymap option '%s'"):format(
                         data.fargs[1],
                         args[1]
                     )

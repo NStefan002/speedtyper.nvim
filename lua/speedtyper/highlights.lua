@@ -56,7 +56,7 @@ function Hl:create_autocmds()
         return
     end
 
-    self.augrp = api.nvim_create_augroup("SpeedTyperHighlight", {})
+    self.augrp = api.nvim_create_augroup("SpeedtyperHighlight", {})
     api.nvim_create_autocmd("Colorscheme", {
         group = self.augrp,
         pattern = "*",

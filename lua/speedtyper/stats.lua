@@ -15,7 +15,7 @@ local constants = require("speedtyper.constants")
 ---@field correct_spaces integer number of correctly typed spaces
 ---@field typed_chars integer number of characters typed
 ---@field typos integer
----@field text_info speedtyper.stack  stack contains elements of type SpeedTyperCharInfo
+---@field text_info speedtyper.stack  stack contains elements of type speedtyper.char_info
 local Stats = {}
 Stats.__index = Stats
 

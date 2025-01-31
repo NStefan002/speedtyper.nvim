@@ -87,7 +87,7 @@ Choose one of available languages.
 ]],
         theme = [[
 Choose one of the predefined themes.
-If `random` is selected, SpeedTyper
+If `random` is selected, speedtyper.nvim
 will randomly apply one of the themes.
 ]],
         cursor_style = [[
@@ -149,7 +149,7 @@ If enabled, emojis will not be displayed.
         debug_mode = [[
 Enable this if you want to debug
 some issue. Display the log with
-`:SpeedTyperLog`.
+`:SpeedtyperLog`.
 ]],
         reset_settings = [[
 Reset to default settings.

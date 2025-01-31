@@ -42,7 +42,7 @@ end
 function UI:create_autocmds()
     local autocmd = api.nvim_create_autocmd
     local augroup = api.nvim_create_augroup
-    local grp = augroup("SpeedTyperUI", {})
+    local grp = augroup("SpeedtyperUI", {})
 
     autocmd("WinClosed", {
         group = grp,
@@ -56,7 +56,7 @@ function UI:create_autocmds()
                 require("speedtyper.settings"):save()
             end
         end,
-        desc = "Internally close the SpeedTyper when its gets closed.",
+        desc = "speedtyper.ui: internally close the speedtyper when its closed",
     })
     autocmd({ "BufDelete", "BufWinLeave" }, {
         group = grp,
@@ -67,7 +67,7 @@ function UI:create_autocmds()
                 self:close()
             end)
         end,
-        desc = "Close the SpeedTyper window when leaving buffer (to update the ui internal state)",
+        desc = "speedtyper.ui: close the speedtyper window when leaving buffer (to update the ui internal state)",
     })
     autocmd("VimResized", {
         group = grp,
@@ -75,13 +75,14 @@ function UI:create_autocmds()
             logger:log("VimResized")
             self:redraw()
         end,
-        desc = "Redraw the SpeedTyper window when the user resizes the editor.",
+        desc = "speedtyper.ui: redraw the speedtyper window when the user resizes the editor",
     })
 end
 
 ---@private
 function UI:open()
     local width = self.menu:get_width()
+    -- TODO: move this check to util and create the separate function
     local nvim_uis = api.nvim_list_uis()
     if #nvim_uis > 0 then
         if nvim_uis[1].height <= constants.win_height or nvim_uis[1].width <= width then
@@ -104,7 +105,7 @@ function UI:open()
         },
         footer = {
             { " :", "speedtyper.hl.text" },
-            { "SpeedTyperSettings", "speedtyper.hl.main" },
+            { "SpeedtyperSettings", "speedtyper.hl.main" },
             { " ", "" },
             { "<option>", "speedtyper.hl.sub" },
             { " ", "" },
@@ -164,7 +165,7 @@ end
 
 function UI:cleanup()
     self.menu:exit_menu()
-    pcall(api.nvim_del_augroup_by_name, "SpeedTyperUI")
+    pcall(api.nvim_del_augroup_by_name, "SpeedtyperUI")
     self:restore_options()
 end
 

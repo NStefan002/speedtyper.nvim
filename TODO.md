@@ -33,7 +33,7 @@
 - [ ] Settings
   - [x] fully (or almost fully) remove config and the 'standard' way of
     configuring plugin
-  - [x] if no arguments are passed to `:SpeedTyperSettings <option>` then show
+  - [x] if no arguments are passed to `:SpeedtyperSettings <option>` then show
     the current value
   - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere

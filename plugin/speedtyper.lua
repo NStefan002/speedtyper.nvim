@@ -8,13 +8,13 @@ if vim.g.speedtyper_ns_id then
 end
 
 ---@type integer
-vim.g.speedtyper_ns_id = api.nvim_create_namespace("SpeedTyper")
+vim.g.speedtyper_ns_id = api.nvim_create_namespace("Speedtyper")
 ---@type integer
 vim.g.speedtyper_bufnr = -1
 ---@type integer
 vim.g.speedtyper_winnr = -1
 
-api.nvim_create_user_command("SpeedTyper", function(event)
+api.nvim_create_user_command("Speedtyper", function(event)
     local util = require("speedtyper.util")
     if #event.fargs > 0 then
         util.error("Command does not take arguments.")
@@ -36,10 +36,10 @@ api.nvim_create_user_command("SpeedTyper", function(event)
     require("speedtyper.ui"):toggle()
 end, {
     nargs = 0,
-    desc = "Start SpeedTyper",
+    desc = "start speedtyper",
 })
 
-api.nvim_create_user_command("SpeedTyperLog", function(event)
+api.nvim_create_user_command("SpeedtyperLog", function(event)
     local util = require("speedtyper.util")
     if #event.fargs > 0 then
         util.error("Command does not take arguments.")
@@ -47,5 +47,5 @@ api.nvim_create_user_command("SpeedTyperLog", function(event)
     require("speedtyper.logger"):display()
 end, {
     nargs = 0,
-    desc = "Display SpeedTyper Log",
+    desc = "display speedtyper log",
 })
