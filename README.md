@@ -8,7 +8,7 @@ Practice typing in Neovim!
 - [Installation](#installation)
 - [Commands](#commands)
 - [Settings](#settings)
-<!-- - [Contributing](#contributing) -->
+- [Contributing](#contributing)
 - [Credits](#credits)
 - [See Also](#see-also)
 
@@ -21,8 +21,8 @@ Practice typing in Neovim!
   - `rain` - coming soon
 - Vast amount of settings (see [settings](#settings))
 - Sounds when typing or making mistakes
-- Customizable colors <!-- (see [contributing](#contributing) if you want to
-  submit your own colorscheme) -->
+- Customizable colors (see [contributing](#contributing) if you want
+  to submit your own colorscheme)
 - Customizable keybindings
 - Lots of different languages to choose from (both natural and programming
   languages)
@@ -58,10 +58,9 @@ return {
 
 Use `:SpeedtyperSettings info <option>` to get information about a specific option.
 
-<!-- TODO: -->
-<!-- ## Contributing -->
-<!---->
-<!-- See [CONTRIBUTING.md](CONTRIBUTING.md). -->
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Credits
 
