@@ -9,6 +9,7 @@ Table of Contents                          *speedtyper.nvim-table-of-contents*
   - Installation                |speedtyper.nvim-speedtyper.nvim-installation|
   - Commands                        |speedtyper.nvim-speedtyper.nvim-commands|
   - Settings                        |speedtyper.nvim-speedtyper.nvim-settings|
+  - Contributing                |speedtyper.nvim-speedtyper.nvim-contributing|
   - Credits                          |speedtyper.nvim-speedtyper.nvim-credits|
   - See Also                        |speedtyper.nvim-speedtyper.nvim-see-also|
 
@@ -24,6 +25,7 @@ TABLE OF CONTENTS          *speedtyper.nvim-speedtyper.nvim-table-of-contents*
 - |speedtyper.nvim-installation|
 - |speedtyper.nvim-commands|
 - |speedtyper.nvim-settings|
+- |speedtyper.nvim-contributing|
 - |speedtyper.nvim-credits|
 - |speedtyper.nvim-see-also|
 
@@ -37,7 +39,8 @@ FEATURES                            *speedtyper.nvim-speedtyper.nvim-features*
     - `rain` - coming soon
 - Vast amount of settings (see |speedtyper.nvim-settings|)
 - Sounds when typing or making mistakes
-- Customizable colors 
+- Customizable colors (see |speedtyper.nvim-contributing| if you want
+    to submit your own colorscheme)
 - Customizable keybindings
 - Lots of different languages to choose from (both natural and programming
     languages)
@@ -74,6 +77,11 @@ SETTINGS                            *speedtyper.nvim-speedtyper.nvim-settings*
 
 Use `:SpeedtyperSettings info <option>` to get information about a specific
 option.
+
+
+CONTRIBUTING                    *speedtyper.nvim-speedtyper.nvim-contributing*
+
+See CONTRIBUTING.md <CONTRIBUTING.md>.
 
 
 CREDITS                              *speedtyper.nvim-speedtyper.nvim-credits*
