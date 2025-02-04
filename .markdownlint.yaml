@@ -1,0 +1,13 @@
+MD013:
+  line_length: 120
+  tables: false
+MD028: false
+MD033:
+  allowed_elements:
+    - "details"
+    - "summary"
+    - "b"
+    - "table"
+    - "tr"
+    - "td"
+    - "a"
