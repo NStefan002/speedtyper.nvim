@@ -14,6 +14,8 @@ List of planned features and bug fixes.
   - [ ] display requested info in the speedtyper ui
 - [x] punctuation game modifier
 - [x] numbers game modifier
+- [ ] if the pace cursor has the same style as the real cursor, then it
+  should be highlighted differently
 - [ ] Stats
   - [x] wpm
   - [x] raw wpm
