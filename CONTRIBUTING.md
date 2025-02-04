@@ -73,29 +73,40 @@ information on how to set up Neovim as a Lua interpreter, see
 If you want to test your contributions to `speedtyper.nvim` manually,
 we recommend you set [`NVIM_APPNAME`](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)
 to something other than `nvim`, so that your test environment
-doesn't interfere with your regular Neovim installation and the plugins you use.
+doesn't interfere with your regular Neovim installation or the plugins you use.
 
-## Creating new Color Schemes
+## Creating new color schemes
 
-Create a file in `lua/speedtyper/themes/` directory and name it `<your_theme>.lua`.
+Create a file in the `lua/speedtyper/themes/` directory and name it `<your_theme>.lua`.
 That lua file should return a function that returns an object with type `speedtyper.hl_group`.
 
 <details>
-<summary>Here is a very simple example.</summary>
+<summary>Here's how it's done in the `default.lua` (yours can be much more complex).</summary>
 
 ```lua
 ---@return speedtyper.hl_group
 return function()
     return {
-        ["speedtyper.hl.bg"] = { link = "Folded" },
-        ["speedtyper.hl.cursor"] = { link = "IncSearch" },
-        ["speedtyper.hl.error"] = { link = "DiagnosticUnderlineError" },
-        ["speedtyper.hl.main"] = { link = "DiagnosticHint" },
-        ["speedtyper.hl.sub"] = { link = "Comment" },
-        ["speedtyper.hl.text"] = { link = "Normal" },
+        ["speedtyper.hl.bg"] = { bg = "#07080d", fg = "#9b9ea4" },
+        ["speedtyper.hl.cursor"] = { fg = "#a6dbff", bg = "#a6dbff" },
+        ["speedtyper.hl.error"] = { fg = "#ffc0b9", underline = true },
+        ["speedtyper.hl.main"] = { fg = "#a6dbff" },
+        ["speedtyper.hl.sub"] = { fg = "#9b9ea4" },
+        ["speedtyper.hl.text"] = { fg = "#e0e2ea" },
     }
 end
 ```
+
+</details>
+
+<details>
+<summary>See what each of the highlight groups colors.</summary>
+
+![speedtyper_highlights_info](https://github.com/user-attachments/assets/5ecd6643-6e88-4f20-8e7b-47e909cd2e0a)
+
+- - -
+
+![speedtyper_highlights_info2](https://github.com/user-attachments/assets/22686ba5-3abd-4f63-b285-ebc87e18c9a3)
 
 </details>
 
@@ -109,4 +120,4 @@ end
 
 ## Thank you
 
-We appreciate your time and effort in contributing to `speedtyper.nvim`! Thank you for your help!
+We appreciate your time and effort in contributing to `speedtyper.nvim`! Thank you!
