@@ -133,7 +133,9 @@ function UI:open()
 
     logger:log("winnr:", winnr, "bufnr:", bufnr)
 
+    -- NOTE: I have no clue why we need to call both of these functions
     api.nvim_win_set_hl_ns(vim.g.speedtyper_winnr, vim.g.speedtyper_ns_id)
+    api.nvim_set_hl_ns(vim.g.speedtyper_ns_id)
     require("speedtyper.highlights"):setup()
     self:create_autocmds()
     self.menu:display_menu()
