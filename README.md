@@ -30,6 +30,9 @@ Practice typing in Neovim!
 
 ## 📦 Installation
 
+> [!NOTE]
+> Neovim version 0.10.4 or higher is required.
+
 [lazy](https://github.com/folke/lazy.nvim):
 
 ```lua
@@ -52,7 +55,7 @@ return {
 - `:Speedtyper` - toggles the speedtyper window
 - `:SpeedtyperSettings <option> <value>` - change settings
 - `:SpeedtyperLog` - for debugging, opens the log file, **NOTE:** logging
-  functionality is active only if `debug_mode` is active (see below)
+  functionality is active only if `debug_mode` is active
 
 ## 🔧 Settings
 
