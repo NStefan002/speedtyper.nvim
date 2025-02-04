@@ -1,21 +1,19 @@
-# ✅☑️ TODO (v2 branch)
+# ✅☑️ TODO
 
-- [x] Rewrite plugin
-- [x] Add tests
-- [ ] more tests
-- [ ] change highlight groups
-- [x] move `lua/speedtyper/langs/` to `assets/languages`
-- [x] Add vimdoc ci
-- [ ] Update README
-- [ ] create `health.lua` for dependencies
-- [ ] Make independent ui
+List of planned features and bug fixes.
+
+## General (changes that users will notice)
+
+- [x] change highlight groups
+- [ ] update README
+- [ ] rain mode (does not count towards stats, it's just for fun)
+- [ ] make independent ui
   - [x] hover instructions
   - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like
     in v1)
   - [ ] display requested info in the speedtyper ui
 - [x] punctuation game modifier
 - [x] numbers game modifier
-- [ ] Possibly make ui similar to monkeytype's (+ rain mode)
 - [ ] Stats
   - [x] wpm
   - [x] raw wpm
@@ -56,15 +54,27 @@
   - [x] live_progress
   - [ ] average_speed
   - [ ] average_accuracy
+  - [ ] rain_direction
+  - [ ] rain_lives
+  - [ ] rain_starting_speed
+  - [ ] rain_speed_increase
   - [x] demojify
   - [x] debug_mode
   - [x] reset settings
   - [x] stop_on_error and confidence_mode can collide, fix it
-- [ ] Other
-  - [x] get rid of magic constants
-  - [x] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
-  - [x] avoid `closing` and `active` and just check if the buf/win is valid
-  - [x] use `vim.g` instead of `speedtyper.globals`
-  - [ ] avoid using `nil` for integer values (see hover and pace_cursor)
-  - [ ] rework `stats.lua`
-  - [ ] use `vim.tbl_get()` to get values from tables (mainly for settings)
+
+## Internal (code related stuff)
+
+- [x] Rewrite plugin
+- [x] Add tests
+- [ ] more tests
+- [x] move `lua/speedtyper/langs/` to `assets/languages`
+- [x] Add vimdoc ci
+- [ ] create `health.lua` for dependencies
+- [ ] avoid using `nil` for integer values (see hover and pace_cursor)
+- [ ] rework `stats.lua`
+- [x] get rid of magic constants
+- [x] use `nvim_strwidth` instead of `#str` (because of non-ASCII characters)
+- [x] avoid `closing` and `active` and just check if the buf/win is valid
+- [x] use `vim.g` instead of `speedtyper.globals`
+- [ ] use `vim.tbl_get()` to get values from tables (mainly for settings)
