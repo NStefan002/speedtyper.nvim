@@ -28,7 +28,7 @@ function Hover:set_keymaps()
             self:open()
         end
     end
-    util.set_keymaps(settings.keymaps.hover, display_current_word_info, {
+    util.set_keymaps(settings.general.keymaps.hover, display_current_word_info, {
         buffer = vim.g.speedtyper_bufnr,
         desc = "speedtyper: display the info of the item under the cursor",
     })

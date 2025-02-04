@@ -1,6 +1,7 @@
 local countdown = require("speedtyper.game_modes.countdown")
 local stopwatch = require("speedtyper.game_modes.stopwatch")
 local custom = require("speedtyper.game_modes.custom")
+local rain = require("speedtyper.game_modes.rain")
 local util = require("speedtyper.util")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
@@ -45,8 +46,11 @@ function Round:set_game_mode()
     elseif game_mode == "custom" then
         self.active_game_mode = custom
     elseif game_mode == "rain" then
-        self.active_game_mode = nil
+        self.active_game_mode = rain
+        -- TODO: remove the next three lines when you finish implementing rain mode
         util.info("Rain mode coming soon!")
+        self.active_game_mode = nil
+        return
     else
         util.error(("Invalid game mode: %s"):format(game_mode))
     end

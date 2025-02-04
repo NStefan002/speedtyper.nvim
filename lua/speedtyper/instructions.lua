@@ -26,6 +26,9 @@
 ---@field average_speed string
 ---@field average_accuracy string
 ---@field reset_settings string
+---@field demojify string
+---@field debug_mode string
+---@field keymaps string
 local Instructions = {}
 Instructions.__index = Instructions
 
@@ -155,6 +158,16 @@ some issue. Display the log with
 Reset to default settings.
 **Warning** this action can not be
 undone.
+]],
+        keymaps = [[
+Set a mapping for the following actions:
+  - start game
+  - new game
+  - restart game
+  - hover (like lsp hover)
+  - press button
+
+`:SpeedtyperSettings keymaps <action> <key1> <key2> ...`
 ]],
     }, Instructions)
     return self

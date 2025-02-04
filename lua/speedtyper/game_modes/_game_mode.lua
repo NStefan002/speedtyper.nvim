@@ -60,7 +60,7 @@ function GM:stop()
         self.timer:close()
         self.timer = nil
     end
-    pcall(util.unset_keymaps, settings.keymaps.start_game, vim.g.speedtyper_bufnr)
+    pcall(util.unset_keymaps, settings.general.keymaps.start_game, vim.g.speedtyper_bufnr)
 
     logger:log("game mode stopped")
 end
@@ -508,7 +508,7 @@ end
 function GM:set_keymaps()
     self:update_info_line(self.keymaps_info())
 
-    util.set_keymaps(settings.keymaps.start_game, function()
+    util.set_keymaps(settings.general.keymaps.start_game, function()
         self:attach_to_speedtyper_buffer()
         api.nvim_set_option_value("modifiable", true, { buf = vim.g.speedtyper_bufnr })
         vim.cmd.startinsert()
@@ -524,7 +524,7 @@ function GM:set_keymaps()
         self.disable_completion()
     end, { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: start the game" })
 
-    util.set_keymaps(settings.keymaps.new_game, function()
+    util.set_keymaps(settings.general.keymaps.new_game, function()
         self:stop()
         self:start()
     end, { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: new game" })
@@ -532,21 +532,21 @@ end
 
 ---@return string
 function GM.keymaps_info()
-    local start_game = type(settings.keymaps.start_game) == "table"
+    local start_game = type(settings.general.keymaps.start_game) == "table"
             ---@diagnostic disable-next-line: param-type-mismatch
-            and table.concat(settings.keymaps.start_game, "/")
-        or settings.keymaps.start_game
+            and table.concat(settings.general.keymaps.start_game, "/")
+        or settings.general.keymaps.start_game
 
-    local new_game = type(settings.keymaps.new_game) == "table"
+    local new_game = type(settings.general.keymaps.new_game) == "table"
             ---@diagnostic disable-next-line: param-type-mismatch
-            and table.concat(settings.keymaps.new_game, "/")
-        or settings.keymaps.new_game
+            and table.concat(settings.general.keymaps.new_game, "/")
+        or settings.general.keymaps.new_game
 
     -- TODO: uncomment when you finish restart functionality
-    -- local restart_game = type(settings.keymaps.restart_game) == "table"
+    -- local restart_game = type(settings.general.keymaps.restart_game) == "table"
     --         ---@diagnostic disable-next-line: param-type-mismatch
-    --         and table.concat(settings.keymaps.restart_game, "/")
-    --     or settings.keymaps.restart_game
+    --         and table.concat(settings.general.keymaps.restart_game, "/")
+    --     or settings.general.keymaps.restart_game
     -- return util.center_text(
     --     ("Start game: %s    New game: %s    Restart game: %s"):format(
     --         start_game,

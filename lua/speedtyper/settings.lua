@@ -16,6 +16,14 @@ local logger = require("speedtyper.logger")
 ---@field game_mode table<"time" | "word" | "rain" | "custom", boolean>
 ---@field length table<"15" | "30" | "60" | "120", boolean>
 
+---@class speedtyper.settings.general.keymaps
+---@field start_game string | string[]
+---@field new_game string | string[]
+---@field restart_game string | string[]
+---@field hover string | string[]
+---@field press_button string | string[]
+---TODO: add more
+
 ---@class speedtyper.settings.general
 ---@field language table<string, boolean>
 ---@field theme table<string, boolean>
@@ -35,25 +43,16 @@ local logger = require("speedtyper.logger")
 -- -@field average_accuracy boolean
 ---@field demojify boolean
 ---@field debug_mode boolean
-
----@class speedtyper.settings.keymap
----@field start_game string | string[]
----@field new_game string | string[]
----@field restart_game string | string[]
----@field hover string | string[]
----@field press_button string | string[]
----TODO: add more
+---@field keymaps speedtyper.settings.general.keymaps
 
 ---@class speedtyper.default_settings
 ---@field round speedtyper.settings.round
 ---@field general speedtyper.settings.general
----@field keymaps speedtyper.settings.keymap
 
 ---@class speedtyper.settings
 ---@field default speedtyper.default_settings
 ---@field round speedtyper.settings.round
 ---@field general speedtyper.settings.general
----@field keymaps speedtyper.settings.keymap
 local Settings = {}
 Settings.__index = Settings
 
@@ -103,15 +102,14 @@ function Settings.new()
                 -- average_accuracy = false,
                 demojify = false,
                 debug_mode = false,
-            },
 
-            -- TODO: figure out how to set these (commandline or via `setup`)
-            keymaps = {
-                start_game = { "I", "i" },
-                new_game = "N",
-                restart_game = "R",
-                hover = "K",
-                press_button = { "<CR>", "<2-LeftMouse>" },
+                keymaps = {
+                    start_game = { "I", "i" },
+                    new_game = "N",
+                    restart_game = "R",
+                    hover = "K",
+                    press_button = { "<CR>", "<2-LeftMouse>" },
+                },
             },
         },
     }, Settings)
@@ -142,7 +140,6 @@ function Settings.new()
 
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
-    self.keymaps = vim.deepcopy(self.default.keymaps)
 
     return self
 end
@@ -160,14 +157,12 @@ function Settings:load()
     end
     self.round = vim.tbl_deep_extend("force", self.round, settings.round or {})
     self.general = vim.tbl_deep_extend("force", self.general, settings.general or {})
-    self.keymaps = vim.tbl_deep_extend("force", self.keymaps, settings.keymaps or {})
 end
 
 function Settings:save()
     local settings = {
         round = self.round,
         general = self.general,
-        keymaps = self.keymaps,
     }
     local json = vim.fn.json_encode(settings)
     local file = io.open(settings_path, "w")
@@ -183,7 +178,6 @@ end
 function Settings:reset_settings()
     self.round = vim.deepcopy(self.default.round)
     self.general = vim.deepcopy(self.default.general)
-    self.keymaps = vim.deepcopy(self.default.keymaps)
     logger:log("settings reset")
 end
 
@@ -465,7 +459,7 @@ end
 ---@return speedtyper.settings_subcmd
 function Settings:create_keymap_subcmd()
     local all_keymaps = {}
-    for key, _ in pairs(self.keymaps) do
+    for key, _ in pairs(self.general.keymaps) do
         table.insert(all_keymaps, key)
     end
     return {
@@ -489,7 +483,7 @@ function Settings:create_keymap_subcmd()
             end
             local keymap = args[1]
             table.remove(args, 1)
-            self.keymaps[keymap] = args
+            self.general.keymaps[keymap] = args
 
             self:save()
             require("speedtyper.ui"):redraw()

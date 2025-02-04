@@ -82,7 +82,7 @@ function Menu:set_keymaps()
         self:activate_button(button)
     end
     util.set_keymaps(
-        settings.keymaps.press_button,
+        settings.general.keymaps.press_button,
         get_cword,
         { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: press button" }
     )
