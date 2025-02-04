@@ -50,6 +50,8 @@ FEATURES                            *speedtyper.nvim-speedtyper.nvim-features*
 
 INSTALLATION                    *speedtyper.nvim-speedtyper.nvim-installation*
 
+
+  [!NOTE] Neovim version 0.10.4 or higher is required.
 lazy <https://github.com/folke/lazy.nvim>
 
 >lua
@@ -71,7 +73,7 @@ COMMANDS                            *speedtyper.nvim-speedtyper.nvim-commands*
 - `:Speedtyper` - toggles the speedtyper window
 - `:SpeedtyperSettings <option> <value>` - change settings
 - `:SpeedtyperLog` - for debugging, opens the log file, **NOTE:** logging
-    functionality is active only if `debug_mode` is active (see below)
+    functionality is active only if `debug_mode` is active
 
 
 SETTINGS                            *speedtyper.nvim-speedtyper.nvim-settings*
