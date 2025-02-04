@@ -72,10 +72,10 @@ describe("Util test", function()
 
     it("create cursor", function()
         local cursor = util.create_cursor("line", false)
-        eq("i:ver30", cursor)
+        eq("i:ver30-speedtyper.hl.cursor", cursor)
 
         cursor = util.create_cursor("block", true)
-        eq("i:block,i:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor", cursor)
+        eq("i:block-speedtyper.hl.cursor,i:blinkwait700-blinkoff400-blinkon250", cursor)
     end)
 
     it("map completion", function()
