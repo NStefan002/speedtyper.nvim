@@ -6,6 +6,7 @@ documentation, or creating new color schemes.
 
 ## Table of contents
 
+- [Getting started](#getting-started)
 - [Commit messages / PR title](#commit-messages--pr-title)
 - [CI](#ci)
 - [Development](#development)
@@ -17,6 +18,11 @@ documentation, or creating new color schemes.
 - [Creating new Color Schemes](#creating-new-color-schemes)
 - [General tips when writing code](#general-tips-when-writing-code)
 - [Thank you](#thank-you)
+
+## Getting started
+
+If you want to contribute to `speedtyper.nvim`, and you don't have a specific idea in mind, you can check the
+[TODO](TODO.md) list for some ideas.
 
 ## Commit messages / PR title
 
