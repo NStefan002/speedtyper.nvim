@@ -32,6 +32,8 @@ Practice typing in Neovim!
 
 > [!NOTE]
 > Neovim version 0.10.4 or higher is required.
+>
+> Nerd Fonts are optional, run `:SpeedtyperSettings demojify on` if you don't have them installed.
 
 [lazy](https://github.com/folke/lazy.nvim):
 
