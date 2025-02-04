@@ -1,0 +1,64 @@
+name: Bug Report
+description: Report a problem in speedtyper.nvim
+labels: [bug]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        *Before reporting:*
+        - Try to find a way to consistently reproduce the bug
+        - Search existing issues (including closed)
+
+  - type: textarea
+    attributes:
+      label: "Problem"
+      description: "Describe the current behavior. May include screenshots or videos."
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: "Steps to reproduce"
+      description: |
+        - Write the steps to reproduce the behavior, if possible.
+      placeholder: |
+        1. ...
+        2. ...
+        ...
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: "SpeedtyperLog output"
+      description: |
+        1. `:SpeedtyperSettings debug_mode on`
+        2. If possible, redo the sequence that causes problems
+        3. `:SpeedtyperLog`
+        4. Copy the contents of the displayed buffer
+      placeholder: |
+        **Paste the log output here**
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: "Expected behavior"
+      description: "Describe the behavior you expect or leave this field empty if it's very obvious."
+    validations:
+      required: false
+
+  - type: input
+    attributes:
+      label: "Neovim version (`nvim -v`)"
+      placeholder: "NVIM v0.10.4"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: "Terminal name/version"
+      placeholder: "wezterm 20240203-110809-5046fc22"
+    validations:
+      required: false
