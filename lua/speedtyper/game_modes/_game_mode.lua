@@ -45,7 +45,6 @@ function GM:start()
         api.nvim_set_option_value("modifiable", true, { buf = vim.g.speedtyper_bufnr })
     end)
     self:set_extmarks()
-    util.set_cursor_pos(constants.text_first_line + 1, 0)
     vim.keymap.set("i", "<cr>", "<nop>", { buffer = vim.g.speedtyper_bufnr })
     self:after_start()
 end
