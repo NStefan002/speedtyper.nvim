@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*    For Neovim >= 0.10.0    Last change: 2025 February 03
+*speedtyper.nvim.txt*    For Neovim >= 0.10.0    Last change: 2025 February 04
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -75,8 +75,10 @@ COMMANDS                            *speedtyper.nvim-speedtyper.nvim-commands*
 
 SETTINGS                            *speedtyper.nvim-speedtyper.nvim-settings*
 
-Use `:SpeedtyperSettings info <option>` to get information about a specific
-option.
+Settings are changed via the `:SpeedtyperSettings` command. To make this
+process easy and fun to use, there is built-in autocompletion for options and
+values. Use `:SpeedtyperSettings info <option>` to get information about a
+specific option.
 
 
 CONTRIBUTING                    *speedtyper.nvim-speedtyper.nvim-contributing*
