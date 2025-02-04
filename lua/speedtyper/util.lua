@@ -188,10 +188,10 @@ function M.create_cursor(type, blinking)
         ["line"] = "ver30",
         ["underline"] = "hor25",
     }
-    local cursor = ("i:%s"):format(styles_to_vim_config[type])
+    local cursor = ("i:%s-speedtyper.hl.cursor"):format(styles_to_vim_config[type])
 
     if blinking then
-        cursor = ("%s,%s"):format(cursor, "i:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor")
+        cursor = ("%s,%s"):format(cursor, "i:blinkwait700-blinkoff400-blinkon250")
     end
 
     return cursor
