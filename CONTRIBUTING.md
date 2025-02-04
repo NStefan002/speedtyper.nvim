@@ -75,7 +75,7 @@ Create a file in `lua/speedtyper/themes/` directory and name it `<your_theme>.lu
 That lua file should return a function that returns an object with type `speedtyper.hl_group`.
 
 <details>
-<summary>Here is `lua/speedtyper/themes/default.lua` for a very simple example.</summary>
+<summary>Here is a very simple example.</summary>
 
 ```lua
 ---@return speedtyper.hl_group
