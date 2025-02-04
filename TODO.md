@@ -66,3 +66,5 @@
   - [x] avoid `closing` and `active` and just check if the buf/win is valid
   - [x] use `vim.g` instead of `speedtyper.globals`
   - [ ] avoid using `nil` for integer values (see hover and pace_cursor)
+  - [ ] rework `stats.lua`
+  - [ ] use `vim.tbl_get()` to get values from tables (mainly for settings)
