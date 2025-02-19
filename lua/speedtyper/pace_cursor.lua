@@ -6,6 +6,7 @@ local settings = require("speedtyper.settings")
 ---@class speedtyper.pace_cursor
 ---@field private line integer
 ---@field private col integer
+---@field private shape string the character that represents the cursor
 ---@field private line_lengths integer[]
 ---@field private total_len_before integer how many non-visible characters is pace_cursor behind the current first character
 ---@field private total_len_after integer how many non-visible characters is pace_cursor ahead of the current last character
@@ -40,6 +41,9 @@ function PaceCursor.new(line_lengths)
     while #self.line_lengths > constants.text_num_lines do
         util.remove_element(self.line_lengths, self.line_lengths[#self.line_lengths])
     end
+
+    self.shape = self.get_cursor_char()
+    self:set_hl_grp()
 
     return self
 end
@@ -133,11 +137,48 @@ function PaceCursor:show_cursor(visible)
         return
     end
     api.nvim_buf_set_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.line, 0, {
-        virt_text = { { visible and " " or "", "speedtyper.hl.cursor" } },
+        virt_text = { { visible and self.shape or "", "speedtyper.hl.pace_cursor" } },
         virt_text_win_col = self.col,
         id = self.extm_id,
         priority = constants.pace_cursor_extmark_priority,
     })
+end
+
+---@private
+---@return string
+function PaceCursor.get_cursor_char()
+    local style = settings:get_selected("pace_cursor_style")
+    local demojify = settings:get_selected("demojify")
+
+    if style == "block" then
+        return demojify and " " or "█"
+    elseif style == "underline" then
+        return demojify and "_" or "▁"
+    else
+        return demojify and "|" or "│"
+    end
+end
+
+---self.shape has to be set before calling this function
+function PaceCursor:set_hl_grp()
+    -- NOTE: if the pace cursor style is the same as the cursor style, then the pace cursor
+    -- highlight falls back to the 'sub' highlight
+    local hl_opts
+    if settings:get_selected("pace_cursor_style") == settings:get_selected("cursor_style") then
+        hl_opts = api.nvim_get_hl(vim.g.speedtyper_ns_id, { name = "speedtyper.hl.sub" })
+    else
+        hl_opts = api.nvim_get_hl(vim.g.speedtyper_ns_id, { name = "speedtyper.hl.cursor" })
+    end
+    -- HACK: if the pace cursor style is block, then we need both fg and bg (to make the space character look like a block)
+    if self.shape == " " then
+        api.nvim_set_hl(
+            vim.g.speedtyper_ns_id,
+            "speedtyper.hl.pace_cursor",
+            { fg = hl_opts.fg, bg = hl_opts.bg }
+        )
+    else
+        api.nvim_set_hl(vim.g.speedtyper_ns_id, "speedtyper.hl.pace_cursor", { fg = hl_opts.fg })
+    end
 end
 
 return PaceCursor
