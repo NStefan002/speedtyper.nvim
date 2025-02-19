@@ -44,7 +44,7 @@ List of planned features and bug fixes.
   - [x] pace_cursor
   - [x] make sure that the pace_cursor `move_up` logic is good
   - [x] pace_cursor_speed
-  - [ ] pace_cursor_style
+  - [x] pace_cursor_style
   - [ ] pace_cursor_blinking
   - [x] strict_space
   - [x] stop_on_error
@@ -72,7 +72,7 @@ List of planned features and bug fixes.
 - [ ] more tests
 - [x] move `lua/speedtyper/langs/` to `assets/languages`
 - [x] Add vimdoc ci
-- [ ] create `health.lua` for dependencies
+- [x] create `health.lua` for dependencies
 - [ ] avoid using `nil` for integer values (see hover and pace_cursor)
 - [ ] rework `stats.lua`
 - [x] get rid of magic constants
