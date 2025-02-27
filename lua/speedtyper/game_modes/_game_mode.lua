@@ -19,9 +19,11 @@ local logger = require("speedtyper.logger")
 ---@field protected ignore_next_change  boolean
 local GM = {}
 
+---@param o? table
 ---@return speedtyper.game_mode
-function GM:new()
-    local o = {
+function GM:new(o)
+    o = o or {}
+    o = vim.tbl_deep_extend("keep", o, {
         timer = nil,
         extm_ids = {},
         info_extm_id = nil,
@@ -30,7 +32,7 @@ function GM:new()
         text_generator = require("speedtyper.text_generator"),
         stats = require("speedtyper.stats"),
         ignore_next_change = true,
-    }
+    })
     setmetatable(o, self)
     self.__index = self
     return o
