@@ -24,9 +24,7 @@ local GM = {}
 function GM:new(o)
     o = o or {}
     o = vim.tbl_deep_extend("keep", o, {
-        timer = nil,
         extm_ids = {},
-        info_extm_id = nil,
         time_sec = 0,
         word_count = 0,
         text_generator = require("speedtyper.text_generator"),
@@ -38,17 +36,15 @@ function GM:new(o)
     return o
 end
 
-function GM:start()
-    self:reset_values()
+function GM:activate()
     vim.schedule(function()
         if not util.speedtyper_is_active() then
             return
         end
         api.nvim_set_option_value("modifiable", true, { buf = vim.g.speedtyper_bufnr })
     end)
-    self:set_extmarks()
     vim.keymap.set("i", "<cr>", "<nop>", { buffer = vim.g.speedtyper_bufnr })
-    self:after_start()
+    self:init()
 end
 
 function GM:stop()
@@ -108,14 +104,14 @@ end
 --     self:set_extmarks()
 --     util.set_cursor_pos(constants.text_first_line + 1, 0, vim.g.speedtyper_winnr)
 --     vim.keymap.set("i", "<cr>", "<nop>", { buffer = vim.g.speedtyper_bufnr })
---     self:after_start()
+--     self:init()
 -- end
 
 -- luacheck: push ignore self
 
 ---@protected
 ---child classes should override this function
-function GM:after_start() end
+function GM:init() end
 
 -- luacheck: pop
 
@@ -507,28 +503,40 @@ function GM:update_info_line(text)
 end
 
 ---@protected
+function GM:start_game()
+    self:attach_to_speedtyper_buffer()
+    api.nvim_set_option_value("modifiable", true, { buf = vim.g.speedtyper_bufnr })
+    vim.cmd.startinsert()
+    util.set_cursor_pos(constants.text_first_line + 1, 0)
+    api.nvim_buf_del_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.info_extm_id)
+    self.info_extm_id = nil
+    vim.schedule(function()
+        util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
+        self:set_extmarks()
+    end)
+    self:start_timer()
+    if self.pace_cursor then
+        self.pace_cursor:run()
+    end
+    self.disable_completion()
+end
+
+---@protected
+function GM:new_game()
+    self:stop()
+    self:activate()
+end
+
+---@protected
 function GM:set_keymaps()
     self:update_info_line(self.keymaps_info())
 
     util.set_keymaps(settings.general.keymaps.start_game, function()
-        self:attach_to_speedtyper_buffer()
-        api.nvim_set_option_value("modifiable", true, { buf = vim.g.speedtyper_bufnr })
-        vim.cmd.startinsert()
-        util.set_cursor_pos(constants.text_first_line + 1, 0)
-        api.nvim_buf_del_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.info_extm_id)
-        self.info_extm_id = nil
-        vim.schedule(function()
-            util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
-            self:set_extmarks()
-        end)
-        self:start_timer()
-        self.pace_cursor:run()
-        self.disable_completion()
+        self:start_game()
     end, { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: start the game" })
 
     util.set_keymaps(settings.general.keymaps.new_game, function()
-        self:stop()
-        self:start()
+        self:new_game()
     end, { buffer = vim.g.speedtyper_bufnr, desc = "speedtyper: new game" })
 end
 

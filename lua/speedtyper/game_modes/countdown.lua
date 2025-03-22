@@ -10,7 +10,9 @@ local Countdown = require("speedtyper.game_modes._game_mode"):new()
 Countdown.__index = Countdown
 
 ---@private
-function Countdown:after_start()
+function Countdown:init()
+    self:reset_values()
+    self:set_extmarks()
     self:set_keymaps()
 
     logger:log("time game mode started")

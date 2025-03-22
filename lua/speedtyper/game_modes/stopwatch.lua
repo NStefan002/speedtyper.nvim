@@ -10,7 +10,9 @@ local Stopwatch = require("speedtyper.game_modes._game_mode"):new()
 Stopwatch.__index = Stopwatch
 
 ---@private
-function Stopwatch:after_start()
+function Stopwatch:init()
+    self:reset_values()
+    self:set_extmarks()
     self:set_keymaps()
 
     logger:log("words game mode started")

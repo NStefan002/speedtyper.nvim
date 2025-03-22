@@ -159,6 +159,7 @@ function PaceCursor.get_cursor_char()
     end
 end
 
+---@private
 ---self.shape has to be set before calling this function
 function PaceCursor:set_hl_grp()
     -- NOTE: if the pace cursor style is the same as the cursor style, then the pace cursor

@@ -10,7 +10,10 @@ local Custom = require("speedtyper.game_modes._game_mode"):new()
 Custom.__index = Custom
 
 ---@private
-function Custom:after_start()
+function Custom:init()
+    self:reset_values()
+    self:set_extmarks()
+
     logger:log("waiting for the user to paste the text")
     local on_lines_detach = false
     api.nvim_buf_attach(vim.g.speedtyper_bufnr, false, {

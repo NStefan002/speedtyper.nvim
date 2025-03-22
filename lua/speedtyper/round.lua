@@ -20,7 +20,7 @@ function Round:start_round()
     self:set_game_mode()
     if self.active_game_mode then
         logger:log("starting round")
-        self.active_game_mode:start()
+        self.active_game_mode:activate()
     end
 end
 
