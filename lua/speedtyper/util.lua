@@ -79,7 +79,7 @@ end
 ---@param bufnr integer
 function M.disable_buffer_modification(bufnr)
     -- exit insert mode
-    api.nvim_feedkeys(api.nvim_replace_termcodes("<Esc>", true, false, true), "!", true)
+    api.nvim_input("<esc>")
     api.nvim_set_option_value("modifiable", false, { buf = bufnr })
 end
 
