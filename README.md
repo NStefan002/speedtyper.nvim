@@ -55,7 +55,7 @@ return {
 ## 💻 Commands
 
 - `:Speedtyper` - toggles the speedtyper window
-- `:SpeedtyperSettings <option> <value>` - change settings
+- `:SpeedtyperSettings <option> [value]` - change settings
 - `:SpeedtyperLog` - for debugging, opens the log file, **NOTE:** logging
   functionality is active only if `debug_mode` is active
 
@@ -64,6 +64,7 @@ return {
 Settings are changed via the `:SpeedtyperSettings` command. To make this process
 easy and fun to use, there is built-in autocompletion for options and values.
 Use `:SpeedtyperSettings info <option>` to get information about a specific option.
+If you don't provide a value for an option, the current value will be shown.
 
 <details>
 <summary>See completion in action</summary>
