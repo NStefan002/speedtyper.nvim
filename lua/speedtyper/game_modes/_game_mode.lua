@@ -511,7 +511,7 @@ function GM:start_game()
     api.nvim_buf_del_extmark(vim.g.speedtyper_bufnr, vim.g.speedtyper_ns_id, self.info_extm_id)
     self.info_extm_id = nil
     vim.schedule(function()
-        util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
+        util.clear_buffer_lines(vim.g.speedtyper_bufnr, 0, constants.win_height)
         self:set_extmarks()
     end)
     self:start_timer()

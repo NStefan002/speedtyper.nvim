@@ -72,7 +72,7 @@ function Hover:open()
     self.bufnr = bufnr
     self.winnr = winnr
 
-    util.clear_buffer_text(n_lines, self.bufnr)
+    util.clear_buffer_lines(self.bufnr, 0, n_lines)
     for i, line in ipairs(self.instruction) do
         api.nvim_buf_set_lines(self.bufnr, i - 1, i, false, {
             line,

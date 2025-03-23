@@ -62,7 +62,7 @@ function Custom:init()
                     end)
                     :totable())
 
-                util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
+                util.clear_buffer_lines(vim.g.speedtyper_bufnr, 0, constants.win_height)
                 self:set_extmarks()
                 util.set_cursor_pos(constants.text_first_line + 1, 0)
                 api.nvim_set_option_value("modifiable", false, { buf = vim.g.speedtyper_bufnr })

@@ -22,7 +22,7 @@ function Menu.new()
 end
 
 function Menu:display_menu()
-    util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
+    util.clear_buffer_lines(vim.g.speedtyper_bufnr, 0, constants.win_height)
     api.nvim_buf_set_lines(
         vim.g.speedtyper_bufnr,
         constants.menu_first_line,

@@ -6,7 +6,7 @@ describe("Util test", function()
 
     before_each(function()
         api.nvim_set_option_value("modifiable", true, { buf = 0 })
-        util.clear_buffer_text(10, 0)
+        util.clear_buffer_lines(0, 0, 10)
         api.nvim_win_set_cursor(0, { 1, 0 })
     end)
 
@@ -19,7 +19,7 @@ describe("Util test", function()
     end)
 
     it("clear text", function()
-        util.clear_buffer_text(5)
+        util.clear_buffer_lines(0, 0, 5)
         local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
         for i, line in ipairs(buf_lines) do
             if i <= 5 then

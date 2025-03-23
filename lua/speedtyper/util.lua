@@ -44,14 +44,15 @@ function M.equals(a, b)
     return tostring(a) == tostring(b)
 end
 
----@param n integer number of empty lines
----@param bufnr? integer
-function M.clear_buffer_text(n, bufnr)
+---@param bufnr integer
+---@param first integer first line index (inclusive, 0-indexed)
+---@param last integer last line index (exclusive, 0-indexed)
+function M.clear_buffer_lines(bufnr, first, last)
     local repl = {}
-    for _ = 1, n do
+    for _ = first, last - 1 do
         table.insert(repl, "")
     end
-    api.nvim_buf_set_lines(bufnr or 0, 0, n, false, repl)
+    api.nvim_buf_set_lines(bufnr, first, last, false, repl)
 end
 
 ---NOTE: currently unused, but might be useful when we add stories and other text features
