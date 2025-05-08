@@ -14,13 +14,7 @@ vim.g.speedtyper_bufnr = -1
 ---@type integer
 vim.g.speedtyper_winnr = -1
 
-api.nvim_create_user_command("Speedtyper", function(event)
-    local util = require("speedtyper.util")
-    if #event.fargs > 0 then
-        util.error("Command does not take arguments.")
-        return
-    end
-
+api.nvim_create_user_command("Speedtyper", function()
     -- set random seed for the random number generator (used in some of the modules)
     math.randomseed(os.time())
 
@@ -39,11 +33,7 @@ end, {
     desc = "start speedtyper",
 })
 
-api.nvim_create_user_command("SpeedtyperLog", function(event)
-    local util = require("speedtyper.util")
-    if #event.fargs > 0 then
-        util.error("Command does not take arguments.")
-    end
+api.nvim_create_user_command("SpeedtyperLog", function()
     require("speedtyper.logger"):display()
 end, {
     nargs = 0,
