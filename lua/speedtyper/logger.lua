@@ -52,8 +52,10 @@ end
 
 function Logger:display()
     if not require("speedtyper.settings"):get_selected("debug_mode") then
-        require("speedtyper.util").info(
-            "Debug mode is turned OFF! Turn it ON to be able to see logs."
+        require("speedtyper.util").notify(
+            "Debug mode is turned OFF! Turn it ON to be able to see logs.",
+            vim.log.levels.INFO,
+            require("speedtyper.settings"):get_selected("notify_method")
         )
         return
     end

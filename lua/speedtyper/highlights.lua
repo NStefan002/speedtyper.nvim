@@ -41,7 +41,11 @@ function Hl:setup()
 
     local ok, get_hl_groups = pcall(require, ("speedtyper.themes.%s"):format(active_theme))
     if not ok then
-        util.error(("Theme not found: %s"):format(active_theme))
+        util.notify(
+            ("Theme not found: %s"):format(active_theme),
+            vim.log.levels.ERROR,
+            settings:get_selected("notify_method")
+        )
         return
     end
     self.set_highlights(get_hl_groups())

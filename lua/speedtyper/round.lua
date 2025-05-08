@@ -48,11 +48,19 @@ function Round:set_game_mode()
     elseif game_mode == "rain" then
         self.active_game_mode = rain
         -- TODO: remove the next three lines when you finish implementing rain mode
-        util.info("Rain mode coming soon!")
+        util.notify(
+            "Rain mode coming soon!",
+            vim.log.levels.WARN,
+            settings:get_selected("notify_method")
+        )
         self.active_game_mode = nil
         return
     else
-        util.error(("Invalid game mode: %s"):format(game_mode))
+        util.notify(
+            ("Invalid game mode: %s"):format(game_mode),
+            vim.log.levels.ERROR,
+            settings:get_selected("notify_method")
+        )
     end
     logger:log(("game mode set to: %s"):format(game_mode))
 end

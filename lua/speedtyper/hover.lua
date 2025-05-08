@@ -65,7 +65,11 @@ function Hover:open()
     })
 
     if winnr == 0 then
-        util.error("Failed to open window")
+        util.notify(
+            "Failed to open window",
+            vim.log.levels.ERROR,
+            settings:get_selected("notify_method")
+        )
         self:_close()
     end
 

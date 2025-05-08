@@ -61,7 +61,11 @@ function Sounds.new()
 
     self:select_tool()
     if self.tool == nil then
-        util.error("No tools for playing sound available, run :checkhealth for more information.")
+        util.notify(
+            "No tools for playing sound available, run :checkhealth for more information.",
+            vim.log.levels.ERROR,
+            settings:get_selected("notify_method")
+        )
     else
         logger:log(("selected sound tool: %s"):format(self.tool))
     end

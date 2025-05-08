@@ -86,7 +86,11 @@ function UI:open()
     local nvim_uis = api.nvim_list_uis()
     if #nvim_uis > 0 then
         if nvim_uis[1].height <= constants.win_height or nvim_uis[1].width <= width then
-            util.error("Increase the size of your Neovim instance.")
+            util.notify(
+                "Increase the size of your Neovim instance.",
+                vim.log.levels.ERROR,
+                settings:get_selected("notify_method")
+            )
             return
         end
     end
@@ -126,7 +130,11 @@ function UI:open()
     vim.g.speedtyper_winnr = winnr
 
     if winnr == 0 then
-        util.error("Failed to open window")
+        util.notify(
+            "Failed to open window",
+            vim.log.levels.ERROR,
+            settings:get_selected("notify_method")
+        )
         api.nvim_buf_delete(bufnr, { force = true })
         return
     end

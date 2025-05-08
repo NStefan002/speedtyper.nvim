@@ -149,6 +149,13 @@ Show the average accuracy of the last
         demojify = [[
 If enabled, emojis will not be displayed.
 ]],
+        notify_method = [[
+Select how to display notifications.
+Available methods:
+  - `echo` (default) - use `vim.api.nvim_echo`
+  - `notify` - use `vim.notify` to display
+  - `none` - do not display notifications
+]],
         debug_mode = [[
 Enable this if you want to debug
 some issue. Display the log with
