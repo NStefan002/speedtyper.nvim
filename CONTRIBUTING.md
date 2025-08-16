@@ -1,8 +1,7 @@
 # Contributing guide
 
-Thank you for considering contributing to speedtyper.nvim! We welcome all
-contributions, whether it's fixing bugs, adding new features, improving
-documentation, or creating new color schemes.
+Thank you for considering contributing to speedtyper.nvim! We welcome all contributions, whether it's fixing bugs,
+adding new features, improving documentation, or creating new color schemes.
 
 ## Table of contents
 
@@ -26,7 +25,8 @@ If you want to contribute to `speedtyper.nvim`, and you don't have a specific id
 
 ## Commit messages / PR title
 
-Please ensure your pull request title conforms to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+Please ensure your pull request title conforms to
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## CI
 
@@ -37,9 +37,8 @@ GitHub Actions will run the following checks on your PR:
 - `markdownlint` linting for markdown files
 - `stylua` formatting - checks if the lua files are formatted correctly
 
-If any CI check fails, review the logs, correct any issues in your code, and
-push the changes. If you're unsure, feel free to ask for assistance in the
-discussions or open an issue for guidance.
+If any CI check fails, review the logs, correct any issues in your code, and push the changes. If you're unsure, feel
+free to ask for assistance in the discussions or open an issue for guidance.
 
 ## Development
 
@@ -61,24 +60,21 @@ We use the following tools:
 
 ### Running tests
 
-We use [`busted`](https://lunarmodules.github.io/busted/) for testing,
-but with Neovim as the Lua interpreter.
+We use [`busted`](https://lunarmodules.github.io/busted/) for testing, but with Neovim as the Lua interpreter.
 
-You can run the test suite using `luarocks test` or `busted`. For more
-information on how to set up Neovim as a Lua interpreter, see
-[`nlua`](https://github.com/mfussenegger/nlua).
+You can run the test suite using `luarocks test` or `busted`. For more information on how to set up Neovim as a Lua
+interpreter, see [`nlua`](https://github.com/mfussenegger/nlua).
 
 ### Manual testing
 
-If you want to test your contributions to `speedtyper.nvim` manually,
-we recommend you set [`NVIM_APPNAME`](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)
-to something other than `nvim`, so that your test environment
-doesn't interfere with your regular Neovim installation or the plugins you use.
+If you want to test your contributions to `speedtyper.nvim` manually, we recommend you set
+[`NVIM_APPNAME`](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME) to something other than `nvim`, so that your
+test environment doesn't interfere with your regular Neovim installation or the plugins you use.
 
 ## Creating new color schemes
 
-Create a file in the `lua/speedtyper/themes/` directory and name it `<your_theme>.lua`.
-That lua file should return a function that returns an object with type `speedtyper.hl_group`.
+Create a file in the `lua/speedtyper/themes/` directory and name it `<your_theme>.lua`. That lua file should return a
+function that returns an object with type `speedtyper.hl_group`.
 
 <details>
 <summary>Here's how it's done in the `default.lua` (yours can be much more complex).</summary>
@@ -104,7 +100,7 @@ end
 
 ![speedtyper_highlights_info](https://github.com/user-attachments/assets/5ecd6643-6e88-4f20-8e7b-47e909cd2e0a)
 
-- - -
+---
 
 ![speedtyper_highlights_info2](https://github.com/user-attachments/assets/22686ba5-3abd-4f63-b285-ebc87e18c9a3)
 

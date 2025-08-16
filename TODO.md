@@ -6,16 +6,15 @@ List of planned features and bug fixes.
 
 - [x] change highlight groups
 - [ ] update README
+  - [ ] add screenshots and gifs
 - [ ] rain mode (does not count towards stats, it's just for fun)
 - [ ] make independent ui
   - [x] hover instructions
-  - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like
-    in v1)
+  - [x] select game modes in the speedtyper ui (instead of `vim.ui.select` like in v1)
   - [ ] display requested info in the speedtyper ui
 - [x] punctuation game modifier
 - [x] numbers game modifier
-- [ ] if the pace cursor has the same style as the real cursor, then it
-  should be highlighted differently
+- [ ] if the pace cursor has the same style as the real cursor, then it should be highlighted differently
 - [ ] Stats
   - [x] wpm
   - [x] raw wpm
@@ -27,14 +26,11 @@ List of planned features and bug fixes.
   - [ ] save stats
   - [ ] detect AFK
 - [x] Instructions
-  - [x] show how each thing is calculated in a pop-up window on 'K' (like
-    lsp.hover)
+  - [x] show how each thing is calculated in a pop-up window on 'K' (like lsp.hover)
   - [x] show each game mode details in a pop-up window (like lsp.hover)
 - [ ] Settings
-  - [x] fully (or almost fully) remove config and the 'standard' way of
-    configuring plugin
-  - [x] if no arguments are passed to `:SpeedtyperSettings <option>` then show
-    the current value
+  - [x] fully (or almost fully) remove config and the 'standard' way of configuring plugin
+  - [x] if no arguments are passed to `:SpeedtyperSettings <option>` then show the current value
   - [x] customize settings in the ~~ui~~ commandline and refresh them live
   - [x] save settings in json somewhere
   - [x] language
@@ -53,6 +49,8 @@ List of planned features and bug fixes.
   - [x] sound_volume (pplay, mpv, ffmpeg->ffplay, cvlc, mplayer, sox->play)
   - [x] sound_on_keypress
   - [x] sound_on_typo
+  - [ ] sound_on_notification
+  - [ ] sound_on_game_end (or something like that, maybe)
   - [x] live_progress
   - [ ] average_speed
   - [ ] average_accuracy
@@ -70,6 +68,7 @@ List of planned features and bug fixes.
 - [x] Rewrite plugin
 - [x] Add tests
 - [ ] more tests
+- [ ] more logging
 - [x] move `lua/speedtyper/langs/` to `assets/languages`
 - [x] Add vimdoc ci
 - [x] create `health.lua` for dependencies
