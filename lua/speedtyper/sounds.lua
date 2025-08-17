@@ -61,11 +61,12 @@ function Sounds.new()
 
     self:select_tool()
     if self.tool == nil then
-        require("speedtyper.notify").notify(
-            "No tools for playing sound available, run :checkhealth for more information.",
-            vim.log.levels.ERROR,
-            settings:get_selected("notify_method")
-        )
+        vim.schedule(function()
+            require("speedtyper.notify").notify(
+                "No tools for playing sound available, run ':checkhealth speedtyper' for more information.",
+                vim.log.levels.ERROR
+            )
+        end)
     else
         logger:log(("selected sound tool: %s"):format(self.tool))
     end
