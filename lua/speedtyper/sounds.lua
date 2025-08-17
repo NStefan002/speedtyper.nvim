@@ -72,18 +72,33 @@ function Sounds.new()
     return self
 end
 
----@param typo boolean
-function Sounds:play_sound(typo)
-    local sound = ""
-    local on_keypress = settings:get_selected("sound_on_keypress")
-    local on_typo = settings:get_selected("sound_on_typo")
-    if on_keypress ~= "off" then
-        sound = on_keypress
+function Sounds:play_keypress_sound()
+    local sound = settings:get_selected("sound_on_keypress")
+    if sound == "off" then
+        return
     end
-    if typo and on_typo ~= "off" then
-        sound = on_typo
+    sound = ("%s%s.ogg"):format(self.sounds_directory, sound)
+    local volume = self:get_volume_for_tool(self.tool, settings:get_selected("sound_volume"))
+
+    local cmd = self.tools[self.tool](sound, volume)
+    vim.system(cmd, {})
+end
+
+function Sounds:play_typo_sound()
+    local sound = settings:get_selected("sound_on_typo")
+    if sound == "off" then
+        return
     end
-    if sound == "" then
+    sound = ("%s%s.ogg"):format(self.sounds_directory, sound)
+    local volume = self:get_volume_for_tool(self.tool, settings:get_selected("sound_volume"))
+
+    local cmd = self.tools[self.tool](sound, volume)
+    vim.system(cmd, {})
+end
+
+function Sounds:play_notification_sound()
+    local sound = settings:get_selected("sound_on_notification")
+    if sound == "off" then
         return
     end
     sound = ("%s%s.ogg"):format(self.sounds_directory, sound)

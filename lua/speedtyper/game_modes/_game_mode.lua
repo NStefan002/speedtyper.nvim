@@ -153,7 +153,11 @@ function GM:attach_to_speedtyper_buffer()
                 ---@type speedtyper.char_info
                 local last_typed = self.stats.text_info:peek()
                 if last_typed ~= nil then
-                    sounds:play_sound(last_typed:is_typo())
+                    if last_typed:is_typo() then
+                        sounds:play_typo_sound()
+                    else
+                        sounds:play_keypress_sound()
+                    end
                 end
             end)
         end,
