@@ -41,6 +41,7 @@ local logger = require("speedtyper.logger")
 ---@field sound_volume integer
 ---@field sound_on_keypress table<string, boolean>
 ---@field sound_on_typo table<string, boolean>
+---@field sound_on_notification table<string, boolean>
 ---@field live_progress boolean
 -- -@field average_speed boolean
 -- -@field average_accuracy boolean
@@ -106,6 +107,7 @@ function Settings.new()
                 sound_volume = 50,
                 sound_on_keypress = {},
                 sound_on_typo = {},
+                sound_on_notification = {},
                 live_progress = true,
                 -- average_speed = false,
                 -- average_accuracy = false,
@@ -132,9 +134,11 @@ function Settings.new()
     for _, sound in ipairs(sounds) do
         self.default.general.sound_on_keypress[sound] = false
         self.default.general.sound_on_typo[sound] = false
+        self.default.general.sound_on_notification[sound] = false
     end
     self.default.general.sound_on_keypress["off"] = true
     self.default.general.sound_on_typo["off"] = true
+    self.default.general.sound_on_notification["off"] = true
 
     -- read all languages from the languages directory
     local langs = util.read_dir(util.get_plugin_path() .. "/assets/languages", ".json", true)
@@ -241,6 +245,7 @@ function Settings:create_user_commands()
         sound_volume = self:create_subcmd_for_number_option("sound_volume", 0, 100),
         sound_on_keypress = self:create_subcmd_for_map_option("sound_on_keypress"),
         sound_on_typo = self:create_subcmd_for_map_option("sound_on_typo"),
+        sound_on_notification = self:create_subcmd_for_map_option("sound_on_notification"),
         live_progress = self:create_subcmd_for_bool_option("live_progress"),
         -- average_speed = self:create_subcmd_for_bool_option("average_speed"),
         -- average_accuracy = self:create_subcmd_for_bool_option("average_accuracy"),
