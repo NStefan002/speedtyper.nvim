@@ -61,7 +61,7 @@ function Sounds.new()
 
     self:select_tool()
     if self.tool == nil then
-        util.notify(
+        require("speedtyper.notify").notify(
             "No tools for playing sound available, run :checkhealth for more information.",
             vim.log.levels.ERROR,
             settings:get_selected("notify_method")

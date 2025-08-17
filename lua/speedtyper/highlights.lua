@@ -1,7 +1,8 @@
 local api = vim.api
-local util = require("speedtyper.util")
-local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
+local notify = require("speedtyper.notify")
+local settings = require("speedtyper.settings")
+local util = require("speedtyper.util")
 
 ---@alias speedtyper.hl_group_name
 ---| "speedtyper.hl.bg"
@@ -41,11 +42,7 @@ function Hl:setup()
 
     local ok, get_hl_groups = pcall(require, ("speedtyper.themes.%s"):format(active_theme))
     if not ok then
-        util.notify(
-            ("Theme not found: %s"):format(active_theme),
-            vim.log.levels.ERROR,
-            settings:get_selected("notify_method")
-        )
+        notify.notify(("Theme not found: %s"):format(active_theme), vim.log.levels.ERROR)
         return
     end
     self.set_highlights(get_hl_groups())

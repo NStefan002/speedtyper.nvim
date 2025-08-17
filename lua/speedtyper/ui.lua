@@ -3,6 +3,7 @@ local util = require("speedtyper.util")
 local constants = require("speedtyper.constants")
 local settings = require("speedtyper.settings")
 local logger = require("speedtyper.logger")
+local notify = require("speedtyper.notify")
 
 ---@class speedtyper.ui
 ---@field menu speedtyper.menu
@@ -86,11 +87,7 @@ function UI:open()
     local nvim_uis = api.nvim_list_uis()
     if #nvim_uis > 0 then
         if nvim_uis[1].height <= constants.win_height or nvim_uis[1].width <= width then
-            util.notify(
-                "Increase the size of your Neovim instance.",
-                vim.log.levels.ERROR,
-                settings:get_selected("notify_method")
-            )
+            notify.notify("Increase the size of your Neovim instance.", vim.log.levels.ERROR)
             return
         end
     end
@@ -130,11 +127,7 @@ function UI:open()
     vim.g.speedtyper_winnr = winnr
 
     if winnr == 0 then
-        util.notify(
-            "Failed to open window",
-            vim.log.levels.ERROR,
-            settings:get_selected("notify_method")
-        )
+        notify.notify("Failed to open window", vim.log.levels.ERROR)
         api.nvim_buf_delete(bufnr, { force = true })
         return
     end

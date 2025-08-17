@@ -2,9 +2,11 @@ local countdown = require("speedtyper.game_modes.countdown")
 local stopwatch = require("speedtyper.game_modes.stopwatch")
 local custom = require("speedtyper.game_modes.custom")
 local rain = require("speedtyper.game_modes.rain")
-local util = require("speedtyper.util")
-local settings = require("speedtyper.settings")
+
 local logger = require("speedtyper.logger")
+local notify = require("speedtyper.notify")
+local settings = require("speedtyper.settings")
+local util = require("speedtyper.util")
 
 ---@class speedtyper.round
 ---@field active_game_mode speedtyper.game_mode
@@ -48,18 +50,13 @@ function Round:set_game_mode()
     elseif game_mode == "rain" then
         self.active_game_mode = rain
         -- TODO: remove the next three lines when you finish implementing rain mode
-        util.notify(
-            "Rain mode coming soon!",
-            vim.log.levels.WARN,
-            settings:get_selected("notify_method")
-        )
+        require("speedtyper.notify").notify("Rain mode coming soon!", vim.log.levels.WARN)
         self.active_game_mode = nil
         return
     else
-        util.notify(
+        require("speedtyper.notify").notify(
             ("Invalid game mode: %s"):format(game_mode),
-            vim.log.levels.ERROR,
-            settings:get_selected("notify_method")
+            vim.log.levels.ERROR
         )
     end
     logger:log(("game mode set to: %s"):format(game_mode))

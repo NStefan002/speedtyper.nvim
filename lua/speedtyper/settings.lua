@@ -1,7 +1,8 @@
 local api = vim.api
-local util = require("speedtyper.util")
 local settings_path = ("%s/speedtyper-settings.json"):format(vim.fn.stdpath("data"))
 local logger = require("speedtyper.logger")
+local notify = require("speedtyper.notify")
+local util = require("speedtyper.util")
 
 ---@class speedtyper.settings_subcmd
 ---@field impl fun(args: string[], data: table) The command implementation
@@ -188,11 +189,7 @@ function Settings:save()
         file:close()
         logger:log("settings saved")
     else
-        util.notify(
-            "failed to save settings",
-            vim.log.levels.ERROR,
-            self:get_selected("notify_method")
-        )
+        notify.notify("failed to save settings", vim.log.levels.ERROR)
     end
 end
 
@@ -257,10 +254,9 @@ function Settings:create_user_commands()
     local function cmd(data)
         local fargs = data.fargs
         if #fargs == 0 then
-            util.notify(
+            notify.notify(
                 "SpeedtyperSettings: command expects at least one argument",
-                vim.log.levels.ERROR,
-                self:get_selected("notify_method")
+                vim.log.levels.ERROR
             )
             return
         end
@@ -269,10 +265,9 @@ function Settings:create_user_commands()
         local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
         local subcmd = subcmds[subcommand_key]
         if not subcmd then
-            util.notify(
+            notify.notify(
                 ("SpeedtyperSettings: unknown command '%s'"):format(subcommand_key),
-                vim.log.levels.ERROR,
-                self:get_selected("notify_method")
+                vim.log.levels.ERROR
             )
             return
         end
@@ -319,20 +314,18 @@ function Settings:create_subcmd_for_map_option(option)
         impl = function(args, _)
             -- if no arguments are given, display the current value
             if #args == 0 then
-                util.notify(
+                notify.notify(
                     ("Option '%s' is currently set to '%s'."):format(
                         option,
                         self:get_selected(option)
                     ),
-                    vim.log.levels.INFO,
-                    self:get_selected("notify_method")
+                    vim.log.levels.INFO
                 )
                 return
             elseif #args > 1 then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: command expects exactly one argument"):format(option),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
@@ -342,10 +335,9 @@ function Settings:create_subcmd_for_map_option(option)
                     args[1]
                 )
             then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: unknown argument '%s'"):format(option, args[1]),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
@@ -369,28 +361,25 @@ function Settings:create_subcmd_for_bool_option(option)
     return {
         impl = function(args, _)
             if #args == 0 then
-                util.notify(
+                notify.notify(
                     ("Option '%s' is currently %s."):format(
                         option,
                         self:get_selected(option) and "ON" or "OFF"
                     ),
-                    vim.log.levels.INFO,
-                    self:get_selected("notify_method")
+                    vim.log.levels.INFO
                 )
                 return
             elseif #args ~= 1 then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: command expects exactly one argument"):format(option),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
             if not util.tbl_contains(util.get_bool_option_completion(""), args[1]) then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: unknown argument '%s'"):format(option, args[1]),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
@@ -415,33 +404,30 @@ function Settings:create_subcmd_for_number_option(option, min, max)
     return {
         impl = function(args, _)
             if #args == 0 then
-                util.notify(
+                notify.notify(
                     ("Option '%s' is currently set to %d."):format(
                         option,
                         self:get_selected(option)
                     ),
-                    vim.log.levels.INFO,
-                    self:get_selected("notify_method")
+                    vim.log.levels.INFO
                 )
                 return
             elseif #args ~= 1 then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: command expects exactly one argument"):format(option),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
             local new_val = tonumber(args[1])
             if new_val == nil or new_val < min or new_val > max then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: value must be between %d and %d"):format(
                         option,
                         min,
                         max
                     ),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
@@ -462,28 +448,22 @@ function Settings:create_info_subcmd()
     return {
         impl = function(args, data)
             if #args ~= 1 then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: command expects exactly one argument"):format(
                         data.fargs[1]
                     ),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
             if not util.tbl_contains(all_options, args[1]) then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: unknown argument '%s'"):format(data.fargs[1], args[1]),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
-            util.notify(
-                require("speedtyper.instructions"):get(args[1]),
-                vim.log.levels.INFO,
-                self:get_selected("notify_method")
-            )
+            notify.notify(require("speedtyper.instructions"):get(args[1]), vim.log.levels.INFO)
         end,
         complete = function(subcmd_arg_lead)
             return vim.iter(all_options)
@@ -501,10 +481,9 @@ function Settings:create_reset_subcmd()
     return {
         impl = function(args, _)
             if #args ~= 0 then
-                util.notify(
+                notify.notify(
                     "SpeedtyperSettings reset_settings: no arguments expected",
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
@@ -514,11 +493,7 @@ function Settings:create_reset_subcmd()
                     self:reset_settings()
                     self:save()
                     require("speedtyper.ui"):redraw()
-                    util.notify(
-                        "Settings have been reset.",
-                        vim.log.levels.INFO,
-                        self:get_selected("notify_method")
-                    )
+                    notify.notify("Settings have been reset.", vim.log.levels.INFO)
                 end
             end)
         end,
@@ -535,23 +510,21 @@ function Settings:create_keymap_subcmd()
     return {
         impl = function(args, data)
             if #args <= 1 then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: command expects at least one argument"):format(
                         data.fargs[1]
                     ),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end
             if not util.tbl_contains(all_keymaps, args[1]) then
-                util.notify(
+                notify.notify(
                     ("SpeedtyperSettings %s: unknown keymap option '%s'"):format(
                         data.fargs[1],
                         args[1]
                     ),
-                    vim.log.levels.ERROR,
-                    self:get_selected("notify_method")
+                    vim.log.levels.ERROR
                 )
                 return
             end

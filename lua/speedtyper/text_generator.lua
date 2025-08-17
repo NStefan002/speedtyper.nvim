@@ -31,7 +31,7 @@ function Text:update_lang()
         file:close()
     else
         self.words = {}
-        util.notify(
+        require("speedtyper.notify").notify(
             ("Invalid language: %s"):format(self.selected_lang),
             vim.log.levels.ERROR,
             settings:get_selected("notify_method")

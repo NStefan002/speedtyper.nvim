@@ -2,39 +2,6 @@ local api = vim.api
 
 local M = {}
 
----notify user of an error
----@param msg string
----@param level vim.log.levels
----@param method speedtyper.notify_method
-function M.notify(msg, level, method)
-    require("speedtyper.logger"):log(msg)
-
-    if method == "none" then
-        return
-    end
-
-    if method == "notify" then
-        -- "\n" for nvim configs that don't use nvim-notify
-        vim.notify("\n" .. msg, level, { title = "Speedtyper" })
-        return
-    end
-
-    -- method == "echo"
-
-    ---@type table<vim.log.levels, string>
-    local hl_groups = {
-        [vim.log.levels.TRACE] = "DiagnosticVirtualTextOk",
-        [vim.log.levels.DEBUG] = "DiagnosticVirtualTextHint",
-        [vim.log.levels.INFO] = "DiagnosticVirtualTextInfo",
-        [vim.log.levels.WARN] = "DiagnosticVirtualTextWarn",
-        [vim.log.levels.ERROR] = "DiagnosticVirtualTextError",
-    }
-    api.nvim_echo({
-        { " speedtyper.nvim ", hl_groups[level] },
-        { msg, "" },
-    }, true, { verbose = false })
-end
-
 ---returns the current position of the cursor, 0-indexed
 ---@return integer
 ---@return integer
@@ -80,10 +47,9 @@ end
 function M.read_words_from_file(file_path)
     local reader = io.open(file_path, "r")
     if reader == nil then
-        M.notify(
+        require("speedtyper.notify").notify(
             ("Failed to read from the file: %s"):format(file_path),
-            vim.log.levels.ERROR,
-            require("speedtyper.settings"):get_selected("notify_method")
+            vim.log.levels.ERROR
         )
         return {}
     end
@@ -329,10 +295,9 @@ end
 ---@return integer
 function M.utf_find(str, char, start)
     if api.nvim_strwidth(char) ~= 1 then
-        M.notify(
+        require("speedtyper.notify").notify(
             "Only single-char strings are supported",
-            vim.log.levels.ERROR,
-            require("speedtyper.settings"):get_selected("notify_method")
+            vim.log.levels.ERROR
         )
         return -1
     end
@@ -385,10 +350,9 @@ function M.read_json(file_path)
         reader:close()
         return vim.json.decode(content) or {}
     else
-        M.notify(
+        require("speedtyper.notify").notify(
             ("Failed to read from file: %s"):format(file_path),
-            vim.log.levels.ERROR,
-            require("speedtyper.settings"):get_selected("notify_method")
+            vim.log.levels.ERROR
         )
     end
     return {}
