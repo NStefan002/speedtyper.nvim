@@ -4,9 +4,7 @@ local custom = require("speedtyper.game_modes.custom")
 local rain = require("speedtyper.game_modes.rain")
 
 local logger = require("speedtyper.logger")
-local notify = require("speedtyper.notify")
 local settings = require("speedtyper.settings")
-local util = require("speedtyper.util")
 
 ---@class speedtyper.round
 ---@field active_game_mode speedtyper.game_mode
