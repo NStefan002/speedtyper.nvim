@@ -16,6 +16,10 @@ function M.notify(msg, level)
         return
     end
 
+    if settings:get_selected("sound_on_notification") then
+        require("speedtyper.sounds"):play_notification_sound()
+    end
+
     if method == "notify" then
         -- "\n" for nvim configs that don't use nvim-notify
         vim.notify("\n" .. msg, level, { title = "Speedtyper" })
