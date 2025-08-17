@@ -79,3 +79,4 @@ List of planned features and bug fixes.
 - [x] avoid `closing` and `active` and just check if the buf/win is valid
 - [x] use `vim.g` instead of `speedtyper.globals`
 - [ ] use `vim.tbl_get()` to get values from tables (mainly for settings)
+- [ ] move `util.notify()` to a separate module, and play sounds when notifying
