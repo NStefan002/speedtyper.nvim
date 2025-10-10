@@ -7,7 +7,7 @@
 ---@field numbers string
 ---@field total_time string
 ---@field wpm string
----@field raw_wpm string
+---@field rwpm string
 ---@field acc string
 ---@field language string
 ---@field theme string
@@ -74,7 +74,7 @@ the correctly typed words
 (including spaces), divided
 by 5 and normalised to 60 seconds.
 ]],
-        raw_wpm = [[
+        rwpm = [[
 Total number of typed characters
 (correctly or incorrectly typed),
 divided by 5 and normalised to

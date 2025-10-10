@@ -52,8 +52,8 @@ function Stats:display_stats()
 
     -- util.clear_buffer_text(constants.win_height, vim.g.speedtyper_bufnr)
     local wpm_text = ("WPM %.2f"):format(self.wpm)
-    local raw_wpm_text = ("Raw_WPM %.2f"):format(self.raw_wpm)
-    local acc_text = ("Accuracy %.2f%%"):format(self.acc)
+    local raw_wpm_text = ("RWPM %.2f"):format(self.raw_wpm)
+    local acc_text = ("Acc %.2f%%"):format(self.acc)
     local text = util.center_text(
         ("%s        %s        %s"):format(wpm_text, raw_wpm_text, acc_text),
         api.nvim_win_get_width(vim.g.speedtyper_winnr)
@@ -71,8 +71,8 @@ function Stats:display_stats()
     end)
 
     local wpm_idx = text:find("WPM") or 0
-    local raw_wpm_idx = text:find("Raw_WPM") or 0
-    local acc_idx = text:find("Accuracy") or 0
+    local raw_wpm_idx = text:find("RWPM") or 0
+    local acc_idx = text:find("Acc") or 0
 
     ---NOTE: this will highlight one char after text, but in this case I think it looks cool
     ---@param col_start integer
