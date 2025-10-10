@@ -1,4 +1,4 @@
-*speedtyper.nvim.txt*     For Neovim >= 0.10.0     Last change: 2025 August 17
+*speedtyper.nvim.txt*     For Neovim >= 0.10.0    Last change: 2025 October 10
 
 ==============================================================================
 Table of Contents                          *speedtyper.nvim-table-of-contents*
@@ -52,7 +52,7 @@ INSTALLATION                    *speedtyper.nvim-speedtyper.nvim-installation*
   [!NOTE] Neovim version 0.10.4 or higher is required.
   Nerd Fonts are optional, run `:SpeedtyperSettings demojify on` if you don’t
   have them installed.
-lazy <https://github.com/folke/lazy.nvim>
+lazy <https://github.com/folke/lazy.nvim>:
 
 >lua
     return {
@@ -63,7 +63,7 @@ lazy <https://github.com/folke/lazy.nvim>
 <
 
 
-  [!NOTE] Noneed to lazy load this plugin, it lazy loads by default.
+  [!NOTE] No need to lazy load this plugin, it lazy loads by default.
 
   [!NOTE] There is no `setup` function, all configuration is done via
   `:SpeedtyperSettings` command (see below).
