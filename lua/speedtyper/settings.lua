@@ -46,6 +46,9 @@ local util = require("speedtyper.util")
 ---@field live_progress boolean
 -- -@field average_speed boolean
 -- -@field average_accuracy boolean
+---@field rain_lives integer
+---@field rain_starting_wpm integer
+---@field rain_wpm_increase_interval integer
 ---@field demojify boolean
 ---@field notify_method table<speedtyper.notify_method, boolean>
 ---@field debug_mode boolean
@@ -110,6 +113,9 @@ function Settings.new()
                 sound_on_typo = {},
                 sound_on_notification = {},
                 live_progress = true,
+                rain_lives = 3,
+                rain_starting_wpm = 30,
+                rain_wpm_increase_interval = 3,
                 -- average_speed = false,
                 -- average_accuracy = false,
                 demojify = false,
@@ -244,6 +250,13 @@ function Settings:create_user_commands()
         sound_on_typo = self:create_subcmd_for_map_option("sound_on_typo"),
         sound_on_notification = self:create_subcmd_for_map_option("sound_on_notification"),
         live_progress = self:create_subcmd_for_bool_option("live_progress"),
+        rain_lives = self:create_subcmd_for_number_option("rain_lives", 1, 10),
+        rain_starting_wpm = self:create_subcmd_for_number_option("rain_starting_wpm", 0, 100),
+        rain_wpm_increase_interval = self:create_subcmd_for_number_option(
+            "rain_wpm_increase_interval",
+            1,
+            100
+        ),
         -- average_speed = self:create_subcmd_for_bool_option("average_speed"),
         -- average_accuracy = self:create_subcmd_for_bool_option("average_accuracy"),
         demojify = self:create_subcmd_for_bool_option("demojify"),
